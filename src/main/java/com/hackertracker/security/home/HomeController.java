@@ -29,7 +29,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String home() {
-        return "home";
+        return "landingPage";
     }
 
     @GetMapping("/register")
@@ -49,7 +49,7 @@ public class HomeController {
 
         RegisterRequest registerRequest = new RegisterRequest(user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail(), user.getPassword());
         authenticationService.register(registerRequest);
-        return "userSuccess";
+        return "home";
     }
 
     @GetMapping("/login")
@@ -61,9 +61,14 @@ public class HomeController {
     @PostMapping("/login")
     public String handleUserLogin(@ModelAttribute User user,
                         BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) {
+            return "login";
+        }
+
         AuthenticationRequest authenticationRequest = new AuthenticationRequest(user.getUsername(), user.getPassword());
         authenticationService.authenticate(authenticationRequest);
-        return "userSuccess";
+        return "home";
     }
 }
 

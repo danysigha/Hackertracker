@@ -1,6 +1,6 @@
 <%-- 
-    Document   : home
-    Created on : Mar 26, 2025, 11:18:58 PM
+    Document   : userSuccess
+    Created on : Mar 26, 2025, 10:56:43 PM
     Author     : danysigha
 --%>
 
@@ -10,11 +10,10 @@
 <html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link rel="stylesheet" href="css/homeStyle.css">
         <title>HackerTracker</title>
     </head>
     <body>
-        <h1>HackerTracker</h1>
-        <button><a href="login">Log In</a></button>
-        <button><a href="register">Register</a></button>
+        <h1>User registered!!</h1>
     </body>
 </html>
