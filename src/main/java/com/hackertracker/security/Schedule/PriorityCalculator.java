@@ -77,6 +77,7 @@ public class PriorityCalculator {
     }
 
 
+
     /**
      * Get score based on topic rank (higher rank = higher score)
      */
@@ -92,12 +93,32 @@ public class PriorityCalculator {
                 .max();
 
         if (highestRank.isPresent()) {
-            // Normalize to 0-100 scale (assuming ranks are 1-MAX_TOPIC_RANK)
-            return (int) (highestRank.getAsInt() * 100.0 / MAX_TOPIC_RANK);
+            // INVERTED normalization - lower ranks get higher scores
+            // This means rank 1 gets closer to 100, and MAX_TOPIC_RANK gets closer to 0
+            return (int) (100 - (highestRank.getAsInt() * 100.0 / MAX_TOPIC_RANK));
         } else {
             return 50; // Default middle value
         }
     }
+
+//    private int getTopicRankScore(ProblemDTO problemDto) {
+//        List<TopicDTO> topics = problemDto.getTopics();
+//        if (topics.isEmpty()) {
+//            return 50; // Default middle value if no topics
+//        }
+//
+//        // Find the highest rank among all topics associated with this problem
+//        OptionalInt highestRank = topics.stream()
+//                .mapToInt(TopicDTO::getTopicRank)
+//                .max();
+//
+//        if (highestRank.isPresent()) {
+//            // Normalize to 0-100 scale (assuming ranks are 1-MAX_TOPIC_RANK)
+//            return (int) (highestRank.getAsInt() * 100.0 / MAX_TOPIC_RANK);
+//        } else {
+//            return 50; // Default middle value
+//        }
+//    }
 
 
     /**

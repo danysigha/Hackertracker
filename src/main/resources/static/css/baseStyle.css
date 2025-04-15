@@ -46,6 +46,7 @@ a:hover {
 }
 
 nav {
+    /*margin-top: 2em;*/
     position: sticky;
     top: 1em;
     display: flex;
@@ -58,6 +59,7 @@ nav {
     padding: 1em;
     padding-left: 4em;
     padding-right: 4em;
+    z-index: 1;
 }
 
 main {
@@ -65,7 +67,6 @@ main {
 }
 
 body {
-    margin-top: 2em;
     min-width: 320px;
     min-height: 100vh;
 }

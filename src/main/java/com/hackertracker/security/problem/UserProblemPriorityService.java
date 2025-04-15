@@ -137,6 +137,7 @@ public class UserProblemPriorityService {
     @Transactional(readOnly = true)
     public List<ProblemDTO> getPrioritizedProblemsForUser(User user) {
         // Return all user's problems ordered by priority score descending
+
         return priorityDao.findByUserOrderByPriorityScoreDesc(user)
                 .stream()
                 .map(UserProblemPriorityDTO::getProblemDto)

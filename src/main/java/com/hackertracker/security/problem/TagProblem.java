@@ -1,21 +1,15 @@
 package com.hackertracker.security.problem;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import com.hackertracker.security.tag.Tag;
 
 import java.util.Objects;
 
 @Entity
 @Table(name="tag_problems")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class TagProblem {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tag_problem_id")
@@ -33,6 +27,40 @@ public class TagProblem {
         this.problem = problem;
         this.tag = tag;
     }
+
+    public TagProblem() {
+    }
+
+    public TagProblem(int tagProblemId, Problem problem, Tag tag) {
+        this.tagProblemId = tagProblemId;
+        this.problem = problem;
+        this.tag = tag;
+    }
+
+    public int getTagProblemId() {
+        return tagProblemId;
+    }
+
+    public void setTagProblemId(int tagProblemId) {
+        this.tagProblemId = tagProblemId;
+    }
+
+    public Problem getProblem() {
+        return problem;
+    }
+
+    public void setProblem(Problem problem) {
+        this.problem = problem;
+    }
+
+    public Tag getTag() {
+        return tag;
+    }
+
+    public void setTag(Tag tag) {
+        this.tag = tag;
+    }
+
 
     @Override
     public String toString() {

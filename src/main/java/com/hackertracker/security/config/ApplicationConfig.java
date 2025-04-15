@@ -2,7 +2,6 @@ package com.hackertracker.security.config;
 
 import com.hackertracker.security.dao.UserDAO;
 import com.hackertracker.security.user.User;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,10 +15,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
-@RequiredArgsConstructor
 public class ApplicationConfig {
 
     private final UserDAO userDao;
+
+    public ApplicationConfig(UserDAO userDao) {
+        this.userDao = userDao;
+    }
 
     @Bean
     public UserDetailsService userDetailsService() {

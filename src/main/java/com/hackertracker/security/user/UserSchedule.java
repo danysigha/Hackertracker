@@ -3,7 +3,6 @@ package com.hackertracker.security.user;
 import com.hackertracker.security.Schedule.Weekday;
 import com.hackertracker.security.Schedule.WeekdayName;
 import jakarta.persistence.*;
-import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.util.Date;
@@ -11,11 +10,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name="user_schedules")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+
 public class UserSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -86,6 +81,92 @@ public class UserSchedule {
         }
     }
 
+    public UserSchedule(int userScheduleId, User user, Weekday monday, Weekday tuesday, Weekday wednesday, Weekday thursday, Weekday friday, Weekday saturday, Weekday sunday) {
+        this.userScheduleId = userScheduleId;
+        this.user = user;
+        this.monday = monday;
+        this.tuesday = tuesday;
+        this.wednesday = wednesday;
+        this.thursday = thursday;
+        this.friday = friday;
+        this.saturday = saturday;
+        this.sunday = sunday;
+    }
+
+    public UserSchedule() {
+    }
+
+    public int getUserScheduleId() {
+        return userScheduleId;
+    }
+
+    public void setUserScheduleId(int userScheduleId) {
+        this.userScheduleId = userScheduleId;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Weekday getMonday() {
+        return monday;
+    }
+
+    public void setMonday(Weekday monday) {
+        this.monday = monday;
+    }
+
+    public Weekday getTuesday() {
+        return tuesday;
+    }
+
+    public void setTuesday(Weekday tuesday) {
+        this.tuesday = tuesday;
+    }
+
+    public Weekday getWednesday() {
+        return wednesday;
+    }
+
+    public void setWednesday(Weekday wednesday) {
+        this.wednesday = wednesday;
+    }
+
+    public Weekday getThursday() {
+        return thursday;
+    }
+
+    public void setThursday(Weekday thursday) {
+        this.thursday = thursday;
+    }
+
+    public Weekday getFriday() {
+        return friday;
+    }
+
+    public void setFriday(Weekday friday) {
+        this.friday = friday;
+    }
+
+    public Weekday getSaturday() {
+        return saturday;
+    }
+
+    public void setSaturday(Weekday saturday) {
+        this.saturday = saturday;
+    }
+
+    public Weekday getSunday() {
+        return sunday;
+    }
+
+    public void setSunday(Weekday sunday) {
+        this.sunday = sunday;
+    }
 
     @Override
     public String toString() {

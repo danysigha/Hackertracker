@@ -31,8 +31,8 @@ public class UserProblemService {
     @Autowired
     private ProblemDAO problemDAO;
 
-    @Autowired
-    private UserDAO userDAO;
+//    @Autowired
+//    private UserDAO userDAO;
 
     @Autowired
     private DTOMapper dtoMapper;
@@ -247,30 +247,30 @@ public class UserProblemService {
         return userDto;
     }
 
-    /**
-     * Get all users as DTOs
-     */
-    public List<UserDTO> getAllUserDtos() {
-        return userDAO.getAllUsers().stream()
-                .map(this::getUserDto)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Get a UserDTO by ID
-     */
-    public UserDTO getUserDtoById(int id) {
-        User user = userDAO.getUserById(id);
-        return user != null ? getUserDto(user) : null;
-    }
-
-    /**
-     * Get a UserDTO by public ID
-     */
-    public UserDTO getUserDtoByPublicId(String publicId) {
-        User user = userDAO.getUserByPublicId(publicId);
-        return user != null ? getUserDto(user) : null;
-    }
+//    /**
+//     * Get all users as DTOs
+//     */
+//    public List<UserDTO> getAllUserDtos() {
+//        return userDAO.getAllUsers().stream()
+//                .map(this::getUserDto)
+//                .collect(Collectors.toList());
+//    }
+//
+//    /**
+//     * Get a UserDTO by ID
+//     */
+//    public UserDTO getUserDtoById(int id) {
+//        User user = userDAO.getUserById(id);
+//        return user != null ? getUserDto(user) : null;
+//    }
+//
+//    /**
+//     * Get a UserDTO by public ID
+//     */
+//    public UserDTO getUserDtoByPublicId(String publicId) {
+//        User user = userDAO.getUserByPublicId(publicId);
+//        return user != null ? getUserDto(user) : null;
+//    }
 
     /**
      * Get completion predictions for a user
@@ -325,8 +325,8 @@ public class UserProblemService {
                             mergedProblem.getProblemId(),
                             mergedProblem.getPublicProblemId(),
                             mergedProblem.getQuestionTitle(),
-                            mergedProblem.getDifficultyLevel(),
                             mergedProblem.getPageUrl(),
+                            mergedProblem.getDifficultyLevel(),
                             dtoMapper.toTopicDtoList(mergedProblem.getListTopics()),
                             null
                     );

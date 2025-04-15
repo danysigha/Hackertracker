@@ -3,10 +3,7 @@ package com.hackertracker.security.tag;
 import com.hackertracker.security.problem.Problem;
 import com.hackertracker.security.problem.TagProblem;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
 //import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 //import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 //import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
@@ -16,10 +13,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name="tag")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+
 //@Indexed
 public class Tag {
     @Id
@@ -45,6 +39,39 @@ public class Tag {
         return problemTags.stream()
                 .map(TagProblem::getProblem)
                 .collect(Collectors.toList());
+    }
+
+    public Tag(byte tagId, String tagName, Set<TagProblem> problemTags) {
+        this.tagId = tagId;
+        this.tagName = tagName;
+        this.problemTags = problemTags;
+    }
+
+    public Tag() {
+    }
+
+    public byte getTagId() {
+        return tagId;
+    }
+
+    public void setTagId(byte tagId) {
+        this.tagId = tagId;
+    }
+
+    public String getTagName() {
+        return tagName;
+    }
+
+    public void setTagName(String tagName) {
+        this.tagName = tagName;
+    }
+
+    public Set<TagProblem> getProblemTags() {
+        return problemTags;
+    }
+
+    public void setProblemTags(Set<TagProblem> problemTags) {
+        this.problemTags = problemTags;
     }
 
     @Override

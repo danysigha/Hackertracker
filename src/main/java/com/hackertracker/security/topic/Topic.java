@@ -5,10 +5,6 @@ import com.hackertracker.security.problem.TagProblem;
 import com.hackertracker.security.problem.TopicProblem;
 import com.hackertracker.security.tag.Tag;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.List;
@@ -22,10 +18,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "topic")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+
 //@Indexed
 public class Topic {
     @Id
@@ -54,6 +47,48 @@ public class Topic {
         return problemTopics.stream()
                 .map(TopicProblem::getProblem)
                 .collect(Collectors.toList());
+    }
+
+    public Topic(byte topicId, String topicName, byte topicRank, Set<TopicProblem> problemTopics) {
+        this.topicId = topicId;
+        this.topicName = topicName;
+        this.topicRank = topicRank;
+        this.problemTopics = problemTopics;
+    }
+
+    public Topic() {
+    }
+
+    public byte getTopicId() {
+        return topicId;
+    }
+
+    public void setTopicId(byte topicId) {
+        this.topicId = topicId;
+    }
+
+    public String getTopicName() {
+        return topicName;
+    }
+
+    public void setTopicName(String topicName) {
+        this.topicName = topicName;
+    }
+
+    public byte getTopicRank() {
+        return topicRank;
+    }
+
+    public void setTopicRank(byte topicRank) {
+        this.topicRank = topicRank;
+    }
+
+    public Set<TopicProblem> getProblemTopics() {
+        return problemTopics;
+    }
+
+    public void setProblemTopics(Set<TopicProblem> problemTopics) {
+        this.problemTopics = problemTopics;
     }
 
     @Override

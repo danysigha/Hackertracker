@@ -1,4 +1,32 @@
 h1 {
     text-align: center;
-    margin: 1em;
+    margin: 0;
+}
+
+.pattern-container {
+    background-image: url('/assets/graphs.png');
+    background-repeat: repeat;
+    background-size: 400px 400px; /* Controls the spacing */
+}
+
+main {
+    /*background: linear-gradient(90deg, rgba(60, 60, 60, 0.8) 0%, rgba(40, 40, 40, 0.8) 100%);*/
+    box-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.2); /* blurry outer shadow */
+    background: #a1a1a1;
+    background: linear-gradient(90deg, rgba(230, 230, 230, 0.71) 0%, rgba(247, 250, 252, 0.79) 100%);
+
+    border-radius: 16px;
+    padding: 1em;
+}
+
+
+
+/* Dark mode styling */
+@media (prefers-color-scheme: dark) {
+    main {
+        background: linear-gradient(90deg, rgba(60, 60, 60, 0.8) 0%, rgba(40, 40, 40, 0.8) 100%);
+        box-shadow: 0 0 30px 10px rgba(0, 0, 0, 0.4); /* blurry outer shadow */
+        border-radius: 16px;
+        padding: 1em;
+    }
 }

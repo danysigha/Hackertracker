@@ -4,18 +4,13 @@ import com.hackertracker.security.user.User;
 import com.hackertracker.security.user.UserProblemAttempt;
 import com.hackertracker.security.user.UserSchedule;
 import jakarta.persistence.*;
-import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.util.Objects;
 
 @Entity
 @Table(name="weekdays")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+
 public class Weekday {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +27,39 @@ public class Weekday {
     // Constructor with fields
     public Weekday(WeekdayName weekdayName, Integer targetProblemCount) {
         this.weekdayName = weekdayName;
+        this.targetProblemCount = targetProblemCount;
+    }
+
+    public Weekday(int weekdayId, WeekdayName weekdayName, int targetProblemCount) {
+        this.weekdayId = weekdayId;
+        this.weekdayName = weekdayName;
+        this.targetProblemCount = targetProblemCount;
+    }
+
+    public Weekday() {
+    }
+
+    public int getWeekdayId() {
+        return weekdayId;
+    }
+
+    public void setWeekdayId(int weekdayId) {
+        this.weekdayId = weekdayId;
+    }
+
+    public WeekdayName getWeekdayName() {
+        return weekdayName;
+    }
+
+    public void setWeekdayName(WeekdayName weekdayName) {
+        this.weekdayName = weekdayName;
+    }
+
+    public int getTargetProblemCount() {
+        return targetProblemCount;
+    }
+
+    public void setTargetProblemCount(int targetProblemCount) {
         this.targetProblemCount = targetProblemCount;
     }
 

@@ -2,21 +2,15 @@ package com.hackertracker.security.user;
 
 import com.hackertracker.security.problem.Problem;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.Date;
 import java.util.Objects;
 
 @Entity
 @Table(name="user_problem_priorities")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class UserProblemPriority {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "priority_id")
@@ -38,6 +32,67 @@ public class UserProblemPriority {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public int getPriorityId() {
+        return priorityId;
+    }
+
+    public UserProblemPriority(int priorityId, double priorityScore, Date lastCalculation, Date lastAttempted, Problem problem, User user) {
+        this.priorityId = priorityId;
+        this.priorityScore = priorityScore;
+        this.lastCalculation = lastCalculation;
+        this.lastAttempted = lastAttempted;
+        this.problem = problem;
+        this.user = user;
+    }
+
+    public UserProblemPriority() {
+    }
+
+    public void setPriorityId(int priorityId) {
+        this.priorityId = priorityId;
+    }
+
+    public double getPriorityScore() {
+        return priorityScore;
+    }
+
+    public void setPriorityScore(double priorityScore) {
+        this.priorityScore = priorityScore;
+    }
+
+    public Date getLastCalculation() {
+        return lastCalculation;
+    }
+
+    public void setLastCalculation(Date lastCalculation) {
+        this.lastCalculation = lastCalculation;
+    }
+
+    public Date getLastAttempted() {
+        return lastAttempted;
+    }
+
+    public void setLastAttempted(Date lastAttempted) {
+        this.lastAttempted = lastAttempted;
+    }
+
+    public Problem getProblem() {
+        return problem;
+    }
+
+    public void setProblem(Problem problem) {
+        this.problem = problem;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
 
     public UserProblemPriority(Problem problem, User user, double priorityScore) {
         this.problem = problem;

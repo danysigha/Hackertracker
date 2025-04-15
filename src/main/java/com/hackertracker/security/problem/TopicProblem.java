@@ -3,18 +3,11 @@ package com.hackertracker.security.problem;
 import com.hackertracker.security.tag.Tag;
 import com.hackertracker.security.topic.Topic;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import java.util.Objects;
 
 @Entity
 @Table(name="topic_problems")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class TopicProblem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +24,39 @@ public class TopicProblem {
 
     TopicProblem(Problem problem, Topic topic) {
         this.problem = problem;
+        this.topic = topic;
+    }
+
+    public TopicProblem(int topicProblemId, Problem problem, Topic topic) {
+        this.topicProblemId = topicProblemId;
+        this.problem = problem;
+        this.topic = topic;
+    }
+
+    public TopicProblem() {
+    }
+
+    public int getTopicProblemId() {
+        return topicProblemId;
+    }
+
+    public void setTopicProblemId(int topicProblemId) {
+        this.topicProblemId = topicProblemId;
+    }
+
+    public Problem getProblem() {
+        return problem;
+    }
+
+    public void setProblem(Problem problem) {
+        this.problem = problem;
+    }
+
+    public Topic getTopic() {
+        return topic;
+    }
+
+    public void setTopic(Topic topic) {
         this.topic = topic;
     }
 

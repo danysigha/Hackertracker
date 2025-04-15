@@ -61,7 +61,10 @@ public class TagDAO {
                     (problem) -> {
                         ProblemDTO problemDto = new ProblemDTO();
                         problemDto.setProblemId(problem.getProblemId());
+                        problemDto.setPublicProblemId(problem.getPublicProblemId());
                         problemDto.setDifficultyLevel(problem.getDifficultyLevel());
+                        problemDto.setPageUrl(problem.getPageUrl());
+                        problemDto.setQuestionTitle(problem.getQuestionTitle());
                         problemDto.setTopics(userProblemService.getProblemTopics(problem));
                         problemDto.setAttempts(userProblemService.getProblemAttempts(problem, problemDto));
                         return problemDto;

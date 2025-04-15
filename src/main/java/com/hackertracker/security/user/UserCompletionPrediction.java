@@ -2,20 +2,12 @@ package com.hackertracker.security.user;
 
 import com.hackertracker.security.problem.Problem;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.Date;
 import java.util.Objects;
 
 @Entity
 @Table(name="user_completion_predictions")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class UserCompletionPrediction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +24,47 @@ public class UserCompletionPrediction {
     @JoinColumn(name = "user_id")
     private User user;
 
+    public UserCompletionPrediction(int predictionId, Date predictedCompletionDate, Date predictionDate, User user) {
+        this.predictionId = predictionId;
+        this.predictedCompletionDate = predictedCompletionDate;
+        this.predictionDate = predictionDate;
+        this.user = user;
+    }
+
+    public UserCompletionPrediction() {
+    }
+
+    public int getPredictionId() {
+        return predictionId;
+    }
+
+    public void setPredictionId(int predictionId) {
+        this.predictionId = predictionId;
+    }
+
+    public Date getPredictionDate() {
+        return predictionDate;
+    }
+
+    public void setPredictionDate(Date predictionDate) {
+        this.predictionDate = predictionDate;
+    }
+
+    public Date getPredictedCompletionDate() {
+        return predictedCompletionDate;
+    }
+
+    public void setPredictedCompletionDate(Date predictedCompletionDate) {
+        this.predictedCompletionDate = predictedCompletionDate;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     @Override
     public String toString() {

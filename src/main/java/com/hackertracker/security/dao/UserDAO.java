@@ -1,5 +1,7 @@
 package com.hackertracker.security.dao;
 
+import com.hackertracker.security.dto.UserDTO;
+import com.hackertracker.security.dto.UserProblemService;
 import com.hackertracker.security.user.User;
 import com.hackertracker.security.dto.DTOMapper;
 import org.hibernate.Session;
@@ -22,7 +24,7 @@ public class UserDAO {
     private SessionFactory sessionFactory;
 
     @Autowired
-    private DTOMapper dtoMapper;
+    private UserProblemService userProblemService;
 
     /**
      * Get all User entities
@@ -37,6 +39,7 @@ public class UserDAO {
      * Save a new User entity
      */
     public void saveUser(User user) {
+        System.out.println("The user we want to save \n" + user);
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
             try {
@@ -52,7 +55,7 @@ public class UserDAO {
     /**
      * Get a User entity by ID
      */
-    public User getUserById(int userId) {
+    public User getUserById(Integer userId) {
         try (Session session = sessionFactory.openSession()) {
             Query<User> q = session.createQuery("from User where userId=:userId", User.class);
             q.setParameter("userId", userId);
@@ -79,6 +82,18 @@ public class UserDAO {
             Query<User> q = session.createQuery("from User where userName=:userName", User.class);
             q.setParameter("userName", userName);
             return q.uniqueResult();
+        }
+    }
+
+    public UserDTO getUserDtoByUserName(String userName) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<User> q = session.createQuery("from User where userName=:userName", User.class);
+            q.setParameter("userName", userName);
+            User user = q.uniqueResult();
+            UserDTO userDto = new UserDTO(user.getUserId(), user.getPublicId(), user.getUserName(), user.getFirstName(),
+                    user.getLastName(), user.getPassword(), user.getEmail(), user.getRole(), userProblemService.getUserAttempts(user));
+            System.out.println("within session " + userDto);
+            return userDto;
         }
     }
 

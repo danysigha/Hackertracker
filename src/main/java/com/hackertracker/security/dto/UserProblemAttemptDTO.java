@@ -1,18 +1,60 @@
 package com.hackertracker.security.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import java.util.Date;
 import java.util.Objects;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class UserProblemAttemptDTO {
+    public int getAttemptId() {
+        return attemptId;
+    }
+
+    public UserProblemAttemptDTO(int attemptId, byte difficultyRating, Date startTime, Date endTime, ProblemDTO problemDto) {
+        this.attemptId = attemptId;
+        this.difficultyRating = difficultyRating;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.problemDto = problemDto;
+    }
+
+    public UserProblemAttemptDTO() {
+    }
+
+    public void setAttemptId(int attemptId) {
+        this.attemptId = attemptId;
+    }
+
+    public byte getDifficultyRating() {
+        return difficultyRating;
+    }
+
+    public void setDifficultyRating(byte difficultyRating) {
+        this.difficultyRating = difficultyRating;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public ProblemDTO getProblemDto() {
+        return problemDto;
+    }
+
+    public void setProblemDto(ProblemDTO problemDto) {
+        this.problemDto = problemDto;
+    }
 
     private int attemptId;
     private byte difficultyRating;

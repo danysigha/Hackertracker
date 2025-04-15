@@ -1,19 +1,44 @@
 package com.hackertracker.security.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import java.util.Objects;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class TopicDTO {
 
     private byte topicId;
+
+    public TopicDTO() {
+    }
+
+    public TopicDTO(byte topicId, String topicName, byte topicRank) {
+        this.topicId = topicId;
+        this.topicName = topicName;
+        this.topicRank = topicRank;
+    }
+
+    public byte getTopicId() {
+        return topicId;
+    }
+
+    public void setTopicId(byte topicId) {
+        this.topicId = topicId;
+    }
+
+    public String getTopicName() {
+        return topicName;
+    }
+
+    public void setTopicName(String topicName) {
+        this.topicName = topicName;
+    }
+
+    public byte getTopicRank() {
+        return topicRank;
+    }
+
+    public void setTopicRank(byte topicRank) {
+        this.topicRank = topicRank;
+    }
+
     private String topicName;
     private byte topicRank;
 

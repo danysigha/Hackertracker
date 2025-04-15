@@ -1,21 +1,55 @@
 package com.hackertracker.security.dto;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import java.util.Date;
 import java.util.Objects;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class UserCompletionPredictionDTO {
     private int predictionId;
     private Date predictionDate;
     private Date predictedCompletionDate;
     private UserDTO userDto;
+
+    public UserCompletionPredictionDTO(int predictionId, Date predictionDate, Date predictedCompletionDate, UserDTO userDto) {
+        this.predictionId = predictionId;
+        this.predictionDate = predictionDate;
+        this.predictedCompletionDate = predictedCompletionDate;
+        this.userDto = userDto;
+    }
+
+    public UserCompletionPredictionDTO() {
+    }
+
+    public int getPredictionId() {
+        return predictionId;
+    }
+
+    public void setPredictionId(int predictionId) {
+        this.predictionId = predictionId;
+    }
+
+    public Date getPredictionDate() {
+        return predictionDate;
+    }
+
+    public void setPredictionDate(Date predictionDate) {
+        this.predictionDate = predictionDate;
+    }
+
+    public Date getPredictedCompletionDate() {
+        return predictedCompletionDate;
+    }
+
+    public void setPredictedCompletionDate(Date predictedCompletionDate) {
+        this.predictedCompletionDate = predictedCompletionDate;
+    }
+
+    public UserDTO getUserDto() {
+        return userDto;
+    }
+
+    public void setUserDto(UserDTO userDto) {
+        this.userDto = userDto;
+    }
 
     @Override
     public String toString() {

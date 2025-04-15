@@ -1,12 +1,9 @@
 package com.hackertracker.security.dao;
 
-import com.hackertracker.security.dto.UserProblemService;
+import com.hackertracker.security.dto.*;
 import com.hackertracker.security.problem.Problem;
-import com.hackertracker.security.dto.ProblemDTO;
 import com.hackertracker.security.user.User;
-import com.hackertracker.security.dto.UserDTO;
 import com.hackertracker.security.user.UserProblemPriority;
-import com.hackertracker.security.dto.UserProblemPriorityDTO;
 import jakarta.persistence.criteria.Predicate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -79,6 +76,7 @@ public class UserProblemPriorityDAO {
                     UserProblemPriority.class
             );
             q.setParameter("user", user);
+
             return q.list().stream().map(
                     (priority) -> {
                         UserProblemPriorityDTO userProblemPriorityDto = new UserProblemPriorityDTO();
@@ -86,6 +84,9 @@ public class UserProblemPriorityDAO {
                         userProblemPriorityDto.setPriorityScore(priority.getPriorityScore());
                         userProblemPriorityDto.setLastCalculation(priority.getLastCalculation());
                         userProblemPriorityDto.setLastAttempted(priority.getLastAttempted());
+                        userProblemPriorityDto.setUserDto(userProblemService.getUserDto(priority.getUser()));
+                        userProblemPriorityDto.setProblemDto(userProblemService.getProblemDto(priority.getProblem()));
+
                         return userProblemPriorityDto;
                     }
             ).toList();

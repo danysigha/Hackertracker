@@ -1,23 +1,35 @@
 package com.hackertracker.security.dto;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-
 import java.util.Objects;
 
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class TagDTO {
 
     private byte tagId;
     private String tagName;
 
+    public TagDTO(byte tagId, String tagName) {
+        this.tagId = tagId;
+        this.tagName = tagName;
+    }
+
+    public TagDTO() {
+    }
+
+    public byte getTagId() {
+        return tagId;
+    }
+
+    public void setTagId(byte tagId) {
+        this.tagId = tagId;
+    }
+
+    public String getTagName() {
+        return tagName;
+    }
+
+    public void setTagName(String tagName) {
+        this.tagName = tagName;
+    }
 
     @Override
     public String toString() {

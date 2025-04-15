@@ -2,20 +2,13 @@ package com.hackertracker.security.user;
 
 import com.hackertracker.security.problem.Problem;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.Date;
 import java.util.Objects;
 
 @Entity
 @Table(name="user_problem_attempts")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class UserProblemAttempt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,6 +42,75 @@ public class UserProblemAttempt {
         this.startTime = startTime;
         this.endTime = endTime;
         this.notes = notes;
+    }
+
+    public UserProblemAttempt(int attemptId, byte difficultyRating, String notes, Date startTime, Date endTime, Problem problem, User user) {
+        this.attemptId = attemptId;
+        this.difficultyRating = difficultyRating;
+        this.notes = notes;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.problem = problem;
+        this.user = user;
+    }
+
+    public UserProblemAttempt() {
+    }
+
+    public int getAttemptId() {
+        return attemptId;
+    }
+
+    public void setAttemptId(int attemptId) {
+        this.attemptId = attemptId;
+    }
+
+    public byte getDifficultyRating() {
+        return difficultyRating;
+    }
+
+    public void setDifficultyRating(byte difficultyRating) {
+        this.difficultyRating = difficultyRating;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Problem getProblem() {
+        return problem;
+    }
+
+    public void setProblem(Problem problem) {
+        this.problem = problem;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override

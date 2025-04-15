@@ -5,10 +5,6 @@ import com.hackertracker.security.topic.Topic;
 import com.hackertracker.security.user.UserProblemAttempt;
 import com.hackertracker.security.user.UserProblemPriority;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 //import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 //import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
@@ -19,10 +15,6 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name="problem")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 //@Indexed
 public class Problem {
     @Id
@@ -57,7 +49,93 @@ public class Problem {
     @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserProblemPriority> problemPriorities = new HashSet<>();
 
-    // Normally you do not have to add or remove tags
+    public Problem(int problemId, String publicProblemId, String questionTitle, String difficultyLevel, String pageUrl, Set<TagProblem> problemTags, Set<TopicProblem> problemTopics, Set<UserProblemAttempt> problemAttempts, Set<UserProblemPriority> problemPriorities) {
+        this.problemId = problemId;
+        this.publicProblemId = publicProblemId;
+        this.questionTitle = questionTitle;
+        this.difficultyLevel = difficultyLevel;
+        this.pageUrl = pageUrl;
+        this.problemTags = problemTags;
+        this.problemTopics = problemTopics;
+        this.problemAttempts = problemAttempts;
+        this.problemPriorities = problemPriorities;
+    }
+
+    public Problem() {
+    }
+
+    public int getProblemId() {
+        return problemId;
+    }
+
+    public void setProblemId(int problemId) {
+        this.problemId = problemId;
+    }
+
+    public String getPublicProblemId() {
+        return publicProblemId;
+    }
+
+    public void setPublicProblemId(String publicProblemId) {
+        this.publicProblemId = publicProblemId;
+    }
+
+    public String getQuestionTitle() {
+        return questionTitle;
+    }
+
+    public void setQuestionTitle(String questionTitle) {
+        this.questionTitle = questionTitle;
+    }
+
+    public String getDifficultyLevel() {
+        return difficultyLevel;
+    }
+
+    public void setDifficultyLevel(String difficultyLevel) {
+        this.difficultyLevel = difficultyLevel;
+    }
+
+    public String getPageUrl() {
+        return pageUrl;
+    }
+
+    public void setPageUrl(String pageUrl) {
+        this.pageUrl = pageUrl;
+    }
+
+    public Set<TagProblem> getProblemTags() {
+        return problemTags;
+    }
+
+    public void setProblemTags(Set<TagProblem> problemTags) {
+        this.problemTags = problemTags;
+    }
+
+    public Set<TopicProblem> getProblemTopics() {
+        return problemTopics;
+    }
+
+    public void setProblemTopics(Set<TopicProblem> problemTopics) {
+        this.problemTopics = problemTopics;
+    }
+
+    public Set<UserProblemAttempt> getProblemAttempts() {
+        return problemAttempts;
+    }
+
+    public void setProblemAttempts(Set<UserProblemAttempt> problemAttempts) {
+        this.problemAttempts = problemAttempts;
+    }
+
+    public Set<UserProblemPriority> getProblemPriorities() {
+        return problemPriorities;
+    }
+
+    public void setProblemPriorities(Set<UserProblemPriority> problemPriorities) {
+        this.problemPriorities = problemPriorities;
+    }
+// Normally you do not have to add or remove tags
     // Methods to manage the relationship
 //    public void addTag(Tag tag) {
 //        TagProblem problemTag = new TagProblem(this, tag);

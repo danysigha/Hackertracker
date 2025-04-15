@@ -34,8 +34,8 @@ public class DTOMapper {
                 problem.getProblemId(),
                 problem.getPublicProblemId(),
                 problem.getQuestionTitle(),
-                problem.getDifficultyLevel(),
                 problem.getPageUrl(),
+                problem.getDifficultyLevel(),
                 topicDtos,
                 null // Attempts are set later if needed
         );
@@ -79,6 +79,11 @@ public class DTOMapper {
                 user.getUserId(),
                 user.getPublicId(),
                 user.getUsername(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getPassword(),
+                user.getEmail(),
+                user.getRole(),
                 null // Attempts are set later if needed
         );
     }
