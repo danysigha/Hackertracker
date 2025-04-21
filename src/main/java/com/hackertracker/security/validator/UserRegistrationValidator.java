@@ -25,7 +25,6 @@ public class UserRegistrationValidator implements Validator {
 
     private final UserDAO userDao;
 
-    @Autowired
     public UserRegistrationValidator(UserDAO userDao) {
         this.userDao = userDao;
     }

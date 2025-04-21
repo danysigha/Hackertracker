@@ -22,10 +22,13 @@ import java.util.List;
 @Repository
 public class TopicDAO {
 
-    @Autowired
-    SessionFactory sessionFactory;
-    @Autowired
-    UserProblemService userProblemService;
+    private final SessionFactory sessionFactory;
+    private final UserProblemService userProblemService;
+
+    public TopicDAO(SessionFactory sessionFactory, UserProblemService userProblemService) {
+        this.sessionFactory = sessionFactory;
+        this.userProblemService = userProblemService;
+    }
 
     public List<TopicDTO> getAllTopics(){
         try (Session session = sessionFactory.openSession()) {

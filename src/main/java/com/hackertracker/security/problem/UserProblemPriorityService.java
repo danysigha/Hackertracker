@@ -30,10 +30,7 @@ public class UserProblemPriorityService {
     private final UserDAO userDao;
     private final UserProblemService userProblemService;
 
-    @Autowired
-    SessionFactory sessionFactory;
 
-    @Autowired
     public UserProblemPriorityService(
             UserProblemPriorityDAO priorityDao,
             PriorityCalculator priorityCalculator,
@@ -46,7 +43,6 @@ public class UserProblemPriorityService {
         this.userDao = userDao;
         this.userProblemService = userProblemService;
     }
-
 
     /**
      * Initialize priority for a new problem for a user

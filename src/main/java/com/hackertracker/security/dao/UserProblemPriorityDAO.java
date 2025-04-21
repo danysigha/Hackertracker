@@ -24,15 +24,12 @@ import java.util.List;
 @Repository
 public class UserProblemPriorityDAO {
 
-    @Autowired
-    SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
+    private final UserProblemService userProblemService;
 
-    @Autowired
-    UserProblemService userProblemService;
-
-
-    public UserProblemPriorityDAO(SessionFactory sessionFactory) {
+    public UserProblemPriorityDAO(SessionFactory sessionFactory, UserProblemService userProblemService) {
         this.sessionFactory = sessionFactory;
+        this.userProblemService = userProblemService;
     }
 
     /**

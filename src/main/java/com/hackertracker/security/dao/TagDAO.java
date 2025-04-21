@@ -22,11 +22,13 @@ import java.util.List;
 @Repository
 public class TagDAO {
 
-    @Autowired
-    SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
+    private final UserProblemService userProblemService;
 
-    @Autowired
-    UserProblemService userProblemService;
+    public TagDAO(SessionFactory sessionFactory, UserProblemService userProblemService) {
+        this.sessionFactory = sessionFactory;
+        this.userProblemService = userProblemService;
+    }
 
     public List<TagDTO> getAllTags(){
         try (Session session = sessionFactory.openSession()) {

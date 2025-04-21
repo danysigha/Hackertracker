@@ -20,11 +20,11 @@ import java.util.List;
 @Repository
 public class ProblemDAO {
 
-    @Autowired
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
-    @Autowired
-    private DTOMapper dtoMapper;
+    public ProblemDAO(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     /**
      * Get a Problem entity by its ID

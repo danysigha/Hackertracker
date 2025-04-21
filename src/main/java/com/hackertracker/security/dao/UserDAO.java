@@ -20,11 +20,11 @@ import java.util.List;
 @Repository
 public class UserDAO {
 
-    @Autowired
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
-    @Autowired
-    private UserProblemService userProblemService;
+    public UserDAO(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     /**
      * Get all User entities
@@ -39,7 +39,7 @@ public class UserDAO {
      * Save a new User entity
      */
     public void saveUser(User user) {
-        System.out.println("The user we want to save \n" + user);
+//        System.out.println("The user we want to save \n" + user);
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
             try {
@@ -85,17 +85,17 @@ public class UserDAO {
         }
     }
 
-    public UserDTO getUserDtoByUserName(String userName) {
-        try (Session session = sessionFactory.openSession()) {
-            Query<User> q = session.createQuery("from User where userName=:userName", User.class);
-            q.setParameter("userName", userName);
-            User user = q.uniqueResult();
-            UserDTO userDto = new UserDTO(user.getUserId(), user.getPublicId(), user.getUserName(), user.getFirstName(),
-                    user.getLastName(), user.getPassword(), user.getEmail(), user.getRole(), userProblemService.getUserAttempts(user));
-            System.out.println("within session " + userDto);
-            return userDto;
-        }
-    }
+//    public UserDTO getUserDtoByUserName(String userName, UserProblemService userProblemService) {
+//        try (Session session = sessionFactory.openSession()) {
+//            Query<User> q = session.createQuery("from User where userName=:userName", User.class);
+//            q.setParameter("userName", userName);
+//            User user = q.uniqueResult();
+//            UserDTO userDto = new UserDTO(user.getUserId(), user.getPublicId(), user.getUserName(), user.getFirstName(),
+//                    user.getLastName(), user.getPassword(), user.getEmail(), user.getRole(), userProblemService.getUserAttempts(user));
+//            System.out.println("within session " + userDto);
+//            return userDto;
+//        }
+//    }
 
     /**
      * Get a User entity by email

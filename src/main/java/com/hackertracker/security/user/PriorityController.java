@@ -29,16 +29,7 @@ public class PriorityController {
 
     private final UserProblemPriorityService priorityService;
     private final UserProblemService userProblemService;
-//    private final UserService userService;
 
-//    @Autowired
-//    public PriorityController(
-//            UserProblemPriorityService priorityService,
-//            UserService userService) {
-//        this.priorityService = priorityService;
-//        this.userService = userService;
-//    }
-    @Autowired
     public PriorityController(UserProblemPriorityService priorityService, UserProblemService userProblemService){
         this.priorityService = priorityService;
         this.userProblemService = userProblemService;

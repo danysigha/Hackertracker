@@ -25,17 +25,17 @@ import java.util.stream.Collectors;
 @Service
 public class UserProblemService {
 
-    @Autowired
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
-    @Autowired
-    private ProblemDAO problemDAO;
+    private final ProblemDAO problemDAO;
 
-//    @Autowired
-//    private UserDAO userDAO;
+    private final DTOMapper dtoMapper;
 
-    @Autowired
-    private DTOMapper dtoMapper;
+    public UserProblemService(SessionFactory sessionFactory, ProblemDAO problemDAO, DTOMapper dtoMapper) {
+        this.sessionFactory = sessionFactory;
+        this.problemDAO = problemDAO;
+        this.dtoMapper = dtoMapper;
+    }
 
     /* ========================== PROBLEM RELATED METHODS ========================== */
 

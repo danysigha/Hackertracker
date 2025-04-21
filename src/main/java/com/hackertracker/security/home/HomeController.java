@@ -35,25 +35,22 @@ import java.util.List;
 @Controller
 public class HomeController {
 
-    @Autowired
-    UserRegistrationValidator userRegistrationValidator;
+    private final UserRegistrationValidator userRegistrationValidator;
+    private final UserLoginValidator userLoginValidator;
+    private final AuthenticationService authenticationService;
+    private final JwtService jwtService;
+    private final UserDAO userDao;
+    private final UserProblemPriorityDAO userProblemPriorityDao;
 
-    @Autowired
-    UserLoginValidator userLoginValidator;
+    public HomeController(UserLoginValidator userLoginValidator, AuthenticationService authenticationService, JwtService jwtService, UserDAO userDao, UserProblemPriorityDAO userProblemPriorityDao, UserRegistrationValidator userRegistrationValidator) {
+        this.userLoginValidator = userLoginValidator;
+        this.authenticationService = authenticationService;
+        this.jwtService = jwtService;
+        this.userDao = userDao;
+        this.userProblemPriorityDao = userProblemPriorityDao;
+        this.userRegistrationValidator = userRegistrationValidator;
+    }
 
-    @Autowired
-    AuthenticationService authenticationService;
-
-    @Autowired
-    JwtService jwtService;
-
-    @Autowired
-    UserDAO userDao;
-
-    @Autowired
-    UserProblemPriorityDAO userProblemPriorityDao;
-
-    private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
     @GetMapping("/")
     public String home() {
@@ -107,6 +104,7 @@ public class HomeController {
 //        }
 //    }
 
+    // try the proper JSTL way again please
     @PostMapping("/login")
     public String handleUserLogin(ModelMap model, @ModelAttribute User user,
                                   BindingResult bindingResult) {
