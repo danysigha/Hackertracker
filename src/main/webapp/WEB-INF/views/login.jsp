@@ -27,8 +27,8 @@
             </div>
 
             <div class="navigation-buttons">
-                <a href="login">Log In</a>
-                <a href="register">Register</a>
+                <a href="login"> <button> Log In </button> </a>
+                <a href="register"> <button> Register </button> </a>
             </div>
 
         </nav>

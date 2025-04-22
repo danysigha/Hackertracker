@@ -6,11 +6,19 @@
 
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib uri="/WEB-INF/tlds/code-challenge" prefix="code"%>
+<%--<%@ taglib uri="/WEB-INF/tlds/code-challenge" prefix="code"%>--%>
 
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <!-- Include D3.js (required dependency) -->
+        <script src="https://d3js.org/d3.v7.min.js"></script>
+
+        <!-- Include Cal-HeatMap JS and CSS -->
+        <script src="https://unpkg.com/cal-heatmap/dist/plugins/Legend.min.js"></script>
+        <script src="https://unpkg.com/cal-heatmap/dist/cal-heatmap.min.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/cal-heatmap/dist/cal-heatmap.css">
+
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <link rel="stylesheet" href="/css/baseStyle.css">
         <link rel="stylesheet" href="/css/homeStyle.css">
@@ -22,15 +30,220 @@
             <img class="logo" src="/assets/hackertracker.png" alt="HackerTracker Logo">
 
             <div class="navigation-buttons">
-                <a href="progress"><img src="" alt="Progress menu"></a>
-                <button><img src="" alt="Night mode switch"></button>
-                <a href="settings"><img src="" alt="Settings menu"></a>
+
+                <a href="progress">
+                    <button>
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#1f1f1f">
+                            <path d="M480-55q-90.2 0-167.57-32.58-77.37-32.57-134.82-90.03-57.46-57.45-90.03-134.82Q55-389.8 55-480q0-90.14 32.56-167.38 32.57-77.24 89.87-134.98 57.31-57.74 134.79-90.69Q389.7-906 480-906q19 0 33 14.59t14 33.5Q527-839 513-825q-14 14-33 14-138.01 0-234.51 96.49Q149-618.02 149-480.01t96.49 234.51q96.49 96.5 234.5 96.5t234.51-96.49Q811-341.99 811-480q0-19 14-33t32.91-14q18.91 0 33.5 14T909-480q0 90.2-32.96 167.68-32.95 77.49-90.46 134.84-57.51 57.34-134.78 89.91Q574.53-55 480-55Z"/>
+                        </svg>
+                    </button>
+                </a>
+
+
+                <button>
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="5.0 1.0 90.0 90.0">
+                        <path d="m50 27.707c-5.9141 0-11.582 2.3516-15.762 6.5312-4.1797 4.1797-6.5312 9.8477-6.5312 15.762s2.3516 11.582 6.5312 15.762c4.1797 4.1797 9.8477 6.5312 15.762 6.5312s11.582-2.3516 15.762-6.5312c4.1797-4.1797 6.5312-9.8477 6.5312-15.762-0.011719-5.9102-2.3633-11.574-6.543-15.75-4.1758-4.1797-9.8398-6.5312-15.75-6.543zm0 38.961c-4.3398-0.054688-8.4844-1.8242-11.527-4.918-3.043-3.0977-4.7383-7.2695-4.7227-11.609 0.019531-4.3398 1.7539-8.5 4.8203-11.57 3.0703-3.0664 7.2305-4.8008 11.57-4.8203 4.3398-0.015625 8.5117 1.6797 11.609 4.7227 3.0938 3.043 4.8633 7.1875 4.918 11.527 0 4.4219-1.7578 8.6602-4.8828 11.785s-7.3633 4.8828-11.785 4.8828zm2.918 13.707v8.375c0 1.6094-1.3086 2.918-2.918 2.918s-2.918-1.3086-2.918-2.918v-8.582c0-1.6133 1.3086-2.918 2.918-2.918s2.918 1.3047 2.918 2.918zm-22.168-11.125c1.1445 1.1523 1.1445 3.0117 0 4.168l-6.082 6.0391c-0.55078 0.5625-1.3008 0.875-2.0859 0.875-0.76953 0-1.5078-0.31641-2.0391-0.875-0.57031-0.54297-0.89453-1.293-0.89453-2.082s0.32422-1.5391 0.89453-2.082l6.082-6.125c1.1719-1.0938 3-1.0586 4.125 0.082031zm-10.918-16.332h-8.582c-1.6094 0-2.918-1.3086-2.918-2.918s1.3086-2.918 2.918-2.918h8.582c1.6133 0 2.918 1.3086 2.918 2.918s-1.3047 2.918-2.918 2.918zm0.70703-28.25h0.003907c-1.1523-1.1523-1.1523-3.0156 0-4.168 1.1484-1.1523 3.0156-1.1523 4.1641 0l6.043 6.125c1.1445 1.1523 1.1445 3.0117 0 4.168-0.56641 0.52734-1.3086 0.82422-2.082 0.83203-0.76562-0.003906-1.4961-0.30469-2.043-0.83203zm26.543-4.8359v-8.582c0-1.6094 1.3086-2.918 2.918-2.918s2.918 1.3086 2.918 2.918v8.582c0 1.6133-1.3086 2.918-2.918 2.918s-2.918-1.3047-2.918-2.918zm22.168 10.918c-1.1445-1.1523-1.1445-3.0117 0-4.168l6.082-6.082c1.1523-1.1523 3.0156-1.1523 4.168 0s1.1523 3.0156 0 4.168l-6.125 6.082c-0.54688 0.53125-1.2773 0.82812-2.043 0.83203-0.77344-0.003906-1.5156-0.30078-2.082-0.83203zm22.418 19.25c0 1.6094-1.3086 2.918-2.918 2.918h-8.582c-1.6133 0-2.918-1.3086-2.918-2.918s1.3047-2.918 2.918-2.918h8.582c0.77344 0 1.5156 0.30859 2.0625 0.85547s0.85547 1.2891 0.85547 2.0625zm-12.207 25.332h-0.003907c1.1445 1.1562 1.1445 3.0156 0 4.168-0.52734 0.5625-1.2695 0.87891-2.0391 0.875-0.78516 0-1.5352-0.31641-2.0859-0.875l-6.082-6.082c-1.1523-1.1523-1.1523-3.0156 0-4.168s3.0156-1.1523 4.168 0z"/>
+                    </svg>
+                </button>
+
+                <button>
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#1f1f1f">
+                        <path d="M95-203v-95h771v95H95Zm0-230v-94h771v94H95Zm0-229v-95h771v95H95Z"/>
+                    </svg>
+                </button>
             </div>
         </nav>
 
         <main>
-            <code:challenge priorities="${priorities}"/>
+<%--            <code:challenge user="${user}"/>--%>
+            <div id="cal-heatmap"></div>
+
+            <div>
+
+                <button id="navigation-backward">← Previous</button>
+
+                <button id="navigation-forward">Next →</button>
+
+                <div id="legend-label"></div>
+            </div>
+
         </main>
+
+        <script>
+            const data = [
+                { date: '2025-04-29 15:47:38.123456', value: 1 },
+                { date: '2025-04-29 22:47:38.123456', value: 2 },
+                { date: '2025-04-28 08:12:54.987654', value: 5 },
+                { date: '2025-04-28 14:33:21.456789', value: 4 },
+                { date: '2025-04-28 19:27:44.234567', value: 1 },
+                { date: '2025-04-28 10:45:09.876543', value: 2 },
+                { date: '2025-04-27 16:58:37.345678', value: 3 },
+                { date: '2025-04-27 11:21:05.654321', value: 1 },
+                { date: '2025-04-27 20:39:16.789012', value: 1 },
+                { date: '2025-04-26 09:04:27.567890', value: 1 },
+                { date: '2025-04-26 13:51:33.901234', value: 2 },
+                { date: '2025-04-26 18:05:49.432109', value: 1 },
+                { date: '2025-04-25 07:30:17.246810', value: 2 },
+                { date: '2025-04-25 12:29:58.135792', value: 2 },
+                { date: '2025-04-25 23:10:42.579136', value: 1 },
+                { date: '2025-04-24 15:22:39.864209', value: 4 },
+                { date: '2025-04-24 10:37:11.294758', value: 1 },
+                { date: '2025-04-24 17:48:25.713924', value: 1 },
+                { date: '2025-04-23 21:16:03.592718', value: 1 },
+                { date: '2025-04-23 14:59:22.385019', value: 2 },
+
+                { date: '2025-04-22 15:47:38.123456', value: 1 },
+                { date: '2025-04-22 22:47:38.123456', value: 2 },
+                { date: '2025-04-22 08:12:54.987654', value: 5 },
+                { date: '2025-04-21 14:33:21.456789', value: 4 },
+                { date: '2025-04-21 19:27:44.234567', value: 1 },
+                { date: '2025-04-21 10:45:09.876543', value: 2 },
+                { date: '2025-04-20 16:58:37.345678', value: 3 },
+                { date: '2025-04-20 11:21:05.654321', value: 1 },
+                { date: '2025-04-20 20:39:16.789012', value: 1 },
+                { date: '2025-04-19 09:04:27.567890', value: 1 },
+                { date: '2025-04-19 13:51:33.901234', value: 2 },
+                { date: '2025-04-19 18:05:49.432109', value: 1 },
+                { date: '2025-04-18 07:30:17.246810', value: 2 },
+                { date: '2025-04-18 12:29:58.135792', value: 2 },
+                { date: '2025-04-18 23:10:42.579136', value: 1 },
+                { date: '2025-04-17 15:22:39.864209', value: 4 },
+                { date: '2025-04-17 10:37:11.294758', value: 1 },
+                { date: '2025-04-17 17:48:25.713924', value: 1 },
+                { date: '2025-04-16 21:16:03.592718', value: 1 },
+                { date: '2025-04-16 14:59:22.385019', value: 2 }
+            ];
+
+            // Process the data to adjust for timezone
+            const processedData = data.map(item => {
+                // Parse date as local time
+                const localDate = new Date(item.date.replace(' ', 'T'));
+
+                // Get timezone offset in hours
+                const tzOffset = localDate.getTimezoneOffset() / 60;
+
+                // Adjust the hour to compensate for timezone conversion
+                // This keeps the hour in local time when the date is parsed later
+                localDate.setHours(localDate.getHours() - tzOffset);
+
+                return {
+                    // Use adjusted ISO string with explicit timezone
+                    date: localDate.toISOString(),
+                    value: item.value,
+                    // Store the timestamp for min/max calculations
+                    timestamp: localDate.getTime()
+                };
+            });
+
+            // Get min and max timestamps for start and end dates
+            const minTimestamp = Math.min(...processedData.map(item => item.timestamp));
+            const maxTimestamp = Math.max(...processedData.map(item => item.timestamp));
+
+            // Create Date objects from the timestamps
+            const startDate = new Date(minTimestamp);
+            const endDate = new Date(maxTimestamp);
+
+
+            // Debug: Check April 17 data after timezone adjustment
+            <%--console.log('Timezone-adjusted April 17 data:');--%>
+            <%--processedData--%>
+            <%--    .filter(item => item.date.includes('2025-04-17'))--%>
+            <%--    .forEach(item => {--%>
+            <%--        const origDate = new Date(item.date);--%>
+            <%--        console.log(`${item.date} (local hour: ${origDate.getHours()}:00) - value: ${item.value}`);--%>
+            <%--    });--%>
+
+
+            const cal = new CalHeatmap();
+
+            // Get the button element by ID
+            const forwardButton = document.getElementById('navigation-forward');
+            const backwardButton = document.getElementById('navigation-backward');
+
+            // Add a click event listener to the button
+            backwardButton.addEventListener('click', function() {
+                cal.previous(7);
+            });
+
+            forwardButton.addEventListener('click', function() {
+                cal.next(7);
+            });
+
+            cal.on('minDateReached', () => {
+                backwardButton.style.opacity = '0.5';
+                backwardButton.style.cursor = 'not-allowed';
+                backwardButton.disabled = true;
+            });
+
+            cal.on('maxDateReached', () => {
+                forwardButton.style.opacity = '0.5';
+                forwardButton.style.cursor = 'not-allowed';
+                forwardButton.disabled = true;
+            });
+
+            cal.on('minDateNotReached', () => {
+                backwardButton.style.opacity = '1';
+                backwardButton.style.cursor = 'pointer';
+                backwardButton.disabled = false;
+            });
+
+            cal.on('maxDateNotReached', () => {
+                forwardButton.style.opacity = '1';
+                forwardButton.style.cursor = 'pointer';
+                forwardButton.disabled = false;
+            });
+
+
+            // Using the paint method with explicit timezone settings
+            cal.paint({
+                itemSelector: "#cal-heatmap", // Make sure this element exists
+                data: {
+                    source: processedData,
+                    x: 'date',
+                    y: 'value'
+                },
+                date: {
+                    min: startDate,
+                    max: endDate,
+                    // Explicitly set timezone to UTC
+                    timezone: 'UTC'
+                },
+                range: 7,
+                domain: {
+                    type: "day",
+                    gutter: 16,
+                    label: {
+                        text: 'YYYY-MM-DD',
+                        textAlign: 'start'
+                    }
+                },
+                subDomain: {
+                    type: 'hour',
+                    label: 'HH:00',
+                    width: 35,
+                    height: 35,
+                    radius: 4
+                },
+                scale: {
+                    color: {
+                        scheme: 'Greens',
+                        type: 'linear',
+                        domain: [0, 4]
+                    }
+                }
+            },
+
+                [
+                    [
+                        Legend,
+                        {
+                            label: 'Number of questions solved',
+                            itemSelector: '#legend-label',
+                        },
+                    ]
+                ]);
+        </script>
+
     </body>
 
 </html>

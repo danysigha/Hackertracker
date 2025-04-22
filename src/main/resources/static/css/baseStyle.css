@@ -39,6 +39,10 @@ a:hover {
     gap: 2em;
 }
 
+.navigation-buttons button {
+    width: 6em;
+}
+
 .menu {
     display: flex;
     flex-direction: row;
@@ -76,7 +80,7 @@ h1 {
     line-height: 1.1;
 }
 
-button, .navigation-buttons a {
+button {
     border-radius: 8px;
     border: 1px solid transparent;
     padding: 0.4em 1em;
@@ -88,14 +92,12 @@ button, .navigation-buttons a {
     transition: border-color 0.25s;
 }
 
-button:hover, .navigation-buttons a:hover {
+button:hover {
     border-color: #646cff;
 }
 
 button:focus,
-button:focus-visible,
-.navigation-buttons a:focus,
-.navigation-buttons a:focus-visible{
+button:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
 }
 
@@ -107,8 +109,7 @@ button:focus-visible,
     a:hover {
         color: #747bff;
     }
-    button,
-    .navigation-buttons a {
+    button {
         background-color: #f9f9f9;
     }
 }

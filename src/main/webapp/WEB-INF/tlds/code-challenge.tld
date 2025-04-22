@@ -12,10 +12,10 @@
         <tag-class>com.hackertracker.security.jstltags.CodeChallengeTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
-            <name>priorities</name>
+            <name>user</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
-            <type>java.util.List</type>
+            <type>com.hackertracker.security.user.User</type>
         </attribute>
     </tag>
 </taglib>

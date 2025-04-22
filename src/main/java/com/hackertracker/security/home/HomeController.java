@@ -64,7 +64,7 @@ public class HomeController {
     }
 
     @PostMapping("/register")
-    public String handleUserRegistration(@ModelAttribute User user,
+    public String handleUserRegistration(ModelMap model, @ModelAttribute User user,
                                          BindingResult bindingResult) {
         userRegistrationValidator.validate(user, bindingResult);
 
@@ -74,6 +74,9 @@ public class HomeController {
 
         RegisterRequest registerRequest = new RegisterRequest(user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail(), user.getPassword());
         authenticationService.register(registerRequest);
+
+        model.addAttribute("user", user);
+
         return "home";
     }
 
@@ -83,13 +86,39 @@ public class HomeController {
         return "login";
     }
 
+    @PostMapping("/login")
+    public String handleUserLogin(ModelMap model, @ModelAttribute User user,
+                                  BindingResult bindingResult) {
+
+        userLoginValidator.validate(user, bindingResult);
+
+        if(bindingResult.hasErrors()) {
+            return "login";
+        }
+
+        try {
+            AuthenticationRequest authenticationRequest = new AuthenticationRequest(user.getUserName(), user.getPassword());
+            authenticationService.authenticate(authenticationRequest);
+
+            model.addAttribute("user", user);
+
+            return "home";
+        } catch (Exception e) {
+            bindingResult.reject("invalid.credentials", "Invalid username or password");
+            return "login";
+        }
+    }
+
+    // try the proper JSTL way again please
 //    @PostMapping("/login")
-//    public String handleUserLogin(@ModelAttribute User user,
+//    public String handleUserLogin(ModelMap model, @ModelAttribute User user,
 //                                  BindingResult bindingResult) {
+//        System.out.println("Login attempt for user: " + user.getUserName());
 //
 //        userLoginValidator.validate(user, bindingResult);
 //
 //        if(bindingResult.hasErrors()) {
+//            System.out.println("Validation errors: " + bindingResult.getAllErrors());
 //            return "login";
 //        }
 //
@@ -97,57 +126,23 @@ public class HomeController {
 //            AuthenticationRequest authenticationRequest = new AuthenticationRequest(user.getUserName(), user.getPassword());
 //            authenticationService.authenticate(authenticationRequest);
 //
+//            String username = user.getUsername();
+//
+//            User myUser = userDao.getUserByUserName(username);
+//
+//            model.addAttribute("user", myUser);
+//
+//            List<UserProblemPriorityDTO> priorities = userProblemPriorityDao.findByUserOrderByPriorityScoreDesc(myUser);
+//
+//            model.addAttribute("priorities", priorities);
+//
 //            return "home";
+//
 //        } catch (Exception e) {
 //            bindingResult.reject("invalid.credentials", "Invalid username or password");
 //            return "login";
 //        }
 //    }
-
-    // try the proper JSTL way again please
-    @PostMapping("/login")
-    public String handleUserLogin(ModelMap model, @ModelAttribute User user,
-                                  BindingResult bindingResult) {
-        System.out.println("Login attempt for user: " + user.getUserName());
-
-        userLoginValidator.validate(user, bindingResult);
-
-        if(bindingResult.hasErrors()) {
-            System.out.println("Validation errors: " + bindingResult.getAllErrors());
-            return "login";
-        }
-
-        try {
-            AuthenticationRequest authenticationRequest = new AuthenticationRequest(user.getUserName(), user.getPassword());
-//            System.out.println("Attempting authentication for: " + user.getUserName());
-            authenticationService.authenticate(authenticationRequest);
-//            System.out.println("Authentication successful for: " + user.getUserName());
-
-            // Get the username from the token
-            String username = user.getUsername();
-//            System.out.println("Username: " + username);
-
-            // Get the user from the database
-            User myUser = userDao.getUserByUserName(username);
-//            System.out.println("User retrieved from DB: " + (myUser != null ? myUser.getUserName() : "null"));
-
-            // Add the user to the model
-            model.addAttribute("user", myUser);
-
-//            List<ProblemDTO> problemDtos = priorityService.getPrioritizedProblemsForUser(myUser); // works!
-//            System.out.println("Problems retrieved: " + (problemDtos != null ? problemDtos.size() : "null")); // works
-            List<UserProblemPriorityDTO> priorities = userProblemPriorityDao.findByUserOrderByPriorityScoreDesc(myUser);
-
-            model.addAttribute("priorities", priorities);
-
-            return "home";
-
-        } catch (Exception e) {
-//            e.printStackTrace();
-            bindingResult.reject("invalid.credentials", "Invalid username or password");
-            return "login";
-        }
-    }
 
 //    @GetMapping("/home")
 //    public String showHome(ModelMap model, HttpServletRequest request) {

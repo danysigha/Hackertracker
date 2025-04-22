@@ -1,23 +1,54 @@
 package com.hackertracker.security.jstltags;
 
+import com.hackertracker.security.dao.UserProblemPriorityDAO;
 import com.hackertracker.security.dto.ProblemDTO;
 import com.hackertracker.security.dto.UserProblemPriorityDTO;
+import com.hackertracker.security.user.User;
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.JspWriter;
+import jakarta.servlet.jsp.PageContext;
 import jakarta.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
 import java.util.List;
+import com.hackertracker.security.dao.UserDAO;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 public class CodeChallengeTag extends SimpleTagSupport {
-    private List<UserProblemPriorityDTO> priorities;
 
-    public void setPriorities(List<UserProblemPriorityDTO> priorities) {
-        this.priorities = priorities;
+    private User user;
+
+    private UserDAO userDao;
+    private UserProblemPriorityDAO userProblemPriorityDao;
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
     public void doTag() throws JspException, IOException {
+
+        if (userDao == null) {
+            WebApplicationContext ctx = WebApplicationContextUtils
+                    .getRequiredWebApplicationContext(((PageContext) getJspContext()).getServletContext());
+
+            userDao = ctx.getBean(UserDAO.class);
+        }
+
+        if(userProblemPriorityDao == null) {
+            WebApplicationContext ctx = WebApplicationContextUtils
+                    .getRequiredWebApplicationContext(((PageContext) getJspContext()).getServletContext());
+
+            userProblemPriorityDao = ctx.getBean(UserProblemPriorityDAO.class);
+        }
+
         JspWriter out = getJspContext().getOut();
+
+        String username = user.getUsername();
+
+        User myUser = userDao.getUserByUserName(username);
+
+        List<UserProblemPriorityDTO> priorities = userProblemPriorityDao.findByUserOrderByPriorityScoreDesc(myUser);
 
         if (priorities == null || priorities.isEmpty()) {
             out.write("<p>No problems found.</p>");
