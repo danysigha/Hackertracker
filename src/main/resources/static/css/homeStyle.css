@@ -30,6 +30,14 @@
     justify-content: center; /* Centers horizontally */
 }
 
+.ch-subdomain-bg {
+    /* Reduce width and height slightly */
+    width: 33px !important;
+    height: 33px !important;
+    /* Center within the original 35x35 space */
+    transform: translate(1px, 1px);
+}
+
 
 /* Dark mode styling */
 @media (prefers-color-scheme: dark) {

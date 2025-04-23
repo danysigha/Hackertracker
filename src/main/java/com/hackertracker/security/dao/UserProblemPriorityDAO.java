@@ -72,6 +72,13 @@ public class UserProblemPriorityDAO {
                     "from UserProblemPriority where user=:user order by priorityScore desc",
                     UserProblemPriority.class
             );
+
+//            int numberOfQuestions = 1; // we only want a question at a time
+//
+//            Query<UserProblemPriority> q = session.createNamedQuery("challenge.orderByPriority", UserProblemPriority.class);
+//            q.setFirstResult( (nextChallenge - 1) * numberOfQuestions);
+//            q.setMaxResults(numberOfQuestions);
+
             q.setParameter("user", user);
 
             return q.list().stream().map(

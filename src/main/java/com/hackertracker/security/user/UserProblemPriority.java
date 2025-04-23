@@ -6,9 +6,9 @@ import jakarta.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
+@NamedQuery(name = "challenge.orderByPriority", query="FROM UserProblemPriority where user=:user order by priorityScore desc")
 @Entity
 @Table(name="user_problem_priorities")
-
 public class UserProblemPriority {
 
     @Id
