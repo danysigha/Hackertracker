@@ -5,14 +5,12 @@ package com.hackertracker.security.home;
  * @author danysigha
  */
 
+import com.hackertracker.security.auth.AuthenticationResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.hackertracker.security.dao.UserDAO;
 import com.hackertracker.security.dao.UserProblemPriorityDAO;
-import com.hackertracker.security.dto.ProblemDTO;
-import com.hackertracker.security.dto.UserDTO;
-import com.hackertracker.security.dto.UserProblemPriorityDTO;
-import com.hackertracker.security.dto.UserProblemService;
 import com.hackertracker.security.problem.UserProblemPriorityService;
 import com.hackertracker.security.user.User;
 import com.hackertracker.security.validator.UserLoginValidator;
@@ -29,6 +27,8 @@ import com.hackertracker.security.auth.RegisterRequest;
 import com.hackertracker.security.auth.AuthenticationService;
 import com.hackertracker.security.auth.AuthenticationRequest;
 import com.hackertracker.security.config.JwtService;
+import jakarta.servlet.http.Cookie;
+
 
 import java.util.List;
 
@@ -88,7 +88,7 @@ public class HomeController {
 
     @PostMapping("/login")
     public String handleUserLogin(ModelMap model, @ModelAttribute User user,
-                                  BindingResult bindingResult) {
+                                  BindingResult bindingResult, HttpServletResponse response) {
 
         userLoginValidator.validate(user, bindingResult);
 
@@ -98,7 +98,19 @@ public class HomeController {
 
         try {
             AuthenticationRequest authenticationRequest = new AuthenticationRequest(user.getUserName(), user.getPassword());
-            authenticationService.authenticate(authenticationRequest);
+            AuthenticationResponse authResponse = authenticationService.authenticate(authenticationRequest);
+
+            String token = authResponse.getToken(); // Assuming your authenticate method returns the token
+
+            // Add token to model for Thymeleaf/JSP to use
+            model.addAttribute("jwtToken", token);
+
+            // Or set it as a cookie
+            Cookie jwtCookie = new Cookie("jwtToken", token);
+            jwtCookie.setPath("/");
+            jwtCookie.setHttpOnly(false); // Allow JavaScript to access
+            jwtCookie.setMaxAge(86400); // 1 day in seconds
+            response.addCookie(jwtCookie);
 
             model.addAttribute("user", user);
 

@@ -1,23 +1,28 @@
 package com.hackertracker.security.problem;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.hackertracker.security.tag.Tag;
 import com.hackertracker.security.topic.Topic;
 import jakarta.persistence.*;
 import java.util.Objects;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name="topic_problems")
-
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class TopicProblem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "topic_problem_id")
     private int topicProblemId;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "problem_id")
     private Problem problem;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "topic_id")
     private Topic topic;

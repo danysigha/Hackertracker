@@ -1,9 +1,7 @@
 package com.hackertracker.security.dao;
 
-import com.hackertracker.security.dto.ProblemDTO;
-import com.hackertracker.security.dto.UserProblemService;
+import com.hackertracker.security.problem.Problem;
 import com.hackertracker.security.topic.Topic;
-import com.hackertracker.security.dto.TopicDTO;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -23,18 +21,14 @@ import java.util.List;
 public class TopicDAO {
 
     private final SessionFactory sessionFactory;
-    private final UserProblemService userProblemService;
 
-    public TopicDAO(SessionFactory sessionFactory, UserProblemService userProblemService) {
+    public TopicDAO(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
-        this.userProblemService = userProblemService;
     }
 
-    public List<TopicDTO> getAllTopics(){
+    public List<Topic> getAllTopics(){
         try (Session session = sessionFactory.openSession()) {
-            return session.createQuery("FROM Topic", Topic.class).list().stream().map(
-                    (t) -> new TopicDTO(t.getTopicId(), t.getTopicName(), t.getTopicRank())
-            ).toList();
+            return session.createQuery("FROM Topic", Topic.class).list();
         } catch (Exception e) {
             throw e;
         }
@@ -47,37 +41,23 @@ public class TopicDAO {
         return q.uniqueResult();
     }
 
-    public List<TopicDTO> getTopicByName(String topicName) {
+    public List<Topic> getTopicByName(String topicName) {
         Session session = sessionFactory.openSession();
 //        Query<Tag> q = session.createQuery("from Tag where tagName=:tagName", Tag.class);
         Query<Topic> q = session.createQuery("from Topic where topicName LIKE :topicName", Topic.class);
         q.setParameter("topicName", "%" + topicName + "%");
 //        q.setParameter("tagName", tagName);
 //        return q.uniqueResult();
-        return q.list().stream().map(
-                (t) -> new TopicDTO(t.getTopicId(), t.getTopicName(), t.getTopicRank())
-        ).toList();
+        return q.list();
     }
 
-    public List<ProblemDTO> getTopicProblems(Topic topic) {
+    public List<Problem> getTopicProblems(Topic topic) {
         Session session = sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
         try {
-            List<ProblemDTO> problems = topic.getListProblems().stream().map(
-                    (problem) -> {
-                        ProblemDTO problemDto = new ProblemDTO();
-                        problemDto.setProblemId(problem.getProblemId());
-                        problemDto.setPublicProblemId(problem.getPublicProblemId());
-                        problemDto.setQuestionTitle(problem.getQuestionTitle());
-                        problemDto.setDifficultyLevel(problem.getDifficultyLevel());
-                        problemDto.setPageUrl(problem.getPageUrl());
-                        problemDto.setTopics(userProblemService.getProblemTopics(problem));
-                        problemDto.setAttempts(userProblemService.getProblemAttempts(problem, problemDto));
-                        return problemDto;
-                    }
-            ).toList();
+            List<Problem> topicProblems = topic.getListProblems();
             tx.commit();
-            return problems;
+            return topicProblems;
         } catch (Exception e) {
             tx.rollback();
             throw e;

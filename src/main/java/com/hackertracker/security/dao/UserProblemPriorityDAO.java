@@ -1,6 +1,5 @@
 package com.hackertracker.security.dao;
 
-import com.hackertracker.security.dto.*;
 import com.hackertracker.security.problem.Problem;
 import com.hackertracker.security.user.User;
 import com.hackertracker.security.user.UserProblemPriority;
@@ -25,11 +24,9 @@ import java.util.List;
 public class UserProblemPriorityDAO {
 
     private final SessionFactory sessionFactory;
-    private final UserProblemService userProblemService;
 
-    public UserProblemPriorityDAO(SessionFactory sessionFactory, UserProblemService userProblemService) {
+    public UserProblemPriorityDAO(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
-        this.userProblemService = userProblemService;
     }
 
     /**
@@ -64,36 +61,23 @@ public class UserProblemPriorityDAO {
     /**
      * Find all priorities for a user, ordered by priority score descending
      */
-    public List<UserProblemPriorityDTO> findByUserOrderByPriorityScoreDesc(User user) {
+    public UserProblemPriority findNextChallengeByPriorityScoreDesc(User user) {
         Session session = sessionFactory.openSession();
 
         try {
-            Query<UserProblemPriority> q = session.createQuery(
-                    "from UserProblemPriority where user=:user order by priorityScore desc",
-                    UserProblemPriority.class
-            );
+//            Query<UserProblemPriority> q = session.createQuery(
+//                    "from UserProblemPriority where user=:user order by priorityScore desc",
+//                    UserProblemPriority.class
+//            );
 
-//            int numberOfQuestions = 1; // we only want a question at a time
-//
-//            Query<UserProblemPriority> q = session.createNamedQuery("challenge.orderByPriority", UserProblemPriority.class);
-//            q.setFirstResult( (nextChallenge - 1) * numberOfQuestions);
-//            q.setMaxResults(numberOfQuestions);
+            Query<UserProblemPriority> q = session.createNamedQuery("challenge.orderByPriority", UserProblemPriority.class);
+            q.setMaxResults(1);
 
             q.setParameter("user", user);
 
-            return q.list().stream().map(
-                    (priority) -> {
-                        UserProblemPriorityDTO userProblemPriorityDto = new UserProblemPriorityDTO();
-                        userProblemPriorityDto.setPriorityId(priority.getPriorityId());
-                        userProblemPriorityDto.setPriorityScore(priority.getPriorityScore());
-                        userProblemPriorityDto.setLastCalculation(priority.getLastCalculation());
-                        userProblemPriorityDto.setLastAttempted(priority.getLastAttempted());
-                        userProblemPriorityDto.setUserDto(userProblemService.getUserDto(priority.getUser()));
-                        userProblemPriorityDto.setProblemDto(userProblemService.getProblemDto(priority.getProblem()));
+            UserProblemPriority priority = q.uniqueResult();
 
-                        return userProblemPriorityDto;
-                    }
-            ).toList();
+            return priority;
 
         } catch (Exception e) {
             throw e;
@@ -123,10 +107,32 @@ public class UserProblemPriorityDAO {
         }
     }
 
+
+    /**
+     * Find all priorities for a user
+     */
+    public List<UserProblemPriority> findByUser(User user) {
+        Session session = sessionFactory.openSession();
+
+        try {
+            Query<UserProblemPriority> q = session.createQuery(
+                    "from UserProblemPriority where user=:user",
+                    UserProblemPriority.class
+            );
+            q.setParameter("user", user);
+            return q.list();
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            session.close();
+        }
+    }
+
     /**
      * Find all priorities
      */
-    public List<UserProblemPriorityDTO> findAll() {
+    public List<UserProblemPriority> findAll() {
         Session session = sessionFactory.openSession();
 
         try {
@@ -134,24 +140,7 @@ public class UserProblemPriorityDAO {
                     "from UserProblemPriority", UserProblemPriority.class);
 
 
-            return q.list().stream().map(
-                    (upp) -> {
-                        UserProblemPriorityDTO userProblemPriorityDto = new UserProblemPriorityDTO();
-
-                        ProblemDTO problemDto = userProblemService.getProblemDto(upp.getProblem());
-                        UserDTO userDto = userProblemService.getUserDto(upp.getUser());
-
-                        userProblemPriorityDto.setPriorityId(upp.getPriorityId());
-                        userProblemPriorityDto.setPriorityScore(upp.getPriorityScore());
-                        userProblemPriorityDto.setLastCalculation(upp.getLastCalculation());
-                        userProblemPriorityDto.setLastAttempted(upp.getLastAttempted());
-                        userProblemPriorityDto.setProblemDto(problemDto);
-                        userProblemPriorityDto.setUserDto(userDto);
-
-                        return userProblemPriorityDto;
-                    }
-
-            ).toList();
+            return q.list();
         } catch (Exception e) {
             throw e;
         } finally {
@@ -173,6 +162,24 @@ public class UserProblemPriorityDAO {
             session.close();
         }
     }
+
+
+    public UserProblemPriority update(UserProblemPriority priority) {
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            priority = session.merge(priority);  // Merges the state of the given object into the current persistence context
+            session.getTransaction().commit();
+            return priority;
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            throw e;
+        } finally {
+            session.close();
+        }
+    }
+
+
 
     public void saveAll( List<UserProblemPriority> allPriorities) {
         Session session = sessionFactory.openSession();

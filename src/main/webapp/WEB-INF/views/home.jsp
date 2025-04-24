@@ -19,6 +19,7 @@
         <!-- Include Cal-HeatMap JS and CSS -->
         <script src="https://unpkg.com/cal-heatmap/dist/plugins/Legend.min.js"></script>
         <script src="https://unpkg.com/cal-heatmap/dist/cal-heatmap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.3/dist/purify.min.js"></script>
         <link rel="stylesheet" href="https://unpkg.com/cal-heatmap/dist/cal-heatmap.css">
 
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -86,288 +87,121 @@
 
             <section>
 
-                <form action="save-content" method="post">
-                    <section id="challenge-card">
+                <section id="challenge-card">
 
-                        <section class="challenge-card-head">
+                    <section class="challenge-card-head">
+                        <div>
+                            <h3 id="challengeTitle">Two Sums</h3>
+                            <div id="challengeTopic">Topic: Algorithms</div>
+                        </div>
+                        <div class="access-challenge">
+                            <p id="challengeLevel">Easy</p>
+                            <a id="challengeUrl" href="" target='_blank'>
+                                <button type="button">
+                                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="2 0 90 85" style="enable-background:new 0 0 100 100;" xml:space="preserve"><title>61 all</title><path d="M28.8,84.1h36l0,0c7.2,0,13-5.8,13-13v-22c0-1.7-1.3-3-3-3l0,0c-1.7,0-3,1.3-3,3v22c0,3.9-3.1,7-7,7l0,0h-36  c-3.9,0-7-3.1-7-7v-36c0-3.9,3.1-7,7-7l0,0h22l0,0c1.7,0,3-1.3,3-3s-1.3-3-3-3h-22l0,0c-7.2,0-13,5.8-13,13l0,0v36  C15.8,78.3,21.6,84.1,28.8,84.1z"/><path d="M84.2,37.2V18.9c0-0.2,0-0.4-0.1-0.6c0-0.1,0-0.2-0.1-0.2c0-0.1-0.1-0.2-0.1-0.3c0-0.1-0.1-0.2-0.2-0.3  c0-0.1-0.1-0.2-0.1-0.2c-0.2-0.3-0.5-0.6-0.8-0.8l-0.2-0.1C82.4,16.1,82.2,16,82,16l-0.3-0.1c-0.2,0-0.4-0.1-0.6-0.1l0,0H62.8l0,0  c-1.7,0-3,1.3-3,3s1.3,3,3,3h11.1L46.4,49.4c-1.2,1.2-1.2,3.1,0,4.2c1.2,1.2,3.1,1.2,4.2,0l27.6-27.5v11.1c0,1.7,1.3,3,3,3l0,0  C82.8,40.2,84.1,38.8,84.2,37.2z"/></svg>
+                                </button>
+                            </a>
+                        </div>
+                    </section>
+
+                    <section>
+
+                        <section class="tag-section">
+                            <h4 class="tags-heading">Tags</h4>
+                            <div id="challengeTags" class="tags-list">
+<%--                                    <span class="tag">Arrays</span>--%>
+<%--                                    <span class="tag">Hash Table</span>--%>
+<%--                                    <span class="tag">Two Pointers</span>--%>
+<%--                                    <span class="tag">Algorithms</span>--%>
+                            </div>
+                        </section>
+
+                        <section class="difficulty-section">
+                            <!-- value should be last set value -->
+                            <h4 id="challengeDifficultyRating" class="difficulty-heading">Difficulty Rating (3/10)</h4>
+
+                            <div class="difficulty-container">
+                                <input
+                                        type="range"
+                                        min="0"
+                                        max="10"
+                                        value="3"
+                                        class="difficulty-slider"
+                                        id="difficultySlider"
+                                >
+                                <div class="difficulty-ticks">
+                                    <span>0</span>
+                                    <span>1</span>
+                                    <span>2</span>
+                                    <span>3</span>
+                                    <span>4</span>
+                                    <span>5</span>
+                                    <span>6</span>
+                                    <span>7</span>
+                                    <span>8</span>
+                                    <span>9</span>
+                                    <span>10</span>
+                                </div>
+                            </div>
+
+                        </section>
+
+
+                        <section class="timer-section">
                             <div>
-                                <h3>Two Sums</h3>
-                                <p>Topic: Algorithms</p>
+                                <div class="timer-header">
+                                    <h3 class="timer-title">
+                                        <svg class="clock-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polyline points="12 6 12 12 16 14"></polyline>
+                                        </svg>
+                                        Timer
+                                    </h3>
+                                    <div class="timer-display" id="timerDisplay">00:00:00</div>
+                                </div>
+
+                                <div class="timer-info">
+                                    <div class="time-item">
+                                        <span class="time-label">Start Time</span>
+                                        <span class="time-value" id="startTimeDisplay">--:--:--</span>
+                                    </div>
+                                    <div class="time-item">
+                                        <span class="time-label">End Time</span>
+                                        <span class="time-value" id="endTimeDisplay">--:--:--</span>
+                                    </div>
+                                </div>
+
+                                <div class="timer-controls">
+                                    <button type = "button" class="timer-button start-button" id="startTimerBtn">Start Timer</button>
+                                    <button type = "button" class="timer-button stop-button" id="stopTimerBtn" style="display: none;">Stop Timer</button>
+                                </div>
                             </div>
-                            <div class="access-challenge">
-                                <p>Easy</p>
-                                <a href="www.google.com" target='_blank'>
-                                    <button type="button">
-                                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="2 0 90 85" style="enable-background:new 0 0 100 100;" xml:space="preserve"><title>61 all</title><path d="M28.8,84.1h36l0,0c7.2,0,13-5.8,13-13v-22c0-1.7-1.3-3-3-3l0,0c-1.7,0-3,1.3-3,3v22c0,3.9-3.1,7-7,7l0,0h-36  c-3.9,0-7-3.1-7-7v-36c0-3.9,3.1-7,7-7l0,0h22l0,0c1.7,0,3-1.3,3-3s-1.3-3-3-3h-22l0,0c-7.2,0-13,5.8-13,13l0,0v36  C15.8,78.3,21.6,84.1,28.8,84.1z"/><path d="M84.2,37.2V18.9c0-0.2,0-0.4-0.1-0.6c0-0.1,0-0.2-0.1-0.2c0-0.1-0.1-0.2-0.1-0.3c0-0.1-0.1-0.2-0.2-0.3  c0-0.1-0.1-0.2-0.1-0.2c-0.2-0.3-0.5-0.6-0.8-0.8l-0.2-0.1C82.4,16.1,82.2,16,82,16l-0.3-0.1c-0.2,0-0.4-0.1-0.6-0.1l0,0H62.8l0,0  c-1.7,0-3,1.3-3,3s1.3,3,3,3h11.1L46.4,49.4c-1.2,1.2-1.2,3.1,0,4.2c1.2,1.2,3.1,1.2,4.2,0l27.6-27.5v11.1c0,1.7,1.3,3,3,3l0,0  C82.8,40.2,84.1,38.8,84.2,37.2z"/></svg>
-                                    </button>
-                                </a>
-                            </div>
-                        </section>
-
-                        <section>
-
-                            <section class="tag-section">
-                                <h4 class="tags-heading">Tags</h4>
-                                <div class="tags-list">
-                                    <span class="tag">Arrays</span>
-                                    <span class="tag">Hash Table</span>
-                                    <span class="tag">Two Pointers</span>
-                                    <span class="tag">Algorithms</span>
-                                </div>
-                            </section>
-
-                            <section class="difficulty-section">
-                                <!-- value should be last set value -->
-                                <h4 class="difficulty-heading">Difficulty Rating (3/10)</h4>
-
-                                <div class="difficulty-container">
-                                    <input
-                                            type="range"
-                                            min="0"
-                                            max="10"
-                                            value="3"
-                                            class="difficulty-slider"
-                                            id="difficultySlider"
-                                    >
-                                    <div class="difficulty-ticks">
-                                        <span>0</span>
-                                        <span>1</span>
-                                        <span>2</span>
-                                        <span>3</span>
-                                        <span>4</span>
-                                        <span>5</span>
-                                        <span>6</span>
-                                        <span>7</span>
-                                        <span>8</span>
-                                        <span>9</span>
-                                        <span>10</span>
-                                    </div>
-                                </div>
-
-                            </section>
-
-
-                            <section class="timer-section">
-                                <div>
-                                    <div class="timer-header">
-                                        <h3 class="timer-title">
-                                            <svg class="clock-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <circle cx="12" cy="12" r="10"></circle>
-                                                <polyline points="12 6 12 12 16 14"></polyline>
-                                            </svg>
-                                            Timer
-                                        </h3>
-                                        <div class="timer-display" id="timerDisplay">00:00:00</div>
-                                    </div>
-
-                                    <div class="timer-info">
-                                        <div class="time-item">
-                                            <span class="time-label">Start Time</span>
-                                            <span class="time-value" id="startTimeDisplay">--:--:--</span>
-                                        </div>
-                                        <div class="time-item">
-                                            <span class="time-label">End Time</span>
-                                            <span class="time-value" id="endTimeDisplay">--:--:--</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="timer-controls">
-                                        <button type = "button" class="timer-button start-button" id="startTimerBtn">Start Timer</button>
-                                        <button type = "button" class="timer-button stop-button" id="stopTimerBtn" style="display: none;">Stop Timer</button>
-                                    </div>
-                                </div>
-
-                            </section>
-
-                            <section class="notes-section">
-                                <h4 class="notes-heading">Notes</h4>
-                                <textarea id="myEditor" name="content"></textarea>
-                                <br/>
-                                <div>
-                                    <button type="button">← Back</button>
-                                    <button type="button">Skip</button>
-                                    <input type="submit" value="Mark completed" id="addAttemptBtn">
-                                </div>
-                            </section>
 
                         </section>
 
-
+                        <section class="notes-section">
+                            <h4 class="notes-heading">Notes</h4>
+                            <textarea id="myEditor" name="content"></textarea>
+                            <br/>
+                            <div>
+                                <button id="previousQuestionBtn" type="button">← Back</button>
+                                <button id="nextQuestionBtn" type="button">Next →</button>
+                                <button id="skipQuestionBtn" type="button">Skip</button>
+                                <input type="submit" value="Mark completed" id="addAttemptBtn">
+                            </div>
+                        </section>
 
                     </section>
 
-                </form>
+                </section>
+
             </section>
 
         </main>
 
-        <script>
-            // Function to handle the search query
-            function getNextChallenge() {
-                let query = $("#bookInput").val();
-                if(query.length === 0){
-                    $("#suggestions").html("");
-                    return;
-                }
+        <script type="module" src="/js/loadview.js" ></script>
 
-                $.ajax({
-                    url: "search.htm",
-                    method: "POST",
-                    data: {query: query},
-                    dataType: "xml",
-                    success: function(data) {
-                        let suggestionList = "";
-                        $(data).find('Book').each(function (){
-                            let bookName = $(this).find("Name").text();
-                            let escapedBookName = bookName.replace(/"/g, '\\"');
-                            suggestionList += "<div class='suggestion' onclick='selectBook(\"" + escapedBookName + "\")'>" + escapedBookName + "</div>";
-                        });
-                        $("#suggestions").html(suggestionList);
-                    }
-                });
-            }
-
-            // Run when the document is ready (when window loads)
-            $(document).ready(function() {
-                // Run the search immediately on page load
-                handleSearch();
-
-                // Set up the event for key presses
-                $("#challenge-card").on("click", getNextChallenge);
-            });
-        </script>
-
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Timer variables
-                let startTime = null;
-                let endTime = null;
-                let timerInterval = null;
-                let isTimerRunning = false;
-
-                // DOM elements
-                const timerDisplay = document.getElementById('timerDisplay');
-                const startTimeDisplay = document.getElementById('startTimeDisplay');
-                const endTimeDisplay = document.getElementById('endTimeDisplay');
-                const startTimerBtn = document.getElementById('startTimerBtn');
-                const stopTimerBtn = document.getElementById('stopTimerBtn');
-
-                // Format time for display (HH:MM:SS)
-                function formatTime(date) {
-                    if (!date) return '--:--:--';
-                    return date.toLocaleTimeString([], {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit'
-                    });
-                }
-
-
-                // Calculate and format elapsed time
-                function calculateElapsedTime() {
-                    if (!startTime) {
-                        console.log("startTime is not set, returning default time");
-                        return '00:00:00';
-                    }
-
-                    // Get end time (either the stored end time or current time)
-                    const end = endTime || new Date();
-
-                    // Calculate difference in milliseconds and convert to seconds
-                    const diffMs = end - startTime;
-                    const diffSec = Math.floor(diffMs / 1000);
-
-                    // Calculate hours, minutes, seconds
-                    const hr = Math.floor(diffSec / 3600);
-                    const min = Math.floor((diffSec % 3600) / 60);
-                    const sec = Math.floor(diffSec % 60);
-
-                    // Format with leading zeros
-                    const formattedTime =
-                        hr.toString().padStart(2, '0') + ':' +
-                        min.toString().padStart(2, '0') + ':' +
-                        sec.toString().padStart(2, '0');
-
-                    console.log("Calculated time:", formattedTime);
-
-                    return formattedTime;
-                }
-
-                // Calculate and format elapsed time
-                <%--function calculateElapsedTime() {--%>
-                <%--    if (!startTime) return '00:00:00';--%>
-
-                <%--    const end = endTime || new Date();--%>
-                <%--    const diff = Math.floor((end - startTime) / 1000);--%>
-
-                <%--    const hours = Math.floor(diff / 3600).toString().padStart(2, '0');--%>
-                <%--    const minutes = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');--%>
-                <%--    const seconds = Math.floor(diff % 60).toString().padStart(2, '0');--%>
-
-                <%--    console.log(`${hours}:${minutes}:${seconds}`);--%>
-
-                <%--    return `${hours}:${minutes}:${seconds}`;--%>
-                <%--}--%>
-
-                // Update timer display
-                function updateTimerDisplay() {
-                    timerDisplay.textContent = calculateElapsedTime();
-                }
-
-                // Start timer functionality
-                function startTimer() {
-                    // Clear any existing interval to avoid multiple intervals
-                    if (timerInterval) {
-                        clearInterval(timerInterval);
-                    }
-
-                    startTime = new Date();
-                    endTime = null;
-                    isTimerRunning = true;
-
-                    startTimeDisplay.textContent = formatTime(startTime);
-                    endTimeDisplay.textContent = '--:--:--';
-
-                    // Update timer display then start interval
-                    updateTimerDisplay();
-                    timerInterval = setInterval(updateTimerDisplay, 1000);
-
-                    // Toggle buttons
-                    startTimerBtn.style.display = 'none';
-                    stopTimerBtn.style.display = 'block';
-                }
-
-                // Stop timer functionality
-                function stopTimer() {
-                    if (!isTimerRunning) return;
-
-                    endTime = new Date();
-                    isTimerRunning = false;
-
-                    endTimeDisplay.textContent = formatTime(endTime);
-
-                    // Clear interval
-                    if (timerInterval) {
-                        clearInterval(timerInterval);
-                        timerInterval = null;
-                    }
-
-                    // Update display one final time
-                    updateTimerDisplay();
-
-                    // Toggle buttons
-                    startTimerBtn.style.display = 'block';
-                    stopTimerBtn.style.display = 'none';
-                }
-
-                // Event listeners
-                startTimerBtn.addEventListener('click', startTimer);
-                stopTimerBtn.addEventListener('click', stopTimer);
-
-                // Initialize display
-                updateTimerDisplay();
-            });
-        </script>
+        <script src="/js/timer.js"></script>
 
         <script src="/js/heatmap.js"></script>
 

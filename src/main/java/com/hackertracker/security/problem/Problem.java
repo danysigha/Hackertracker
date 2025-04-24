@@ -1,10 +1,13 @@
 package com.hackertracker.security.problem;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hackertracker.security.tag.Tag;
 import com.hackertracker.security.topic.Topic;
 import com.hackertracker.security.user.UserProblemAttempt;
 import com.hackertracker.security.user.UserProblemPriority;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 //import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 //import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
@@ -15,6 +18,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name="problem")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 //@Indexed
 public class Problem {
     @Id
@@ -37,15 +41,19 @@ public class Problem {
 //    @FullTextField
     private String pageUrl;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<TagProblem> problemTags = new HashSet<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<TopicProblem> problemTopics = new HashSet<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserProblemAttempt> problemAttempts = new HashSet<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserProblemPriority> problemPriorities = new HashSet<>();
 

@@ -1,14 +1,17 @@
 package com.hackertracker.security.user;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.hackertracker.security.problem.Problem;
 import jakarta.persistence.*;
 
 import java.util.Date;
 import java.util.Objects;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name="user_problem_attempts")
-
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class UserProblemAttempt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,15 +30,17 @@ public class UserProblemAttempt {
     @Column(name = "end_time", nullable = false)
     private Date endTime;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "problem_id")
     private Problem problem;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    UserProblemAttempt(Problem problem, User user, byte difficultyRating, Date startTime, Date endTime, String notes) {
+    public UserProblemAttempt(Problem problem, User user, byte difficultyRating, Date startTime, Date endTime, String notes) {
         this.problem = problem;
         this.user = user;
         this.difficultyRating = difficultyRating;

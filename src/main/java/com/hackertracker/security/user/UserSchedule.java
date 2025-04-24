@@ -4,13 +4,15 @@ import com.hackertracker.security.Schedule.Weekday;
 import com.hackertracker.security.Schedule.WeekdayName;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.util.Date;
 import java.util.Objects;
 
 @Entity
 @Table(name="user_schedules")
-
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class UserSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

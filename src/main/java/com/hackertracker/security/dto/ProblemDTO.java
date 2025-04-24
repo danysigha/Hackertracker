@@ -1,7 +1,8 @@
 package com.hackertracker.security.dto;
 
+import com.hackertracker.security.problem.Problem;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ProblemDTO {
     private int problemId;
@@ -9,99 +10,63 @@ public class ProblemDTO {
     private String questionTitle;
     private String difficultyLevel;
     private String pageUrl;
-    private List<TopicDTO> topics;
-    private List<UserProblemAttemptDTO> attempts;
+    private List<String> problemTags = new ArrayList<>();
+    private List<String> problemTopics = new ArrayList<>();
 
-    public ProblemDTO() {
+    // Default constructor
+    public ProblemDTO() {}
+
+    // Static factory method to create from entity
+    public static ProblemDTO fromEntity(Problem problem) {
+        if (problem == null) return null;
+
+        ProblemDTO dto = new ProblemDTO();
+        dto.setProblemId(problem.getProblemId());
+        dto.setPublicProblemId(problem.getPublicProblemId());
+        dto.setQuestionTitle(problem.getQuestionTitle());
+        dto.setDifficultyLevel(problem.getDifficultyLevel());
+        dto.setPageUrl(problem.getPageUrl());
+
+        // Extract tag names if collection is initialized
+        if (problem.getProblemTags() != null) {
+            problem.getProblemTags().forEach(tagProblem -> {
+                if (tagProblem.getTag() != null) {
+                    dto.getProblemTags().add(tagProblem.getTag().getTagName());
+                }
+            });
+        }
+
+        // Extract topic names if collection is initialized
+        if (problem.getProblemTopics() != null) {
+            problem.getProblemTopics().forEach(topicProblem -> {
+                if (topicProblem.getTopic() != null) {
+                    dto.getProblemTopics().add(topicProblem.getTopic().getTopicName());
+                }
+            });
+        }
+
+        return dto;
     }
 
-    public ProblemDTO(int problemId, String publicProblemId, String questionTitle, String pageUrl, String difficultyLevel, List<TopicDTO> topics, List<UserProblemAttemptDTO> attempts) {
-        this.problemId = problemId;
-        this.publicProblemId = publicProblemId;
-        this.questionTitle = questionTitle;
-        this.pageUrl = pageUrl;
-        this.difficultyLevel = difficultyLevel;
-        this.topics = topics;
-        this.attempts = attempts;
-    }
+    // Getters and setters
+    public int getProblemId() { return problemId; }
+    public void setProblemId(int problemId) { this.problemId = problemId; }
 
-    public int getProblemId() {
-        return problemId;
-    }
+    public String getPublicProblemId() { return publicProblemId; }
+    public void setPublicProblemId(String publicProblemId) { this.publicProblemId = publicProblemId; }
 
-    public void setProblemId(int problemId) {
-        this.problemId = problemId;
-    }
+    public String getQuestionTitle() { return questionTitle; }
+    public void setQuestionTitle(String questionTitle) { this.questionTitle = questionTitle; }
 
-    public String getPublicProblemId() {
-        return publicProblemId;
-    }
+    public String getDifficultyLevel() { return difficultyLevel; }
+    public void setDifficultyLevel(String difficultyLevel) { this.difficultyLevel = difficultyLevel; }
 
-    public void setPublicProblemId(String publicProblemId) {
-        this.publicProblemId = publicProblemId;
-    }
+    public String getPageUrl() { return pageUrl; }
+    public void setPageUrl(String pageUrl) { this.pageUrl = pageUrl; }
 
-    public String getQuestionTitle() {
-        return questionTitle;
-    }
+    public List<String> getProblemTags() { return problemTags; }
+    public void setProblemTags(List<String> problemTags) { this.problemTags = problemTags; }
 
-    public void setQuestionTitle(String questionTitle) {
-        this.questionTitle = questionTitle;
-    }
-
-    public String getDifficultyLevel() {
-        return difficultyLevel;
-    }
-
-    public void setDifficultyLevel(String difficultyLevel) {
-        this.difficultyLevel = difficultyLevel;
-    }
-
-    public String getPageUrl() {
-        return pageUrl;
-    }
-
-    public void setPageUrl(String pageUrl) {
-        this.pageUrl = pageUrl;
-    }
-
-    public List<TopicDTO> getTopics() {
-        return topics;
-    }
-
-    public void setTopics(List<TopicDTO> topics) {
-        this.topics = topics;
-    }
-
-    public List<UserProblemAttemptDTO> getAttempts() {
-        return attempts;
-    }
-
-    public void setAttempts(List<UserProblemAttemptDTO> attempts) {
-        this.attempts = attempts;
-    }
-
-    @Override
-    public String toString() {
-        return "Problem{" +
-                "problemId=" + problemId + ", " +
-                "publicProblemId=" + publicProblemId +
-                ", questionTitle=" + questionTitle + "\n" +
-                ", difficultyLevel=" + difficultyLevel + "\n" +
-                ", pageUrl=" + pageUrl + "\n" +
-                "} ";
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ProblemDTO problem = (ProblemDTO) o;
-        return problemId == problem.problemId;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(problemId);
-    }
+    public List<String> getProblemTopics() { return problemTopics; }
+    public void setProblemTopics(List<String> problemTopics) { this.problemTopics = problemTopics; }
 }

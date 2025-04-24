@@ -1,13 +1,17 @@
 package com.hackertracker.security.user;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hackertracker.security.problem.Problem;
 import jakarta.persistence.*;
 
 import java.util.Date;
 import java.util.Objects;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name="user_completion_predictions")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class UserCompletionPrediction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +24,7 @@ public class UserCompletionPrediction {
     @Column(name = "predicted_completion_date", nullable = false)
     private Date predictedCompletionDate;
 
+    @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

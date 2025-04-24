@@ -1,13 +1,14 @@
 package com.hackertracker.security.dao;
 
 import com.hackertracker.security.problem.Problem;
-import com.hackertracker.security.dto.DTOMapper;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -35,6 +36,18 @@ public class ProblemDAO {
             q.setParameter("problemId", problemId);
             return q.uniqueResult();
         }
+    }
+
+    /**
+     * Get a Problem entity by its ID
+     */
+    @Transactional(readOnly = true)
+    public Problem getProblemByIdWithCollections(int problemId) {
+        Session session = sessionFactory.openSession();
+        Problem problem = session.get(Problem.class, problemId);
+        Hibernate.initialize(problem.getProblemTags());
+        Hibernate.initialize(problem.getProblemTopics());
+        return problem;
     }
 
     /**

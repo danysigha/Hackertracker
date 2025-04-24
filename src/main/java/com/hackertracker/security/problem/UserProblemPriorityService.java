@@ -4,11 +4,8 @@ import com.hackertracker.security.Schedule.PriorityCalculator;
 import com.hackertracker.security.dao.ProblemDAO;
 import com.hackertracker.security.dao.UserDAO;
 import com.hackertracker.security.dao.UserProblemPriorityDAO;
-import com.hackertracker.security.dto.ProblemDTO;
-import com.hackertracker.security.dto.UserDTO;
-import com.hackertracker.security.dto.UserProblemPriorityDTO;
-import com.hackertracker.security.dto.UserProblemService;
 import com.hackertracker.security.user.*;
+import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -28,29 +25,25 @@ public class UserProblemPriorityService {
     private final PriorityCalculator priorityCalculator;
     private final ProblemDAO problemDao;
     private final UserDAO userDao;
-    private final UserProblemService userProblemService;
+//    private final UserProblemService userProblemService;
 
 
     public UserProblemPriorityService(
             UserProblemPriorityDAO priorityDao,
             PriorityCalculator priorityCalculator,
             ProblemDAO problemDao,
-            UserDAO userDao,
-            UserProblemService userProblemService) {
+            UserDAO userDao) {
         this.priorityDao = priorityDao;
         this.priorityCalculator = priorityCalculator;
         this.problemDao = problemDao;
         this.userDao = userDao;
-        this.userProblemService = userProblemService;
     }
 
     /**
      * Initialize priority for a new problem for a user
      */
     @Transactional
-    public UserProblemPriority initializePriority(ProblemDTO problemDto, User user) {
-
-        Problem problem = problemDao.getProblemById(problemDto.getProblemId());
+    public UserProblemPriority initializePriority(Problem problem, User user) {
 
         // Check if priority already exists
         UserProblemPriority existingPriority = priorityDao.findByProblemAndUser(problem, user);
@@ -60,7 +53,7 @@ public class UserProblemPriorityService {
         }
 
         // Calculate initial priority score
-        double initialScore = priorityCalculator.calculateInitialPriorityScore(problemDto);
+        double initialScore = priorityCalculator.calculateInitialPriorityScore(problem);
 
         // Create new priority record
         UserProblemPriority priority = new UserProblemPriority();
@@ -81,10 +74,6 @@ public class UserProblemPriorityService {
         Problem problem = attempt.getProblem();
         User user = attempt.getUser();
 
-        ProblemDTO problemDto = userProblemService.getProblemDto(problem);
-
-        UserDTO userDto = userProblemService.getUserDto(user);
-
         // Get or create priority record
         UserProblemPriority priority = priorityDao.findByProblemAndUser(problem, user);
 
@@ -96,49 +85,58 @@ public class UserProblemPriorityService {
         priority.setLastAttempted(attempt.getEndTime());
 
         // Recalculate priority score
-        double newScore = priorityCalculator.calculatePriorityScore(problemDto, userDto);
+        double newScore = priorityCalculator.calculatePriorityScore(problem, user);
         priority.setPriorityScore(newScore);
         priority.setLastCalculation(new Date());
 
-        priorityDao.save(priority);
+        priorityDao.update(priority);
     }
 
 
     @Transactional
-    public double recalculateSinglePriority(ProblemDTO problemDto, User user) {
+    public double recalculateSinglePriority(Problem problem, User user) {
 
-        Problem problem = problemDao.getProblemById(problemDto.getProblemId());
-
-        UserDTO userDto = userProblemService.getUserDto(user);
-
-        double newScore = priorityCalculator.calculatePriorityScore(problemDto, userDto);
+        double newScore = priorityCalculator.calculatePriorityScore(problem, user);
 
         UserProblemPriority priority = priorityDao.findByProblemAndUser(problem, user);
 
         if(priority == null) {
             priority = new UserProblemPriority(problem, user, newScore);
+            priority.setPriorityScore(newScore);
+            priority.setLastCalculation(new Date());
+            priorityDao.save(priority);
+        } else {
+            priority.setPriorityScore(newScore);
+            priority.setLastCalculation(new Date());
+            priorityDao.update(priority);
         }
-
-        priority.setPriorityScore(newScore);
-        priority.setLastCalculation(new Date());
-        priorityDao.save(priority);
 
         return newScore;
     }
+
+
 
 
     /**
      * Get prioritized problems for a user
      */
     @Transactional(readOnly = true)
-    public List<ProblemDTO> getPrioritizedProblemsForUser(User user) {
-        // Return all user's problems ordered by priority score descending
+    public Problem getNextTopPriorityProblemForUser(User user) {
+        UserProblemPriority priority = priorityDao.findNextChallengeByPriorityScoreDesc(user);
+        if (priority == null) {
+            return null;
+        }
 
-        return priorityDao.findByUserOrderByPriorityScoreDesc(user)
-                .stream()
-                .map(UserProblemPriorityDTO::getProblemDto)
-                .toList();
+        int problemId = priority.getProblem().getProblemId();
+        return problemDao.getProblemByIdWithCollections(problemId);
     }
+//    @Transactional(readOnly = true)
+//    public Problem getNextTopPriorityProblemForUser(User user) {
+//        // Return all user's problems ordered by priority score descending
+//
+//        return priorityDao.findNextChallengeByPriorityScoreDesc(user).getProblem();
+//
+//    }
 
 
     /**
@@ -149,19 +147,17 @@ public class UserProblemPriorityService {
     @Transactional
     public void recalculateAllPriorities() {
 
-        List<UserProblemPriorityDTO> allPrioritiesDto = priorityDao.findAll();
+        List<UserProblemPriority> allPrioritiesDto = priorityDao.findAll();
         List<UserProblemPriority> allPriorities = new ArrayList<>();
 
-        for (UserProblemPriorityDTO priorityDto : allPrioritiesDto) {
-            ProblemDTO problemDto = priorityDto.getProblemDto();
-            UserDTO userDto = priorityDto.getUserDto();
+        for (UserProblemPriority priority : allPrioritiesDto) {
+            Problem problem = priority.getProblem();
+            User user = priority.getUser();
 
-            Problem problem = problemDao.getProblemById(problemDto.getProblemId());
-            User user = userDao.getUserById(userDto.getUserId());
-            UserProblemPriority priority = priorityDao.findByProblemAndUser(problem, user);
+            UserProblemPriority userProblemPriority = priorityDao.findByProblemAndUser(problem, user);
 
             // Recalculate score
-            double newScore = priorityCalculator.calculatePriorityScore(problemDto, userDto);
+            double newScore = priorityCalculator.calculatePriorityScore(problem, user);
 
             priority.setPriorityScore(newScore);
             priority.setLastCalculation(new Date());
@@ -232,8 +228,8 @@ public class UserProblemPriorityService {
      */
     @Transactional
     public void initializeAllPrioritiesForNewUser(User user) {
-        for (ProblemDTO problemDto : userProblemService.getAllProblemDtos()) {
-            initializePriority(problemDto, user);
+        for (Problem problem : problemDao.getAllProblems()) {
+            initializePriority(problem, user);
         }
     }
 

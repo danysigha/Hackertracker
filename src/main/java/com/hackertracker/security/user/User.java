@@ -4,6 +4,7 @@
  */
 package com.hackertracker.security.user;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hackertracker.security.Schedule.Weekday;
 import com.hackertracker.security.Schedule.WeekdayName;
 import com.hackertracker.security.problem.Problem;
@@ -13,6 +14,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  *
@@ -21,6 +24,7 @@ import java.util.*;
 
 @Entity
 @Table(name="user")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -151,12 +155,15 @@ public class User implements UserDetails {
         return true;
     }
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserProblemAttempt> problemAttempts = new HashSet<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserProblemPriority> problemPriorities = new HashSet<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserCompletionPrediction> completionPredictions = new HashSet<>();
 
@@ -166,25 +173,25 @@ public class User implements UserDetails {
     private UserSchedule userSchedule;
 
 
-    // Methods to manage the relationship
-    public void addAttempt(Problem problem, User user, byte difficultyRating, Date startTime, Date endTime, String notes) {
-        UserProblemAttempt problemAttempt = new UserProblemAttempt(problem, this, difficultyRating, startTime, endTime, notes);
-        problemAttempts.add(problemAttempt);
-        problem.getProblemAttempts().add(problemAttempt);
-    }
-
-    public void removeAttempt(UserProblemAttempt attempt) {
-        for (Iterator<UserProblemAttempt> iterator = problemAttempts.iterator(); iterator.hasNext();) {
-            UserProblemAttempt nextAttempt = iterator.next();
-            if (nextAttempt.getAttemptId() == attempt.getAttemptId()) {
-                iterator.remove();
-                attempt.getProblem().getProblemAttempts().remove(nextAttempt);
-                nextAttempt.setProblem(null);
-                nextAttempt.setUser(null);
-                break; // Exit loop after finding and removing the tag
-            }
-        }
-    }
+//    // Methods to manage the relationship
+//    public void addAttempt(Problem problem, User user, byte difficultyRating, Date startTime, Date endTime, String notes) {
+//        UserProblemAttempt problemAttempt = new UserProblemAttempt(problem, this, difficultyRating, startTime, endTime, notes);
+//        problemAttempts.add(problemAttempt);
+//        problem.getProblemAttempts().add(problemAttempt);
+//    }
+//
+//    public void removeAttempt(UserProblemAttempt attempt) {
+//        for (Iterator<UserProblemAttempt> iterator = problemAttempts.iterator(); iterator.hasNext();) {
+//            UserProblemAttempt nextAttempt = iterator.next();
+//            if (nextAttempt.getAttemptId() == attempt.getAttemptId()) {
+//                iterator.remove();
+//                attempt.getProblem().getProblemAttempts().remove(nextAttempt);
+//                nextAttempt.setProblem(null);
+//                nextAttempt.setUser(null);
+//                break; // Exit loop after finding and removing the tag
+//            }
+//        }
+//    }
 
     /**
      * Get all priorities for this user's problems

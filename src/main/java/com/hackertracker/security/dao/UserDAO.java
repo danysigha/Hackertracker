@@ -1,15 +1,15 @@
 package com.hackertracker.security.dao;
 
-import com.hackertracker.security.dto.UserDTO;
-import com.hackertracker.security.dto.UserProblemService;
+import com.hackertracker.security.problem.Problem;
 import com.hackertracker.security.user.User;
-import com.hackertracker.security.dto.DTOMapper;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -55,12 +55,23 @@ public class UserDAO {
     /**
      * Get a User entity by ID
      */
-    public User getUserById(Integer userId) {
+    public User getUserById(int userId) {
         try (Session session = sessionFactory.openSession()) {
             Query<User> q = session.createQuery("from User where userId=:userId", User.class);
             q.setParameter("userId", userId);
             return q.uniqueResult();
         }
+    }
+
+    /**
+     * Get a User entity by ID
+     */
+    @Transactional(readOnly = true)
+    public User getUserByIdWithCollections(int userId) {
+        Session session = sessionFactory.openSession();
+        User user = session.get(User.class, userId);
+        Hibernate.initialize(user.getListAttempts());
+        return user;
     }
 
     /**
@@ -90,10 +101,8 @@ public class UserDAO {
 //            Query<User> q = session.createQuery("from User where userName=:userName", User.class);
 //            q.setParameter("userName", userName);
 //            User user = q.uniqueResult();
-//            UserDTO userDto = new UserDTO(user.getUserId(), user.getPublicId(), user.getUserName(), user.getFirstName(),
+//            return new UserDTO(user.getUserId(), user.getPublicId(), user.getUserName(), user.getFirstName(),
 //                    user.getLastName(), user.getPassword(), user.getEmail(), user.getRole(), userProblemService.getUserAttempts(user));
-//            System.out.println("within session " + userDto);
-//            return userDto;
 //        }
 //    }
 

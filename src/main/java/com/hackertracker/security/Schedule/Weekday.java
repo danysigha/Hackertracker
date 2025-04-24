@@ -5,12 +5,14 @@ import com.hackertracker.security.user.UserProblemAttempt;
 import com.hackertracker.security.user.UserSchedule;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.util.Objects;
 
 @Entity
 @Table(name="weekdays")
-
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Weekday {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,9 +1,11 @@
 package com.hackertracker.security.Schedule;
 
-import com.hackertracker.security.dto.ProblemDTO;
-import com.hackertracker.security.dto.TopicDTO;
-import com.hackertracker.security.dto.UserDTO;
-import com.hackertracker.security.dto.UserProblemAttemptDTO;
+import com.hackertracker.security.dao.ProblemDAO;
+import com.hackertracker.security.dao.UserDAO;
+import com.hackertracker.security.problem.Problem;
+import com.hackertracker.security.topic.Topic;
+import com.hackertracker.security.user.User;
+import com.hackertracker.security.user.UserProblemAttempt;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -33,6 +35,13 @@ public class PriorityCalculator {
     private static final long MAX_TIME_SPENT_MINUTES = 120;  // Cap time spent at 2 hours for scoring
     private static final long RECENCY_DAYS_MAX = 14;         // Consider attempts within last 14 days
 
+    private final ProblemDAO problemDao;
+    private final UserDAO userDao;
+
+    public PriorityCalculator(ProblemDAO problemDao, UserDAO userDao) {
+        this.problemDao = problemDao;
+        this.userDao = userDao;
+    }
 
     // Precision factor to reduce ties (multiply final score by this value)
 //    private static final int PRECISION_FACTOR = 1000;
@@ -40,22 +49,22 @@ public class PriorityCalculator {
     /**
      * Calculate priority score for a problem/user combination
      *
-     * @param problemDto The problem
-     * @param userDto The user
+     * @param problem The problem
+     * @param user The user
      * @return The calculated priority score (higher score = higher priority)
      */
-    public double calculatePriorityScore(ProblemDTO problemDto, UserDTO userDto) {
+    public double calculatePriorityScore(Problem problem, User user) {
         // Get the highest topic rank for this problem (most important)
-        int topicRankScore = getTopicRankScore(problemDto);
+        int topicRankScore = getTopicRankScore(problem);
 
         // Get the user's difficulty rating for this problem
-        int difficultyScore = getDifficultyScore(problemDto, userDto);
+        int difficultyScore = getDifficultyScore(problem, user);
 
         // Calculate time spent score based on previous attempts
-        int timeSpentScore = getTimeSpentScore(problemDto, userDto);
+        int timeSpentScore = getTimeSpentScore(problem, user);
 
         // Calculate recency score
-        int recencyScore = getRecencyScore(problemDto, userDto);
+        int recencyScore = getRecencyScore(problem, user);
 
         // Calculate weighted sum
         double weightedScore = (TOPIC_RANK_WEIGHT * topicRankScore) +
@@ -64,7 +73,7 @@ public class PriorityCalculator {
                 (RECENCY_WEIGHT * recencyScore);
 
         // Add a minor unique factor to prevent ties
-        double uniqueFactor = generateUniqueFactor(problemDto);
+        double uniqueFactor = generateUniqueFactor(problem);
 
         // Return double score with higher precision to reduce ties (0-100)
 //        return (weightedScore * PRECISION_FACTOR) + uniqueFactor;
@@ -81,15 +90,18 @@ public class PriorityCalculator {
     /**
      * Get score based on topic rank (higher rank = higher score)
      */
-    private int getTopicRankScore(ProblemDTO problemDto) {
-        List<TopicDTO> topics = problemDto.getTopics();
+    private int getTopicRankScore(Problem problem) {
+
+        Problem myProblem = problemDao.getProblemByIdWithCollections(problem.getProblemId());
+
+        List<Topic> topics = myProblem.getListTopics();
         if (topics.isEmpty()) {
             return 50; // Default middle value if no topics
         }
 
         // Find the highest rank among all topics associated with this problem
         OptionalInt highestRank = topics.stream()
-                .mapToInt(TopicDTO::getTopicRank)
+                .mapToInt(Topic::getTopicRank)
                 .max();
 
         if (highestRank.isPresent()) {
@@ -101,8 +113,8 @@ public class PriorityCalculator {
         }
     }
 
-//    private int getTopicRankScore(ProblemDTO problemDto) {
-//        List<TopicDTO> topics = problemDto.getTopics();
+//    private int getTopicRankScore(Problem problem) {
+//        List<TopicDTO> topics = problem.getTopics();
 //        if (topics.isEmpty()) {
 //            return 50; // Default middle value if no topics
 //        }
@@ -125,20 +137,23 @@ public class PriorityCalculator {
      * Get score based on difficulty rating
      * Higher user difficulty rating = higher priority (more challenging problems)
      */
-    private int getDifficultyScore(ProblemDTO problemDto, UserDTO userDto) {
-        List<UserProblemAttemptDTO> attempts = userDto.getAttempts().stream()
-                .filter(attempt -> attempt.getProblemDto().equals(problemDto))
+    private int getDifficultyScore(Problem problem, User user) {
+
+        User myUser = userDao.getUserByIdWithCollections(user.getUserId());
+
+        List<UserProblemAttempt> attempts = myUser.getListAttempts().stream()
+                .filter(attempt -> attempt.getProblem().equals(problem))
                 .toList();
 
         if (attempts.isEmpty()) {
             // If no attempts yet, use problem's difficulty level
-            return convertDifficultyLevelToScore(problemDto.getDifficultyLevel());
+            return convertDifficultyLevelToScore(problem.getDifficultyLevel());
         }
 
         // Use the most recent attempt's difficulty rating
         byte latestRating = attempts.stream()
                 .max((a1, a2) -> a1.getEndTime().compareTo(a2.getEndTime()))
-                .map(UserProblemAttemptDTO::getDifficultyRating)
+                .map(UserProblemAttempt::getDifficultyRating)
                 .orElse((byte)5); // Default to medium difficulty
 
         // NEW CODE HERE: Look at the trend in difficulty ratings (if multiple attempts)
@@ -158,20 +173,20 @@ public class PriorityCalculator {
         // Normalize to 0-100
         return (int) ((latestRating * 100.0) / MAX_DIFFICULTY_RATING);
     }
-//    private int getDifficultyScore(ProblemDTO problemDto, UserDTO userDto) {
-//        List<UserProblemAttemptDTO> attempts = userDto.getAttempts().stream()
-//                .filter(attempt -> attempt.getProblemDto().equals(problemDto))
+//    private int getDifficultyScore(Problem problem, User user) {
+//        List<UserProblemAttempt> attempts = user.getListAttempts().stream()
+//                .filter(attempt -> attempt.getProblem().equals(problem))
 //                .toList();
 //
 //        if (attempts.isEmpty()) {
 //            // If no attempts yet, use problem's difficulty level
-//            return convertDifficultyLevelToScore(problemDto.getDifficultyLevel());
+//            return convertDifficultyLevelToScore(problem.getDifficultyLevel());
 //        }
 //
 //        // Use the most recent attempt's difficulty rating
 //        byte latestRating = attempts.stream()
 //                .max((a1, a2) -> a1.getEndTime().compareTo(a2.getEndTime()))
-//                .map(UserProblemAttemptDTO::getDifficultyRating)
+//                .map(UserProblemAttempt::getDifficultyRating)
 //                .orElse((byte)5); // Default to medium difficulty
 //
 //        // Normalize to 0-100
@@ -196,9 +211,12 @@ public class PriorityCalculator {
      * Get score based on time spent on problem
      * More time spent = more challenging = higher priority
      */
-    private int getTimeSpentScore(ProblemDTO problemDto, UserDTO userDto) {
-        List<UserProblemAttemptDTO> attempts = userDto.getAttempts().stream()
-                .filter(attempt -> attempt.getProblemDto().equals(problemDto))
+    private int getTimeSpentScore(Problem problem, User user) {
+
+        User myUser = userDao.getUserByIdWithCollections(user.getUserId());
+
+        List<UserProblemAttempt> attempts = myUser.getListAttempts().stream()
+                .filter(attempt -> attempt.getProblem().equals(problem))
                 .toList();
 
         if (attempts.isEmpty()) {
@@ -209,7 +227,7 @@ public class PriorityCalculator {
         long totalMinutes = 0;
         int attemptCount = 0;
 
-        for (UserProblemAttemptDTO attempt : attempts) {
+        for (UserProblemAttempt attempt : attempts) {
             if (attempt.getStartTime() != null && attempt.getEndTime() != null) {
                 long minutes = (attempt.getEndTime().getTime() - attempt.getStartTime().getTime()) / (1000 * 60);
                 totalMinutes += minutes;
@@ -234,9 +252,12 @@ public class PriorityCalculator {
      * More recent = lower priority (already practiced recently)
      * Older = higher priority (needs review)
      */
-    private int getRecencyScore(ProblemDTO problemDto, UserDTO userDto) {
-        List<UserProblemAttemptDTO> attempts = userDto.getAttempts().stream()
-                .filter(attempt -> attempt.getProblemDto().equals(problemDto))
+    private int getRecencyScore(Problem problem, User user) {
+
+        User myUser = userDao.getUserByIdWithCollections(user.getUserId());
+
+        List<UserProblemAttempt> attempts = myUser.getListAttempts().stream()
+                .filter(attempt -> attempt.getProblem().equals(problem))
                 .toList();
 
         if (attempts.isEmpty()) {
@@ -245,7 +266,7 @@ public class PriorityCalculator {
 
         // Find latest attempt
         Date latestAttempt = attempts.stream()
-                .map(UserProblemAttemptDTO::getEndTime)
+                .map(UserProblemAttempt::getEndTime)
                 .max(Date::compareTo)
                 .orElse(null);
 
@@ -282,11 +303,11 @@ public class PriorityCalculator {
     }
 
     // Helper method to calculate average time
-    private long getAverageTimeInMinutes(List<UserProblemAttemptDTO> attempts) {
+    private long getAverageTimeInMinutes(List<UserProblemAttempt> attempts) {
         long totalMinutes = 0;
         int validAttempts = 0;
 
-        for (UserProblemAttemptDTO attempt : attempts) {
+        for (UserProblemAttempt attempt : attempts) {
             if (attempt.getStartTime() != null && attempt.getEndTime() != null) {
                 long minutes = (attempt.getEndTime().getTime() - attempt.getStartTime().getTime()) / (1000 * 60);
                 totalMinutes += minutes;
@@ -296,9 +317,9 @@ public class PriorityCalculator {
 
         return validAttempts > 0 ? totalMinutes / validAttempts : 0;
     }
-//    private int getRecencyScore(ProblemDTO problemDto, UserDTO userDto) {
-//        List<UserProblemAttemptDTO> attempts = userDto.getAttempts().stream()
-//                .filter(attempt -> attempt.getProblemDto().equals(problemDto))
+//    private int getRecencyScore(Problem problem, User user) {
+//        List<UserProblemAttempt> attempts = user.getListAttempts().stream()
+//                .filter(attempt -> attempt.getProblem().equals(problem))
 //                .toList();
 //
 //        if (attempts.isEmpty()) {
@@ -307,7 +328,7 @@ public class PriorityCalculator {
 //
 //        // Find latest attempt
 //        Date latestAttempt = attempts.stream()
-//                .map(UserProblemAttemptDTO::getEndTime)
+//                .map(UserProblemAttempt::getEndTime)
 //                .max(Date::compareTo)
 //                .orElse(null);
 //
@@ -330,13 +351,13 @@ public class PriorityCalculator {
      * Calculate initial priority score when user first encounters a problem
      * This method uses problem metadata only (no attempt history)
      */
-    public double calculateInitialPriorityScore(ProblemDTO problemDto) {
+    public double calculateInitialPriorityScore(Problem problem) {
         // Topic rank is the primary factor
-        int topicRankScore = getTopicRankScore(problemDto);
+        int topicRankScore = getTopicRankScore(problem);
 
         // Use problem's static difficulty level
         int difficultyScore = invertDifficultyScore(
-                convertDifficultyLevelToScore(problemDto.getDifficultyLevel())
+                convertDifficultyLevelToScore(problem.getDifficultyLevel())
         );
 
         // Time spent and recency are maximized since user hasn't practiced this problem yet
@@ -350,7 +371,7 @@ public class PriorityCalculator {
                 (RECENCY_WEIGHT * recencyScore);
 
         // Add a minor unique factor to prevent ties
-        double uniqueFactor = generateUniqueFactor(problemDto);
+        double uniqueFactor = generateUniqueFactor(problem);
 
         // Return double score with higher precision to reduce ties
 //        return (weightedScore * PRECISION_FACTOR) + uniqueFactor;
@@ -375,10 +396,10 @@ public class PriorityCalculator {
      * Generates a small unique factor (between 0 and 0.99) based on problem ID
      * to break potential ties in priority scores
      */
-    private double generateUniqueFactor(ProblemDTO problemDto) {
+    private double generateUniqueFactor(Problem problem) {
         // Generate a value between 0 and 0.99 based on the problem's hashCode
         // This ensures the same problem always gets the same tie-breaking value
-        int hashValue = problemDto.hashCode();
+        int hashValue = problem.hashCode();
         if (hashValue < 0) {
             hashValue = -hashValue; // Ensure positive value
         }

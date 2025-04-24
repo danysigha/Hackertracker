@@ -1,5 +1,6 @@
 package com.hackertracker.security.tag;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hackertracker.security.problem.Problem;
 import com.hackertracker.security.problem.TagProblem;
 import jakarta.persistence.*;
@@ -10,10 +11,12 @@ import jakarta.persistence.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name="tag")
-
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 //@Indexed
 public class Tag {
     @Id
@@ -25,6 +28,7 @@ public class Tag {
 //    @FullTextField
     private String tagName;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<TagProblem> problemTags = new HashSet<>();
 

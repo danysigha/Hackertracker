@@ -1,5 +1,6 @@
 package com.hackertracker.security.topic;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hackertracker.security.problem.Problem;
 import com.hackertracker.security.problem.TagProblem;
 import com.hackertracker.security.problem.TopicProblem;
@@ -11,6 +12,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 //import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 //import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
@@ -18,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "topic")
-
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 //@Indexed
 public class Topic {
     @Id
@@ -33,6 +36,7 @@ public class Topic {
     @Column(name = "topic_rank", nullable = false)
     private byte topicRank;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<TopicProblem> problemTopics = new HashSet<>();
 
