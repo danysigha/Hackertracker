@@ -1,6 +1,3 @@
-// Using DOMPurify (you'd need to include this library)
-// import DOMPurify from 'dompurify';
-
 let pastQuestions = [];
 let futureQuestions = [];
 let currentQuestionId = null;
@@ -8,18 +5,6 @@ let originalStartDate = null;
 let originalEndDate = null;
 let cal = initializeCalendar();
 
-
-// If using cookies
-// function getJwtToken() {
-//     const cookies = document.cookie.split(';');
-//     for (let cookie of cookies) {
-//         const [name, value] = cookie.trim().split('=');
-//         if (name === 'jwtToken') {
-//             return value;
-//         }
-//     }
-//     return null;
-// }
 
 function getJwtToken() {
     const cookies = document.cookie.split(';');
@@ -279,17 +264,6 @@ $("#addAttemptBtn").on("click", function() {
     console.log("startTime", ajaxData.startTime);
     console.log("endTime", ajaxData.endTime);
 
-    // if(document.getElementById("startTimeDisplay").innerHTML !== "--:--:--") {
-    //     ajaxData.startTime = originalStartDate ? originalStartDate.toISOString() : null;
-    // } else {
-    //     ajaxData.startTime = null;
-    // }
-    //
-    // if(document.getElementById("endTimeDisplay").innerHTML !== "--:--:--") {
-    //     ajaxData.endTime = originalEndDate ? originalEndDate.toISOString() : null;
-    // } else {
-    //     ajaxData.endTime = null;
-    // }
 
     // Safely get TinyMCE content
 
@@ -310,20 +284,6 @@ $("#addAttemptBtn").on("click", function() {
         ajaxData.notes = DOMPurify.sanitize(rawHtml);
     }
 
-    // try {
-    //     // Check if TinyMCE is available globally
-    //     if (typeof window.tinymce !== 'undefined' && window.tinymce.get('myEditor')) {
-    //         ajaxData.notes = window.tinymce.get('myEditor').getContent();
-    //     } else {
-    //         // Fallback to innerHTML as you suggested
-    //         ajaxData.notes = document.getElementById("myEditor").innerHTML || "";
-    //         console.log("TinyMCE not initialized, using innerHTML instead");
-    //     }
-    // } catch (e) {
-    //     console.error("Error accessing TinyMCE:", e);
-    //     // Fallback
-    //     ajaxData.notes = document.getElementById("myEditor").innerHTML || "";
-    // }
 
 
     // Then request the next question in sequence
@@ -374,12 +334,6 @@ function updateNavigationButtons() {
         $("#nextQuestionBtn").prop("disabled", true);
     }
 }
-
-// Initial setup
-// $(document).ready(function() {
-//     // Load the initial question
-//     loadQuestion(); // Don't add to history since it's the first one
-// });
 
 // Initial setup
 $(document).ready(function() {

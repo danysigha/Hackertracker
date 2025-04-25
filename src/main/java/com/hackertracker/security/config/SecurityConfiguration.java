@@ -1,6 +1,5 @@
 package com.hackertracker.security.config;
 
-import jakarta.servlet.Filter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -28,7 +27,7 @@ public class SecurityConfiguration {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/api/calendar/**", "/dashboard", "/register", "/login", "/WEB-INF/views/**", "/error", "/css/**", "/js/**", "/assets/**", "/tinymce/**")
+                        .requestMatchers("/", "user/*", "/api/calendar/**", "/dashboard", "/register", "/login", "/WEB-INF/views/**", "/error", "/css/**", "/js/**", "/assets/**", "/tinymce/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated()
@@ -38,20 +37,6 @@ public class SecurityConfiguration {
                 )
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
-//        httpSecurity.csrf()
-//                .disable()
-//                .authorizeHttpRequests()
-//                .requestMatchers("")
-//                .permitAll()
-//                .anyRequest()
-//                .authenticated()
-//                .and()
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .authenticationProvider(authenticationProvider)
-//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }

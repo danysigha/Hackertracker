@@ -2,11 +2,15 @@ package com.hackertracker.security.topic;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hackertracker.security.problem.Problem;
-import com.hackertracker.security.problem.TagProblem;
 import com.hackertracker.security.problem.TopicProblem;
-import com.hackertracker.security.tag.Tag;
-import jakarta.persistence.*;
-
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Table;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -14,10 +18,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-//import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
-//import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
-//import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 
 @Entity
 @Table(name = "topic")

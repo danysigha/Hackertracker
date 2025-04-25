@@ -2,12 +2,18 @@ package com.hackertracker.security.user;
 
 import com.hackertracker.security.Schedule.Weekday;
 import com.hackertracker.security.Schedule.WeekdayName;
-import jakarta.persistence.*;
-import org.hibernate.annotations.ColumnDefault;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import java.util.Date;
 import java.util.Objects;
 
 @Entity

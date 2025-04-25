@@ -5,13 +5,16 @@ import com.hackertracker.security.tag.Tag;
 import com.hackertracker.security.topic.Topic;
 import com.hackertracker.security.user.UserProblemAttempt;
 import com.hackertracker.security.user.UserProblemPriority;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-//import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
-//import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
-//import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,7 +22,6 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name="problem")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-//@Indexed
 public class Problem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,18 +29,15 @@ public class Problem {
     private int problemId;
 
     @Column(name = "public_problem_id", unique = true, nullable = false)
-//    @KeywordField
     private String publicProblemId;
 
     @Column(name = "question_title", nullable = false)
-//    @FullTextField
     private String questionTitle;
 
     @Column(name = "difficulty_level", nullable = false)
     private String difficultyLevel;
 
     @Column(name = "page_url", nullable = false)
-//    @FullTextField
     private String pageUrl;
 
     @JsonManagedReference
@@ -143,26 +142,6 @@ public class Problem {
     public void setProblemPriorities(Set<UserProblemPriority> problemPriorities) {
         this.problemPriorities = problemPriorities;
     }
-// Normally you do not have to add or remove tags
-    // Methods to manage the relationship
-//    public void addTag(Tag tag) {
-//        TagProblem problemTag = new TagProblem(this, tag);
-//        problemTags.add(problemTag);
-//        tag.getProblemTags().add(problemTag);
-//    }
-//
-//    public void removeTag(Tag tag) {
-//        for (Iterator<TagProblem> iterator = problemTags.iterator(); iterator.hasNext();) {
-//            TagProblem problemTag = iterator.next();
-//            if (problemTag.getTag().getTagId() == tag.getTagId()) {
-//                iterator.remove();
-//                tag.getProblemTags().remove(problemTag);
-//                problemTag.setProblem(null);
-//                problemTag.setTag(null);
-//                break; // Exit loop after finding and removing the tag
-//            }
-//        }
-//    }
 
     /**
      * Get all tags for this problem
@@ -177,28 +156,6 @@ public class Problem {
                 .collect(Collectors.toList());
     }
 
-
-    // Normally you do not have to add or remove topics
-
-    // Methods to manage the relationship
-//    public void addTopic(Topic topic) {
-//        TopicProblem problemTopic = new TopicProblem(this, topic);
-//        problemTopics.add(problemTopic);
-//        topic.getProblemTopics().add(problemTopic);
-//    }
-//
-//    public void removeTopic(Topic topic) {
-//        for (Iterator<TopicProblem> iterator = problemTopics.iterator(); iterator.hasNext();) {
-//            TopicProblem problemTopic = iterator.next();
-//            if (problemTopic.getTopic().getTopicId() == topic.getTopicId()) {
-//                iterator.remove();
-//                topic.getProblemTopics().remove(problemTopic);
-//                problemTopic.setProblem(null);
-//                problemTopic.setTopic(null);
-//                break; // Exit loop after finding and removing the tag
-//            }
-//        }
-//    }
 
     /**
      * Get all topics for this problem

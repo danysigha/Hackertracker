@@ -1,9 +1,3 @@
-<%-- 
-    Document   : register
-    Created on : Mar 26, 2025, 9:48:57 PM
-    Author     : danysigha
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 

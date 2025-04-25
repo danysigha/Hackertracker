@@ -7,9 +7,7 @@ import jakarta.persistence.criteria.Predicate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
@@ -65,11 +63,6 @@ public class UserProblemPriorityDAO {
         Session session = sessionFactory.openSession();
 
         try {
-//            Query<UserProblemPriority> q = session.createQuery(
-//                    "from UserProblemPriority where user=:user order by priorityScore desc",
-//                    UserProblemPriority.class
-//            );
-
             Query<UserProblemPriority> q = session.createNamedQuery("challenge.orderByPriority", UserProblemPriority.class);
             q.setMaxResults(1);
 

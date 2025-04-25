@@ -4,7 +4,6 @@ package com.hackertracker.security.dao;
 import com.hackertracker.security.problem.Problem;
 import com.hackertracker.security.user.User;
 import com.hackertracker.security.user.UserProblemAttempt;
-import com.hackertracker.security.user.UserProblemPriority;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -12,11 +11,9 @@ import jakarta.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**

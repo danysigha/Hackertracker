@@ -43,9 +43,6 @@ public class PriorityCalculator {
         this.userDao = userDao;
     }
 
-    // Precision factor to reduce ties (multiply final score by this value)
-//    private static final int PRECISION_FACTOR = 1000;
-
     /**
      * Calculate priority score for a problem/user combination
      *
@@ -72,19 +69,11 @@ public class PriorityCalculator {
                 (TIME_SPENT_WEIGHT * timeSpentScore) +
                 (RECENCY_WEIGHT * recencyScore);
 
-        // Add a minor unique factor to prevent ties
         double uniqueFactor = generateUniqueFactor(problem);
 
-        // Return double score with higher precision to reduce ties (0-100)
-//        return (weightedScore * PRECISION_FACTOR) + uniqueFactor;
         return Math.min(100, Math.max(0, weightedScore)) + (uniqueFactor / 100);
 
-
-
-        // Return integer score (0-100)
-        // return (int) Math.round(weightedScore);
     }
-
 
 
     /**
@@ -112,25 +101,6 @@ public class PriorityCalculator {
             return 50; // Default middle value
         }
     }
-
-//    private int getTopicRankScore(Problem problem) {
-//        List<TopicDTO> topics = problem.getTopics();
-//        if (topics.isEmpty()) {
-//            return 50; // Default middle value if no topics
-//        }
-//
-//        // Find the highest rank among all topics associated with this problem
-//        OptionalInt highestRank = topics.stream()
-//                .mapToInt(TopicDTO::getTopicRank)
-//                .max();
-//
-//        if (highestRank.isPresent()) {
-//            // Normalize to 0-100 scale (assuming ranks are 1-MAX_TOPIC_RANK)
-//            return (int) (highestRank.getAsInt() * 100.0 / MAX_TOPIC_RANK);
-//        } else {
-//            return 50; // Default middle value
-//        }
-//    }
 
 
     /**
@@ -173,25 +143,6 @@ public class PriorityCalculator {
         // Normalize to 0-100
         return (int) ((latestRating * 100.0) / MAX_DIFFICULTY_RATING);
     }
-//    private int getDifficultyScore(Problem problem, User user) {
-//        List<UserProblemAttempt> attempts = user.getListAttempts().stream()
-//                .filter(attempt -> attempt.getProblem().equals(problem))
-//                .toList();
-//
-//        if (attempts.isEmpty()) {
-//            // If no attempts yet, use problem's difficulty level
-//            return convertDifficultyLevelToScore(problem.getDifficultyLevel());
-//        }
-//
-//        // Use the most recent attempt's difficulty rating
-//        byte latestRating = attempts.stream()
-//                .max((a1, a2) -> a1.getEndTime().compareTo(a2.getEndTime()))
-//                .map(UserProblemAttempt::getDifficultyRating)
-//                .orElse((byte)5); // Default to medium difficulty
-//
-//        // Normalize to 0-100
-//        return (int) ((latestRating * 100.0) / MAX_DIFFICULTY_RATING);
-//    }
 
 
     /**
@@ -317,34 +268,6 @@ public class PriorityCalculator {
 
         return validAttempts > 0 ? totalMinutes / validAttempts : 0;
     }
-//    private int getRecencyScore(Problem problem, User user) {
-//        List<UserProblemAttempt> attempts = user.getListAttempts().stream()
-//                .filter(attempt -> attempt.getProblem().equals(problem))
-//                .toList();
-//
-//        if (attempts.isEmpty()) {
-//            return 100; // Never attempted = highest priority
-//        }
-//
-//        // Find latest attempt
-//        Date latestAttempt = attempts.stream()
-//                .map(UserProblemAttempt::getEndTime)
-//                .max(Date::compareTo)
-//                .orElse(null);
-//
-//        if (latestAttempt == null) {
-//            return 100; // No completed attempts = highest priority
-//        }
-//
-//        // Calculate days since latest attempt
-//        long daysSince = ChronoUnit.DAYS.between(
-//                latestAttempt.toInstant(),
-//                Instant.now());
-//
-//        // More days = higher score (capped at RECENCY_DAYS_MAX)
-//        long cappedDays = Math.min(daysSince, RECENCY_DAYS_MAX);
-//        return (int) ((cappedDays * 100.0) / RECENCY_DAYS_MAX);
-//    }
 
 
     /**
@@ -370,15 +293,9 @@ public class PriorityCalculator {
                 (TIME_SPENT_WEIGHT * timeSpentScore) +
                 (RECENCY_WEIGHT * recencyScore);
 
-        // Add a minor unique factor to prevent ties
         double uniqueFactor = generateUniqueFactor(problem);
 
-        // Return double score with higher precision to reduce ties
-//        return (weightedScore * PRECISION_FACTOR) + uniqueFactor;
         return Math.min(100, Math.max(0, weightedScore)) + (uniqueFactor / 100);
-
-        // Return integer score (0-100)
-        // return (int) Math.round(weightedScore);
     }
 
 

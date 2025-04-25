@@ -6,7 +6,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
@@ -43,11 +42,8 @@ public class TagDAO {
 
     public List<Tag> getTagByName(String tagName) {
         Session session = sessionFactory.openSession();
-//        Query<Tag> q = session.createQuery("from Tag where tagName=:tagName", Tag.class);
         Query<Tag> q = session.createQuery("from Tag where tagName LIKE :tagName", Tag.class);
         q.setParameter("tagName", "%" + tagName + "%");
-//        q.setParameter("tagName", tagName);
-//        return q.uniqueResult();
         return q.list();
     }
 

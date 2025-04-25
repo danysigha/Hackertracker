@@ -96,9 +96,6 @@ public class HomeController {
 
             String token = authResponse.getToken(); // Assuming your authenticate method returns the token
 
-            // Add token to model for Thymeleaf/JSP to use
-            //model.addAttribute("jwtToken", token);
-
             // Or set it as a cookie
             Cookie jwtCookie = new Cookie("jwtToken", token);
             jwtCookie.setPath("/");

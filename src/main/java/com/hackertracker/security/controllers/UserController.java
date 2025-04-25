@@ -5,12 +5,10 @@ import com.hackertracker.security.user.User;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -18,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
  * @author danysigha
  */
 
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 @Controller
 public class UserController {
 
@@ -30,20 +28,23 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @ResponseBody
     @GetMapping("/read")
-    public User getUserDetails(@AuthenticationPrincipal User user) {
-        return userDao.getUserByIdWithCollections(userDao.getUserByUserName(user.getUserName()).getUserId());
+    public String getUserDetails(@AuthenticationPrincipal User user, ModelMap mp) {
+        User fullUserDetails = userDao.getUserByUserName(user.getUserName());
+        mp.addAttribute("user", fullUserDetails);
+        return "profile";
     }
 
-    @ResponseBody
+
     @PostMapping("/update")
-    public User updateUserDetails(
+    //public User updateUserDetails(
+    public String updateUserDetails(
             @RequestParam(value = "firstName") String firstName,
             @RequestParam(value = "lastName") String lastName,
             @RequestParam(value = "userName") String userName,
             @RequestParam(value = "password", required = false) String password,
-            @AuthenticationPrincipal User user
+            @AuthenticationPrincipal User user,
+            ModelMap mp
     ) {
         // Get existing user
         User existingUser = userDao.getUserByUserName(user.getUserName());
@@ -63,8 +64,12 @@ public class UserController {
         // Save updates
         userDao.updateUser(existingUser);
 
-        // Fetch and return updated user (using new username if it changed)
-        return userDao.getUserByUserName(userName);
+        // Add success message
+        mp.addAttribute("message", "Profile updated successfully");
+        mp.addAttribute("user", existingUser);
+
+        return "redirect:/";
+
     }
 
     @PostMapping("/delete")

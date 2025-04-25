@@ -7,7 +7,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -95,16 +94,6 @@ public class UserDAO {
             return q.uniqueResult();
         }
     }
-
-//    public UserDTO getUserDtoByUserName(String userName, UserProblemService userProblemService) {
-//        try (Session session = sessionFactory.openSession()) {
-//            Query<User> q = session.createQuery("from User where userName=:userName", User.class);
-//            q.setParameter("userName", userName);
-//            User user = q.uniqueResult();
-//            return new UserDTO(user.getUserId(), user.getPublicId(), user.getUserName(), user.getFirstName(),
-//                    user.getLastName(), user.getPassword(), user.getEmail(), user.getRole(), userProblemService.getUserAttempts(user));
-//        }
-//    }
 
     /**
      * Get a User entity by email
