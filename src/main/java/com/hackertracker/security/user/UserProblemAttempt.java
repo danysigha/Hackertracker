@@ -15,7 +15,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 public class UserProblemAttempt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "attempt_id")
+    @Column(name = "attempt_id", nullable = false)
     private int attemptId;
 
     @Column(name = "difficulty_rating", nullable = false)
@@ -24,20 +24,20 @@ public class UserProblemAttempt {
     @Column(name = "notes")
     private String notes;
 
-    @Column(name = "start_time", nullable = false)
+    @Column(name = "start_time")
     private Date startTime;
 
-    @Column(name = "end_time", nullable = false)
+    @Column(name = "end_time")
     private Date endTime;
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "problem_id")
+    @JoinColumn(name = "problem_id", nullable = false)
     private Problem problem;
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     public UserProblemAttempt(Problem problem, User user, byte difficultyRating, Date startTime, Date endTime, String notes) {

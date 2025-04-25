@@ -67,24 +67,19 @@ public class PriorityController {
             UserProblemAttempt attempt;
 
             if(questionId == null || !fetchById) {
-                problem = priorityService.getNextTopPriorityProblemForUser(myUser);
-                attempt = userProblemAttemptDao.getLatestAttempt(problem, myUser);
+                // Get a problem ID first
+                Problem basicProblem = priorityService.getNextTopPriorityProblemForUser(myUser);
+                // Then fetch it with all collections
+                problem = problemDao.getProblemByIdWithCollections(basicProblem.getProblemId());
             } else {
-                problem = problemDao.getProblemById(Integer.parseInt(questionId));
-                attempt = userProblemAttemptDao.getLatestAttempt(problem, myUser);
+                problem = problemDao.getProblemByIdWithCollections(Integer.parseInt(questionId));
             }
 
-//            if (problem == null) {
-//                // Return an appropriate error response or fallback
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                        .body(new ErrorResponse("Problem not found"));
-//            }
+            attempt = userProblemAttemptDao.getLatestAttempt(problem, myUser);
 
-            // Convert to DTO to break circular references
             return new ProblemWithAttemptDTO(problem, attempt);
         } catch (Exception e) {
             e.printStackTrace();
-            // Return an empty DTO or handle the error as appropriate
             return new ProblemWithAttemptDTO(null, null);
         }
     }

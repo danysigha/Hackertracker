@@ -77,7 +77,7 @@ public class HomeController {
 
         model.addAttribute("user", user);
 
-        return "home";
+        return "redirect:/login";
     }
 
     @GetMapping("/login")
@@ -114,11 +114,17 @@ public class HomeController {
 
             model.addAttribute("user", user);
 
-            return "home";
+            return "redirect:/dashboard";
         } catch (Exception e) {
             bindingResult.reject("invalid.credentials", "Invalid username or password");
             return "login";
         }
+    }
+
+    @GetMapping("/dashboard")
+    public String dashboard(HttpServletRequest request) {
+        // You could check authentication here if needed
+        return "dashboard"; // Return the dashboard view
     }
 
     // try the proper JSTL way again please

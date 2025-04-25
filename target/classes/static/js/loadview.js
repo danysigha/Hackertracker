@@ -179,7 +179,7 @@ function loadQuestion(questionId = null, addToPast = true) {
                 $("#difficultySlider").attr("value", 3);
                 $("#difficultySlider").val(3).trigger('input');
 
-                $("#timerDisplay").text("--:--:--");
+                $("#timerDisplay").text("00:00:00");
 
                 $("#startTimeDisplay").text("--:--:--");
                 originalStartDate = null;
@@ -364,7 +364,25 @@ function updateNavigationButtons() {
 }
 
 // Initial setup
+// $(document).ready(function() {
+//     // Load the initial question
+//     loadQuestion(); // Don't add to history since it's the first one
+// });
+
+// Initial setup
 $(document).ready(function() {
-    // Load the initial question
-    loadQuestion(); // Don't add to history since it's the first one
+    // Small delay to ensure cookie is fully processed
+    setTimeout(function() {
+        // console.log("we outsiiiiiiddddde!");
+        const token = getJwtToken();
+        if (token) {
+            // console.log("we insiiiiiiddddde!");
+            // Token found, load question
+            loadQuestion();
+            // console.log("supposedly called loadQuestion");
+        } else {
+            // No token, redirect to login
+            window.location.href = '/login';
+        }
+    }, 100); // Even a short 100ms delay can help
 });
