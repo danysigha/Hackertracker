@@ -44,6 +44,10 @@ public class User implements UserDetails {
     private String email;
     @Enumerated(EnumType.STRING)
     private Role role;
+    @Column(name = "token_version")
+    private int tokenVersion = 0;
+    @Column(name = "token_version_updated_at")
+    private Date tokenVersionUpdatedAt;
 
     public User(int userId, String publicId, String firstName, String lastName, String userName, String password, String email, Role role) {
         this.userId = userId;
@@ -56,7 +60,12 @@ public class User implements UserDetails {
         this.role = role;
     }
 
+
     public User() {}
+
+    public int getTokenVersion() {
+        return tokenVersion;
+    }
 
     public void setUserId(int userId) {
         this.userId = userId;
@@ -108,6 +117,11 @@ public class User implements UserDetails {
 
     public String getEmail() {
         return email;
+    }
+
+    public void incrementTokenVersion() {
+        this.tokenVersion++;
+        this.tokenVersionUpdatedAt = new Date();
     }
 
     @PrePersist

@@ -12,6 +12,7 @@ import com.hackertracker.security.dao.UserProblemPriorityDAO;
 import com.hackertracker.security.user.User;
 import com.hackertracker.security.validator.UserLoginValidator;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -96,7 +97,7 @@ public class HomeController {
             String token = authResponse.getToken(); // Assuming your authenticate method returns the token
 
             // Add token to model for Thymeleaf/JSP to use
-            model.addAttribute("jwtToken", token);
+            //model.addAttribute("jwtToken", token);
 
             // Or set it as a cookie
             Cookie jwtCookie = new Cookie("jwtToken", token);
@@ -112,6 +113,23 @@ public class HomeController {
             bindingResult.reject("invalid.credentials", "Invalid username or password");
             return "login";
         }
+    }
+
+    @GetMapping("/logout")
+    public String logoutUser(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal User user) {
+
+        // Delete the JWT cookie
+        Cookie cookie = new Cookie("jwtToken", "");  // Empty value
+        cookie.setPath("/");
+        cookie.setMaxAge(0);  // Expires immediately
+        cookie.setHttpOnly(false);
+        response.addCookie(cookie);
+
+        User myUser = userDao.getUserByUserName(user.getUserName());
+        myUser.incrementTokenVersion();
+        userDao.updateUser(myUser);
+
+        return "redirect:/login";
     }
 
     @GetMapping("/dashboard")

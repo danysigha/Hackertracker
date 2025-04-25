@@ -1,9 +1,12 @@
 package com.hackertracker.security.config;
 
+import com.hackertracker.security.dao.UserDAO;
+import com.hackertracker.security.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +23,14 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY = "d3b07384d113edec49eaa6238ad5ff00f5d1a6454c8e3fbef0d7c3bfcf4b9d7f";
+    @Value("${jwt.secret}")
+    private String secretKey;
+
+    private final UserDAO userDao;
+
+    public JwtService(UserDAO userDao) {
+        this.userDao = userDao;
+    }
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -39,17 +49,27 @@ public class JwtService {
             Map<String, Object> extraClaims,
             UserDetails userDetails
     ) {
+        User user = userDao.getUserByUserName(userDetails.getUsername());
+
         return Jwts.builder()
                 .subject(userDetails.getUsername())
+                .claim("tokenVersion", user.getTokenVersion())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
                 .signWith(getSigninKey())
                 .compact();
     }
 
      public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+
+         // Get the token version from the JWT
+         Integer tokenVersion = extractClaim(token, claims -> claims.get("tokenVersion", Integer.class));
+
+         // Get the user from your DAO
+         User user = userDao.getUserByUserName(username);
+
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token) && tokenVersion != null && tokenVersion == user.getTokenVersion();
      }
 
     private boolean isTokenExpired(String token) {
@@ -75,7 +95,7 @@ public class JwtService {
 
     private SecretKey getSigninKey() {
         byte[] bytes = Base64.getDecoder()
-                .decode(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+                .decode(secretKey.getBytes(StandardCharsets.UTF_8));
         return new SecretKeySpec(bytes, "HmacSHA256");
     }
 }

@@ -6,15 +6,27 @@ let futureQuestions = [];
 let currentQuestionId = null;
 let originalStartDate = null;
 let originalEndDate = null;
+let cal = initializeCalendar();
 
 
 // If using cookies
+// function getJwtToken() {
+//     const cookies = document.cookie.split(';');
+//     for (let cookie of cookies) {
+//         const [name, value] = cookie.trim().split('=');
+//         if (name === 'jwtToken') {
+//             return value;
+//         }
+//     }
+//     return null;
+// }
+
 function getJwtToken() {
     const cookies = document.cookie.split(';');
-    for (let cookie of cookies) {
-        const [name, value] = cookie.trim().split('=');
-        if (name === 'jwtToken') {
-            return value;
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.startsWith('jwtToken=')) {
+            return cookie.substring('jwtToken='.length, cookie.length);
         }
     }
     return null;
@@ -264,7 +276,6 @@ $("#addAttemptBtn").on("click", function() {
         ajaxData.endTime = null;
     }
 
-
     console.log("startTime", ajaxData.startTime);
     console.log("endTime", ajaxData.endTime);
 
@@ -329,6 +340,7 @@ $("#addAttemptBtn").on("click", function() {
             console.log("loading new question!!!! calling loadQuestion with problem id and addToPast = true");
             console.log(data);
             loadQuestion(data.problemId);
+            setTimeout(function() { loadDataAndDisplayCalendarData(cal); }, 100);
         },
         error: function(xhr, status, error) {
             console.error("Error response:", {
@@ -379,6 +391,7 @@ $(document).ready(function() {
             // console.log("we insiiiiiiddddde!");
             // Token found, load question
             loadQuestion();
+            loadDataAndDisplayCalendarData(cal);
             // console.log("supposedly called loadQuestion");
         } else {
             // No token, redirect to login

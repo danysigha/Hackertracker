@@ -1,4 +1,99 @@
-function loadCalendar() {
+function initializeCalendar() {
+    return new CalHeatmap();
+}
+
+function displayCalendar(cal, processedData, startDate, endDate) {
+
+// Get the button element by ID
+    const forwardButton = document.getElementById('navigation-forward');
+    const backwardButton = document.getElementById('navigation-backward');
+
+// Add a click event listener to the button
+    backwardButton.addEventListener('click', function() {
+        cal.previous(7);
+    });
+
+    forwardButton.addEventListener('click', function() {
+        cal.next(7);
+    });
+
+    cal.on('minDateReached', () => {
+        backwardButton.style.opacity = '0.5';
+        backwardButton.style.cursor = 'not-allowed';
+        backwardButton.disabled = true;
+    });
+
+    cal.on('maxDateReached', () => {
+        forwardButton.style.opacity = '0.5';
+        forwardButton.style.cursor = 'not-allowed';
+        forwardButton.disabled = true;
+    });
+
+    cal.on('minDateNotReached', () => {
+        backwardButton.style.opacity = '1';
+        backwardButton.style.cursor = 'pointer';
+        backwardButton.disabled = false;
+    });
+
+    cal.on('maxDateNotReached', () => {
+        forwardButton.style.opacity = '1';
+        forwardButton.style.cursor = 'pointer';
+        forwardButton.disabled = false;
+    });
+
+
+// Using the paint method with explicit timezone settings
+    cal.paint({
+            itemSelector: "#cal-heatmap", // Make sure this element exists
+            data: {
+                source: processedData,
+                x: 'date',
+                y: 'value'
+            },
+            date: {
+                min: startDate,
+                max: endDate,
+                // Explicitly set timezone to UTC
+                timezone: 'UTC'
+            },
+            range: 7,
+            domain: {
+                type: "day",
+                gutter: 16,
+                label: {
+                    text: 'YYYY-MM-DD',
+                    textAlign: 'start'
+                }
+            },
+            subDomain: {
+                type: 'hour',
+                label: 'HH:00',
+                width: 35,
+                height: 35,
+                radius: 4
+            },
+            scale: {
+                color: {
+                    scheme: 'Greens',
+                    type: 'linear',
+                    domain: [0, 4]
+                }
+            }
+        },
+
+        [
+            [
+                Legend,
+                {
+                    label: 'Number of questions solved',
+                    itemSelector: '#legend-label',
+                },
+            ]
+        ]);
+}
+
+
+function loadDataAndDisplayCalendarData(cal) {
     $.ajax({
         url: "/api/calendar/update",
         method: "GET",
@@ -38,105 +133,8 @@ function loadCalendar() {
             const startDate = new Date(minTimestamp);
             const endDate = new Date(maxTimestamp);
 
+            displayCalendar(cal, processedData, startDate, endDate);
 
-// Debug: Check April 17 data after timezone adjustment
-// <%--console.log('Timezone-adjusted April 17 data:');--%>
-// <%--processedData--%>
-// <%--    .filter(item => item.date.includes('2025-04-17'))--%>
-// <%--    .forEach(item => {--%>
-// <%--        const origDate = new Date(item.date);--%>
-// <%--        console.log(`${item.date} (local hour: ${origDate.getHours()}:00) - value: ${item.value}`);--%>
-// <%--    });--%>
-
-
-            const cal = new CalHeatmap();
-
-// Get the button element by ID
-            const forwardButton = document.getElementById('navigation-forward');
-            const backwardButton = document.getElementById('navigation-backward');
-
-// Add a click event listener to the button
-            backwardButton.addEventListener('click', function() {
-                cal.previous(7);
-            });
-
-            forwardButton.addEventListener('click', function() {
-                cal.next(7);
-            });
-
-            cal.on('minDateReached', () => {
-                backwardButton.style.opacity = '0.5';
-                backwardButton.style.cursor = 'not-allowed';
-                backwardButton.disabled = true;
-            });
-
-            cal.on('maxDateReached', () => {
-                forwardButton.style.opacity = '0.5';
-                forwardButton.style.cursor = 'not-allowed';
-                forwardButton.disabled = true;
-            });
-
-            cal.on('minDateNotReached', () => {
-                backwardButton.style.opacity = '1';
-                backwardButton.style.cursor = 'pointer';
-                backwardButton.disabled = false;
-            });
-
-            cal.on('maxDateNotReached', () => {
-                forwardButton.style.opacity = '1';
-                forwardButton.style.cursor = 'pointer';
-                forwardButton.disabled = false;
-            });
-
-
-// Using the paint method with explicit timezone settings
-            cal.paint({
-                    itemSelector: "#cal-heatmap", // Make sure this element exists
-                    data: {
-                        source: processedData,
-                        x: 'date',
-                        y: 'value'
-                    },
-                    date: {
-                        min: startDate,
-                        max: endDate,
-                        // Explicitly set timezone to UTC
-                        timezone: 'UTC'
-                    },
-                    range: 7,
-                    domain: {
-                        type: "day",
-                        gutter: 16,
-                        label: {
-                            text: 'YYYY-MM-DD',
-                            textAlign: 'start'
-                        }
-                    },
-                    subDomain: {
-                        type: 'hour',
-                        label: 'HH:00',
-                        width: 35,
-                        height: 35,
-                        radius: 4
-                    },
-                    scale: {
-                        color: {
-                            scheme: 'Greens',
-                            type: 'linear',
-                            domain: [0, 4]
-                        }
-                    }
-                },
-
-                [
-                    [
-                        Legend,
-                        {
-                            label: 'Number of questions solved',
-                            itemSelector: '#legend-label',
-                        },
-                    ]
-                ]);
         }
     });
 }
@@ -144,12 +142,12 @@ function loadCalendar() {
 
 
 // Initial setup
-$(document).ready(function() {
-    // Small delay to ensure cookie is fully processed
-    setTimeout(function() {
-        loadCalendar();
-    }, 100); // Even a short 100ms delay can help
-});
+// $(document).ready(function() {
+//     // Small delay to ensure cookie is fully processed
+//     setTimeout(function() {
+//         loadCalendar();
+//     }, 100); // Even a short 100ms delay can help
+// });
 
 
 
