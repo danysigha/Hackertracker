@@ -1,4 +1,4 @@
-package com.hackertracker.security.user;
+package com.hackertracker.security.controllers;
 
 import com.hackertracker.security.dto.ProblemWithAttemptDTO;
 import com.hackertracker.security.dao.ProblemDAO;
@@ -7,11 +7,9 @@ import com.hackertracker.security.dao.UserProblemAttemptDAO;
 import com.hackertracker.security.dao.UserProblemPriorityDAO;
 import com.hackertracker.security.problem.Problem;
 import com.hackertracker.security.problem.UserProblemPriorityService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.hackertracker.security.user.User;
+import com.hackertracker.security.user.UserProblemAttempt;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,8 +21,6 @@ import org.jsoup.safety.Safelist;
 
 import java.time.Instant;
 import java.util.Date;
-import java.util.List;
-import java.text.SimpleDateFormat;
 
 
 /**
@@ -83,22 +79,6 @@ public class PriorityController {
             return new ProblemWithAttemptDTO(null, null);
         }
     }
-//    public ProblemWithAttemptDTO getPrioritizedProblemsOrById( @RequestParam(value = "questionId", required = false) String questionId, @RequestParam(value = "fetchById", required = false) boolean fetchById,
-//            @AuthenticationPrincipal User user) {
-//
-//        User myUser = userDao.getUserByUserName(user.getUserName());
-//
-//        Problem problem = priorityService.getNextTopPriorityProblemForUser(myUser);
-//        UserProblemAttempt attempt = userProblemAttemptDao.getLatestAttempt(problem, myUser);
-//
-//        if(questionId == null || !fetchById){
-//            return new ProblemWithAttemptDTO(problem, attempt);
-//        } else {
-//            Problem problemResult = problemDao.getProblemById(Integer.parseInt(questionId));
-//            UserProblemAttempt attemptResult = userProblemAttemptDao.getLatestAttempt(problemResult, myUser);
-//            return new ProblemWithAttemptDTO(problemResult, attemptResult);
-//        }
-//    }
 
     /**
      * Manually trigger priority recalculation for the current user
