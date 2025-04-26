@@ -112,22 +112,22 @@ public class HomeController {
         }
     }
 
-    @GetMapping("/logout")
-    public String logoutUser(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal User user) {
-
-        // Delete the JWT cookie
-        Cookie cookie = new Cookie("jwtToken", "");  // Empty value
-        cookie.setPath("/");
-        cookie.setMaxAge(0);  // Expires immediately
-        cookie.setHttpOnly(false);
-        response.addCookie(cookie);
-
-        User myUser = userDao.getUserByUserName(user.getUserName());
-        myUser.incrementTokenVersion();
-        userDao.updateUser(myUser);
-
-        return "redirect:/login";
-    }
+//    @GetMapping("/logout")
+//    public String logoutUser(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal User user) {
+//
+//        // Delete the JWT cookie
+//        Cookie cookie = new Cookie("jwtToken", "");  // Empty value
+//        cookie.setPath("/");
+//        cookie.setMaxAge(0);  // Expires immediately
+//        cookie.setHttpOnly(false);
+//        response.addCookie(cookie);
+//
+//        User myUser = userDao.getUserByUserName(user.getUserName());
+//        myUser.incrementTokenVersion();
+//        userDao.updateUser(myUser);
+//
+//        return "redirect:/login";
+//    }
 
     @GetMapping("/dashboard")
     public String dashboard(HttpServletRequest request) {
