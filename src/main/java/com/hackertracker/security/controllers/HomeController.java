@@ -134,4 +134,10 @@ public class HomeController {
         // You could check authentication here if needed
         return "dashboard"; // Return the dashboard view
     }
+
+    @GetMapping("/progress")
+    public String progress(HttpServletRequest request) {
+        // You could check authentication here if needed
+        return "progress"; // Return the progress view
+    }
 }

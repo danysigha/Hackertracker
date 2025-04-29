@@ -17,12 +17,6 @@
         <nav>
             <img class="logo" src="/assets/hackertracker.png" alt="HackerTracker Logo">
 
-            <div class="menu">
-                <a href="#why">Why learn DSA?</a>
-                <a href="#demo">Demo</a>
-                <a href="#instructions">Instructions</a>
-            </div>
-
             <div class="navigation-buttons">
                 <a href="login"> <button> Log In </button> </a>
                 <a href="register"> <button> Register </button> </a>

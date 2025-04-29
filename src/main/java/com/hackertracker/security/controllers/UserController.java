@@ -68,7 +68,7 @@ public class UserController {
         mp.addAttribute("message", "Profile updated successfully");
         mp.addAttribute("user", existingUser);
 
-        return "redirect:/";
+        return "redirect:/user/read";
 
     }
 

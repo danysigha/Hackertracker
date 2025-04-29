@@ -51,8 +51,9 @@ function displayCalendar(cal, processedData, startDate, endDate) {
                 y: 'value'
             },
             date: {
-                min: startDate,
-                max: endDate,
+                start: getPastSunday(new Date()),
+                min: getPastSunday(startDate),
+                max: new Date(getNextSaturday(new Date())),
                 // Explicitly set timezone to UTC
                 timezone: 'UTC'
             },
@@ -133,8 +134,40 @@ function loadDataAndDisplayCalendarData(cal) {
             const startDate = new Date(minTimestamp);
             const endDate = new Date(maxTimestamp);
 
+            console.log(startDate);
+            console.log(endDate);
+
             displayCalendar(cal, processedData, startDate, endDate);
 
         }
     });
 }
+
+
+function getPastSunday(startDay) {
+    // const today = new Date();
+    const dayOfWeek = startDay.getDay(); // 0 is Sunday, 1 is Monday, etc.
+
+    // Calculate how many days to go back to reach Monday
+    const daysToSubtract = dayOfWeek;
+
+    // Create a new date by subtracting those days
+    const pastSunday = new Date(startDay);
+    pastSunday.setDate(startDay.getDate() - daysToSubtract);
+
+    // Reset time to midnight
+    pastSunday.setHours(0, 0, 0, 0);
+
+    return pastSunday;
+}
+
+function getNextSaturday(startDay) {
+    const sunday = getPastSunday(startDay);
+    const nextSunday = new Date(sunday);
+    nextSunday.setDate(sunday.getDate() + 6);
+    return nextSunday;
+}
+
+// Example usage
+// const lastMonday = getClosestPastMonday();
+// console.log(lastMonday);
