@@ -2,7 +2,7 @@ function initializeCalendar() {
     return new CalHeatmap();
 }
 
-function displayCalendar(cal, processedData, startDate, endDate) {
+function displayCalendar(cal, processedData, startDate) {
 
 // Get the button element by ID
     const forwardButton = document.getElementById('navigation-forward');
@@ -104,41 +104,47 @@ function loadDataAndDisplayCalendarData(cal) {
         },
         success: function(data) {
             // Process the data to adjust for timezone
-            const processedData = data.map(item => {
-                // Parse date as local time
-                // console.log(item.date);
-                const fixedDateString = item.date + ":00:00Z";
-                const localDate = new Date(fixedDateString);
+            console.log("inside loadDataAndDisplayCalendarData");
+            console.log(data);
 
-                // Get timezone offset in hours
-                const tzOffset = localDate.getTimezoneOffset() / 60;
+            if(data.length === 0) {
+                displayCalendar(cal, data, new Date());
+            } else {
+                const processedData = data.map(item => {
+                    // Parse date as local time
+                    // console.log(item.date);
+                    const fixedDateString = item.date + ":00:00Z";
+                    const localDate = new Date(fixedDateString);
 
-                // Adjust the hour to compensate for timezone conversion
-                // This keeps the hour in local time when the date is parsed later
-                localDate.setHours(localDate.getHours() - tzOffset);
+                    // Get timezone offset in hours
+                    const tzOffset = localDate.getTimezoneOffset() / 60;
 
-                return {
-                    // Use adjusted ISO string with explicit timezone
-                    date: localDate.toISOString(),
-                    value: item.value,
-                    // Store the timestamp for min/max calculations
-                    timestamp: localDate.getTime()
-                };
-            });
+                    // Adjust the hour to compensate for timezone conversion
+                    // This keeps the hour in local time when the date is parsed later
+                    localDate.setHours(localDate.getHours() - tzOffset);
 
-// Get min and max timestamps for start and end dates
-            const minTimestamp = Math.min(...processedData.map(item => item.timestamp));
-            const maxTimestamp = Math.max(...processedData.map(item => item.timestamp));
+                    return {
+                        // Use adjusted ISO string with explicit timezone
+                        date: localDate.toISOString(),
+                        value: item.value,
+                        // Store the timestamp for min/max calculations
+                        timestamp: localDate.getTime()
+                    };
+                });
 
-// Create Date objects from the timestamps
-            const startDate = new Date(minTimestamp);
-            const endDate = new Date(maxTimestamp);
+                // Get min and max timestamps for start and end dates
+                const minTimestamp = Math.min(...processedData.map(item => item.timestamp));
+                const maxTimestamp = Math.max(...processedData.map(item => item.timestamp));
 
-            console.log(startDate);
-            console.log(endDate);
+                // Create Date objects from the timestamps
+                const startDate = new Date(minTimestamp);
+                //const endDate = new Date(maxTimestamp);
 
-            displayCalendar(cal, processedData, startDate, endDate);
+                console.log(startDate);
+                //console.log(endDate);
 
+                displayCalendar(cal, processedData, startDate);
+            }
         }
     });
 }

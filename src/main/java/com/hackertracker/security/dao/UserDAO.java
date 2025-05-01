@@ -62,15 +62,79 @@ public class UserDAO {
         }
     }
 
+//    /**
+//     * Get a User entity by ID
+//     */
+//    @Transactional(readOnly = true)
+//    public User getUserByIdWithCollections(int userId) {
+//        Session session = sessionFactory.openSession();
+//        User user = session.get(User.class, userId);
+//        Hibernate.initialize(user.getListAttempts());
+//        Hibernate.initialize(user.getUserSchedule());
+//        return user;
+//    }
+
     /**
-     * Get a User entity by ID
+     * Get a User entity by ID with collections initialized
      */
-    @Transactional(readOnly = true)
+    /**
+     * Get a User entity by ID with collections initialized
+     */
     public User getUserByIdWithCollections(int userId) {
         Session session = sessionFactory.openSession();
-        User user = session.get(User.class, userId);
-        Hibernate.initialize(user.getListAttempts());
-        return user;
+        try {
+            User user = session.get(User.class, userId);
+
+            if (user != null) {
+                // Force initialization of collections while session is still open
+                Hibernate.initialize(user.getListAttempts());
+                Hibernate.initialize(user.getListProblemPriorities());
+                Hibernate.initialize(user.getUserSchedule());
+            }
+
+            return user;
+        } finally {
+            session.close(); // Make sure to close the session
+        }
+    }
+//    @Transactional(readOnly = true)
+//    public User getUserByIdWithCollections(int userId) {
+//        Session session = sessionFactory.getCurrentSession();
+//        User user = session.get(User.class, userId);
+//
+//        if (user != null) {
+//            Hibernate.initialize(user.getListAttempts());
+//            Hibernate.initialize(user.getListProblemPriorities());
+//            Hibernate.initialize(user.getUserSchedule());
+//        }
+//
+//        return user;
+//    }
+
+    /**
+     * Get a User entity by username with schedule
+     */
+    @Transactional(readOnly = true)
+    public User getUserByUsernameWithSchedule(String username) {
+        // Use the current transaction's session rather than opening a new one
+        Session session = sessionFactory.openSession();
+
+        try {
+            // Query directly in this method instead of calling getUserByUserName
+            Query<User> q = session.createQuery("from User where userName=:userName", User.class);
+            q.setParameter("userName", username);
+            User user = q.uniqueResult();
+
+            // Initialize the collections within the same session
+            if (user != null && user.getUserSchedule() != null) {
+                Hibernate.initialize(user.getUserSchedule().getSchedule());
+            }
+
+            return user;
+        }
+        finally {
+            session.close();
+        }
     }
 
     /**

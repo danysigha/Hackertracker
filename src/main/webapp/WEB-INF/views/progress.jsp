@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="/css/baseStyle.css">
     <link rel="stylesheet" href="/css/progressStyle.css">
     <script type="module" src="/js/progressarc.js"></script>
+    <script src="/js/timeseries.js"></script>
+    <script src="/js/rankscript.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>HackerTracker</title>
@@ -108,6 +111,26 @@
                 </div>
             </section>
         </section>
+    </section>
+
+    <section class="topic-section">
+        <h1>Programming Topics Ranking</h1>
+
+        <div class="instruction-box">
+            <h2 style="margin-top: 0; font-size: 18px;">Drag and Drop to Reorder</h2>
+            <p style="margin-bottom: 8px; font-size: 14px;">Drag any topic and drop it in a new position to reorder. The ranks will automatically update.</p>
+            <div id="feedback" class="feedback">Topics reordered successfully!</div>
+        </div>
+
+        <ul id="topicList" class="topic-list">
+            <!-- Topics will be inserted here by JavaScript -->
+        </ul>
+        <section class="topic-navigation-section">
+            <button id="show-topics">Show more topics</button>
+            <button id="hide-topics">Hide topics</button>
+            <button id="show-all-topics">Show all topics</button>
+        </section>
+
     </section>
 </main>
 

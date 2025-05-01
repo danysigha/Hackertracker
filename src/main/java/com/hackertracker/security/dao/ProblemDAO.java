@@ -70,6 +70,33 @@ public class ProblemDAO {
     }
 
     /**
+     * Get number of problem entities
+     */
+    public int getNumberOfProblems() {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Long> query = session.createQuery("select count(*) from Problem", Long.class);
+            Long count = query.uniqueResult();
+            return count.intValue();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    /**
+     * Get number of problem entities by level
+     */
+    public int getNumberOfProblemsByDifficultyLevel(String difficultyLevel) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Long> query = session.createQuery("select count(*) from Problem where difficultyLevel=:difficultyLevel", Long.class);
+            query.setParameter("difficultyLevel", difficultyLevel);
+            Long count = query.uniqueResult();
+            return count.intValue();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    /**
      * Get Problem entities by difficulty level
      */
     public List<Problem> getProblemsByDifficultyLevel(String difficultyLevel) {

@@ -7,12 +7,9 @@ package com.hackertracker.security.controllers;
 
 import com.hackertracker.security.auth.AuthenticationResponse;
 import jakarta.servlet.http.HttpServletResponse;
-import com.hackertracker.security.dao.UserDAO;
-import com.hackertracker.security.dao.UserProblemPriorityDAO;
 import com.hackertracker.security.user.User;
 import com.hackertracker.security.validator.UserLoginValidator;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,16 +29,10 @@ public class HomeController {
     private final UserRegistrationValidator userRegistrationValidator;
     private final UserLoginValidator userLoginValidator;
     private final AuthenticationService authenticationService;
-    private final JwtService jwtService;
-    private final UserDAO userDao;
-    private final UserProblemPriorityDAO userProblemPriorityDao;
 
-    public HomeController(UserLoginValidator userLoginValidator, AuthenticationService authenticationService, JwtService jwtService, UserDAO userDao, UserProblemPriorityDAO userProblemPriorityDao, UserRegistrationValidator userRegistrationValidator) {
+    public HomeController(UserLoginValidator userLoginValidator, AuthenticationService authenticationService, UserRegistrationValidator userRegistrationValidator) {
         this.userLoginValidator = userLoginValidator;
         this.authenticationService = authenticationService;
-        this.jwtService = jwtService;
-        this.userDao = userDao;
-        this.userProblemPriorityDao = userProblemPriorityDao;
         this.userRegistrationValidator = userRegistrationValidator;
     }
 

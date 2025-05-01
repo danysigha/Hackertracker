@@ -2,6 +2,52 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
 function createVisualization() {
 
+    $.ajax({
+        url: "/api/progress/stats",
+        method: "GET",
+        data: {},
+        dataType: "json",
+        xhrFields: {
+            withCredentials: true
+        },
+        success: function(data) {
+            // Progress data
+            const easyProgressData = {
+                total: data.numberOfEasyQuestions,
+                completed: data.numberOfEasyCompletedQuestions,
+                color: "#A8DCAB", // Teal for Easy
+                progressColor: "green"
+            };
+
+            const mediumProgressData = {
+                total: data.numberOfMediumQuestion,
+                completed: data.numberOfMediumCompletedQuestions,
+                color: "#FFDBBB", // Amber for Medium
+                progressColor: "#FFAB00"
+            };
+
+            const hardProgressData = {
+                total: data.numberOfHardQuestions,
+                completed: data.numberOfHardCompletedQuestions,
+                color: "#FF7F7F", // Red for Hard
+                progressColor: "#E53935"
+            };
+
+            // Totals
+            const totalSolved = data.numberOfCompletedQuestions;
+            const attempts = data.numberOfAttempts;
+
+            drawElements(easyProgressData, mediumProgressData, hardProgressData, totalSolved, attempts);
+
+        }
+    });
+
+}
+
+
+
+function drawElements(easyProgressData, mediumProgressData, hardProgressData, totalSolved, attempts) {
+
     d3.select("#container").selectAll("svg").remove();
 
     const container = d3.select("#container");
@@ -31,28 +77,6 @@ function createVisualization() {
     const totalArcEnd = Math.PI * 0.7;
     const totalArcSpan = totalArcEnd - totalArcStart;
 
-    // Progress data
-    const easyProgressData = {
-        total: 38,
-        completed: 12,
-        color: "#A8DCAB", // Teal for Easy
-        progressColor: "green"
-    };
-
-    const mediumProgressData = {
-        total: 100,
-        completed: 50,
-        color: "#FFDBBB", // Amber for Medium
-        progressColor: "#FFAB00"
-    };
-
-    const hardProgressData = {
-        total: 12,
-        completed: 6,
-        color: "#FF7F7F", // Red for Hard
-        progressColor: "#E53935"
-    };
-
     // Calculate arc angles dynamically based on the proportion of problems
     const totalProblems = easyProgressData.total + mediumProgressData.total + hardProgressData.total;
 
@@ -71,9 +95,11 @@ function createVisualization() {
     const hardRatio = hardProgressData.total / totalProblems;
     const hardEndAngle = totalArcEnd; // Ensure it ends exactly at the end point
 
-    // Totals
-    const totalSolved = 83;
-    const attempts = 27;
+    // Calculate progress end angles
+    const easyProgressAngle = easyStartAngle + (easyEndAngle - easyStartAngle) * (easyProgressData.completed / easyProgressData.total);
+    const mediumProgressAngle = mediumStartAngle + (mediumEndAngle - mediumStartAngle) * (mediumProgressData.completed / mediumProgressData.total);
+    const hardProgressAngle = hardStartAngle + (hardEndAngle - hardStartAngle) * (hardProgressData.completed / hardProgressData.total);
+
 
     // Create SVG directly within the container (no d3.create)
     const svg = container.append("svg")
@@ -125,11 +151,6 @@ function createVisualization() {
         .attr("fill", hardProgressData.color);
 
 
-    // Calculate progress end angles
-    const easyProgressAngle = easyStartAngle + (easyEndAngle - easyStartAngle) * (easyProgressData.completed / easyProgressData.total);
-    const mediumProgressAngle = mediumStartAngle + (mediumEndAngle - mediumStartAngle) * (mediumProgressData.completed / mediumProgressData.total);
-    const hardProgressAngle = hardStartAngle + (hardEndAngle - hardStartAngle) * (hardProgressData.completed / hardProgressData.total);
-
     // FORWARD ARCS
 
     // Progress arcs with animation
@@ -179,26 +200,32 @@ function createVisualization() {
         });
 
     // Add completed number in center
-    const progressNumberGroup = svg.append("g")
-        .attr("transform", `translate(${centerX + baseSize * 0.02},${centerY - baseSize * 0.25})`);
+    // const progressNumberGroup = svg.append("g")
+    //     .attr("transform", `translate(${centerX + baseSize * 0.02},${centerY - baseSize * 0.25})`);
 
-    const progressNumber = progressNumberGroup.append("text")
-        .attr("class", "center-label--completed")
-        .attr("text-anchor", "end")
+
+    // Add centered progress number
+    const progressNumberGroup = svg.append("g")
+        .attr("transform", `translate(${centerX},${centerY - baseSize * 0.25})`);
+
+// Create a single text element that will contain both numbers
+    const progressText = progressNumberGroup.append("text")
+        .attr("text-anchor", "middle") // This ensures perfect centering
         .attr("dominant-baseline", "central")
-        .attr("x", 0)
-        .attr("style", `font-size: ${baseSize * 0.25}px`)
+        .attr("y", 0);
+
+// Add completed number as first tspan
+    progressText.append("tspan")
+        .attr("class", "center-label--completed")
+        .attr("style", `font-size: ${baseSize * 0.22}px`)
         .text("0");
 
-// Add total number
-    progressNumberGroup.append("text")
+// Add total number as second tspan
+    progressText.append("tspan")
         .attr("class", "center-label-missing")
-        .attr("text-anchor", "start")
-        .attr("dominant-baseline", "central")
-        .attr("x", 10)
-        .attr("y", 0)
         .attr("style", `font-size: ${baseSize * 0.1}px`)
         .text(`/${totalProblems}`);
+
 
 // "Solved" label
     svg.append("text")
@@ -230,25 +257,6 @@ function createVisualization() {
         .delay(2100)
         .style("opacity", 1);
 
-// Animate progress number
-    const startCount = 0;
-    const duration = 2000;
-
-    const timer = d3.timer(function(elapsed) {
-        const progress = Math.min(1, elapsed / duration);
-        const currentCount = Math.floor(progress * totalSolved);
-        progressNumber.text(currentCount);
-
-        if (progress === 1) timer.stop();
-    });
-
-// Add difficulty labels on the right side with boxes
-    // const rightSideX = centerX + width * 0.40;
-    // const startY = centerY - height * 0.35;
-    // const spacing = height * 0.25;
-    // const boxWidth = width * 0.15;
-    // const boxHeight = height * 0.17;
-    // const boxRadius = 8;
 
     // Add difficulty labels on the right side with boxes
     // Use relative positioning based on the base size for consistency
@@ -383,18 +391,8 @@ function createVisualization() {
         .attr("style", `font-size: ${baseSize * 0.045}px`)
         .text(`/${hardProgressData.total}`);
 
-// Animate count numbers for each difficulty
-    d3.timer(function(elapsed) {
-        const progress = Math.min(1, elapsed / duration);
 
-        easyCount.text(Math.floor(progress * easyProgressData.completed));
-        mediumCount.text(Math.floor(progress * mediumProgressData.completed));
-        hardCount.text(Math.floor(progress * hardProgressData.completed));
-
-        if (progress === 1) return true; // Stop timer
-    });
-
-// Add checkmark icon
+    // Add checkmark icon
     const checkmarkX = centerX - baseSize * 0.2;
     const checkmarkY = centerY - baseSize * 0.035;
     //const strokeWidth = baseSize * 0.01; // 1% of the smallest dimension
@@ -411,290 +409,39 @@ function createVisualization() {
         .duration(500)
         .delay(1500)
         .style("opacity", 1);
+
+    animate(totalSolved, progressText, easyProgressData, mediumProgressData, hardProgressData, easyCount, mediumCount, hardCount);
 }
 
 
+function animate(totalSolved, progressText, easyProgressData, mediumProgressData, hardProgressData, easyCount, mediumCount, hardCount) {
+    // Animate progress number
+    const startCount = 0;
+    const duration = 2000;
 
-function createPredictionVisualization() {
-    // Default values
-    let totalQuestions = 150;
-    let alreadyCompleted = 50;
-    let chart; // Reference to the chart object
+    const progressNumber = progressText.select("tspan:first-child");
 
-    const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const timer = d3.timer(function(elapsed) {
+        const progress = Math.min(1, elapsed / duration);
+        const currentCount = Math.floor(progress * totalSolved);
+        progressNumber.text(currentCount);
 
-    // Initial state
-    let questionsPerDay = {
-        Mon: 1, Tue: 2, Wed: 0, Thu: 0, Fri: 3, Sat: 1, Sun: 0
-    };
-
-    let completedQuestions = {
-        Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0, Sun: 0
-    };
-
-    // Setup the day headers
-    const dayHeadersContainer = document.getElementById('day-headers');
-    daysOfWeek.forEach(day => {
-        const dayHeader = document.createElement('div');
-        dayHeader.className = 'day-header';
-        dayHeader.textContent = day;
-        dayHeadersContainer.appendChild(dayHeader);
+        if (progress === 1) timer.stop();
     });
 
-    // Setup target inputs
-    const targetInputsContainer = document.getElementById('target-inputs');
-    daysOfWeek.forEach(day => {
-        const inputContainer = document.createElement('div');
-        inputContainer.className = 'input-container';
 
-        const input = document.createElement('input');
-        input.type = 'number';
-        input.min = '0';
-        input.value = questionsPerDay[day];
-        input.id = `target-${day}`;
-        input.setAttribute('aria-label', `Target questions for ${day}`);
-        input.addEventListener('input', function() {
-            handleTargetChange(day, this.value, questionsPerDay, completedQuestions);
-        });
+// Animate count numbers for each difficulty
+    d3.timer(function(elapsed) {
+        const progress = Math.min(1, elapsed / duration);
 
-        inputContainer.appendChild(input);
-        targetInputsContainer.appendChild(inputContainer);
-    });
+        easyCount.text(Math.floor(progress * easyProgressData.completed));
+        mediumCount.text(Math.floor(progress * mediumProgressData.completed));
+        hardCount.text(Math.floor(progress * hardProgressData.completed));
 
-    // Setup completion inputs
-    const completionInputsContainer = document.getElementById('completion-inputs');
-    daysOfWeek.forEach(day => {
-        const inputContainer = document.createElement('div');
-        inputContainer.className = 'input-container';
-
-        const input = document.createElement('input');
-        input.type = 'number';
-        input.min = '0';
-        input.value = completedQuestions[day];
-        input.className = 'completion-input';
-        input.id = `completion-${day}`;
-        input.setAttribute('aria-label', `Completed questions for ${day}`);
-        input.addEventListener('input', function() {
-            handleCompletedChange(day, this.value, questionsPerDay, completedQuestions);
-        });
-
-        inputContainer.appendChild(input);
-        completionInputsContainer.appendChild(inputContainer);
-    });
-
-    // Initialize projection chart
-    chart = createChart(totalQuestions, alreadyCompleted);
-
-    // Update chart when button is clicked
-    document.getElementById('update-chart').addEventListener('click', function() {
-        // Get the current schedule from inputs
-        daysOfWeek.forEach(day => {
-            questionsPerDay[day] = parseInt(document.getElementById(`target-${day}`).value) || 0;
-        });
-
-        // Get total goal and already completed values
-        totalQuestions = 150;
-        alreadyCompleted = 50;
-
-        // Update the chart
-        if (chart) {
-            chart.destroy(); // Destroy previous chart if exists
-        }
-        chart = createChart(totalQuestions, alreadyCompleted);
-    });
-
-    // Initialize stats
-    updateStats(questionsPerDay, completedQuestions);
-}
-
-// Handle target change
-function handleTargetChange(day, value, questionsPerDay, completedQuestions) {
-    const numValue = Math.max(0, parseInt(value) || 0);
-    questionsPerDay[day] = numValue;
-    updateStats(questionsPerDay, completedQuestions);
-}
-
-// Handle completed change
-function handleCompletedChange(day, value, questionsPerDay, completedQuestions) {
-    const numValue = Math.max(0, parseInt(value) || 0);
-    completedQuestions[day] = numValue;
-    updateStats(questionsPerDay, completedQuestions);
-}
-
-// Update statistics
-function updateStats(questionsPerDay, completedQuestions) {
-    const weeklyTotal = Object.values(questionsPerDay).reduce((sum, val) => sum + val, 0);
-    const completedTotal = Object.values(completedQuestions).reduce((sum, val) => sum + val, 0);
-    const percentage = weeklyTotal > 0 ? Math.round((completedTotal / weeklyTotal) * 100) : 100;
-
-    document.getElementById('target-total').textContent = `Target: ${weeklyTotal}`;
-    document.getElementById('done-total').textContent = `Done: ${completedTotal}`;
-    document.getElementById('percentage').textContent = `${percentage}%`;
-    document.getElementById('progress-fill').style.width = `${percentage}%`;
-}
-
-// Generate projection data based on the weekly schedule
-function generateProjection(totalQuestions, alreadyCompleted) {
-    const data = [];
-    const labels = [];
-    let totalCompleted = alreadyCompleted; // Start with already completed questions
-    let day = 0;
-
-    // Get current values from inputs
-    const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    const schedule = {};
-
-    daysOfWeek.forEach(day => {
-        const input = document.getElementById(`target-${day}`);
-        schedule[day] = input ? (parseInt(input.value) || 0) : 0;
-    });
-
-    // Add starting point with already completed questions
-    data.push(totalCompleted);
-    labels.push(`Start (${alreadyCompleted} already done)`);
-
-    // Generate data until we reach the target
-    while (totalCompleted < totalQuestions) {
-        day++;
-        const weekday = daysOfWeek[day % 7];
-        const questionsToday = schedule[weekday];
-
-        // Only add a data point if questions are completed that day
-        if (questionsToday > 0) {
-            totalCompleted = Math.min(totalCompleted + questionsToday, totalQuestions);
-
-            data.push(totalCompleted);
-            labels.push(`Day ${day} (${weekday})`);
-
-            // If we've reached the total, break
-            if (totalCompleted >= totalQuestions) {
-                break;
-            }
-        }
-    }
-
-    return { data, labels, completionDay: day };
-}
-
-// Create chart
-function createChart(totalQuestions, alreadyCompleted) {
-    const { data, labels, completionDay } = generateProjection(totalQuestions, alreadyCompleted);
-
-    // Calculate completion date information
-    const weeksToComplete = Math.floor(completionDay / 7);
-    const daysRemaining = completionDay % 7;
-
-    // Update info box
-    const completionEstimation = document.getElementById('completion-estimation');
-    const alreadyCompletedInfo = document.getElementById('already-completed-info');
-    const weeklyTotalInfo = document.getElementById('weekly-total-info');
-
-    completionEstimation.textContent = `Estimated time to complete all ${totalQuestions} questions: ${weeksToComplete} weeks and ${daysRemaining} days`;
-    alreadyCompletedInfo.textContent = `Starting with ${alreadyCompleted} questions already completed`;
-
-    // Calculate weekly total
-    const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    let weeklyTotal = 0;
-
-    daysOfWeek.forEach(day => {
-        const input = document.getElementById(`target-${day}`);
-        weeklyTotal += input ? (parseInt(input.value) || 0) : 0;
-    });
-
-    weeklyTotalInfo.textContent = `Based on your weekly schedule of ${weeklyTotal} questions per week`;
-
-    // Create simplified labels for better readability
-    const simplifiedLabels = labels.map((label, index) => {
-        if (index === 0) return 'Start';
-        if (index === labels.length - 1) return `Day ${completionDay}`;
-
-        // Extract the day number from the label
-        const dayMatch = label.match(/Day (\d+)/);
-        if (dayMatch && dayMatch[1]) {
-            return `Day ${dayMatch[1]}`;
-        }
-        return label;
-    });
-
-    // Create chart
-    const ctx = document.getElementById('completionChart').getContext('2d');
-
-    // Create data for goal line
-    const goalData = Array(data.length).fill(totalQuestions);
-
-    return new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: simplifiedLabels,
-            datasets: [
-                {
-                    label: 'Questions Completed',
-                    data: data,
-                    borderColor: '#3b82f6',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                    tension: 0.1,
-                    pointRadius: 5,
-                    pointHoverRadius: 7
-                },
-                {
-                    label: `Goal (${totalQuestions} questions)`,
-                    data: goalData,
-                    borderColor: 'red',
-                    borderDash: [5, 5],
-                    pointRadius: 0,
-                    fill: false
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: false,
-                    min: 0,
-                    max: totalQuestions + 10,
-                    title: {
-                        display: true,
-                        text: 'Questions Completed'
-                    }
-                },
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Days'
-                    },
-                    ticks: {
-                        // Only show some of the labels to avoid overcrowding
-                        callback: function(value, index, values) {
-                            // Show first, last, and every 7th label (weekly intervals)
-                            if (index === 0 || index === labels.length - 1 || index % 7 === 0) {
-                                return simplifiedLabels[index];
-                            }
-                            return null;
-                        },
-                        maxRotation: 45,
-                        minRotation: 45
-                    }
-                }
-            },
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return `${context.dataset.label}: ${context.raw} questions`;
-                        },
-                        title: function(tooltipItems) {
-                            // Show the original detailed label in the tooltip
-                            const index = tooltipItems[0].dataIndex;
-                            return labels[index];
-                        }
-                    }
-                }
-            }
-        }
+        if (progress === 1) return true; // Stop timer
     });
 }
+
 
 // Replace your existing JavaScript with this
 document.addEventListener('DOMContentLoaded', function() {
@@ -710,4 +457,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     createPredictionVisualization();
+    renderTopics();
+    addEventListeners();
 });

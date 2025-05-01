@@ -1,6 +1,6 @@
 package com.hackertracker.security.config;
 
-import com.hackertracker.security.Schedule.Weekday;
+//import com.hackertracker.security.Schedule.Weekday;
 import com.hackertracker.security.problem.Problem;
 import com.hackertracker.security.problem.TagProblem;
 import com.hackertracker.security.problem.TopicProblem;
@@ -110,12 +110,12 @@ public class HibernateConfig {
         return new MetadataSources(serviceRegistry)
                 .addAnnotatedClass(User.class)
                 .addAnnotatedClass(Problem.class)
-                .addAnnotatedClass(Weekday.class)
+//                .addAnnotatedClass(Weekday.class)
                 .addAnnotatedClass(Tag.class)
                 .addAnnotatedClass(TagProblem.class)
                 .addAnnotatedClass(Topic.class)
                 .addAnnotatedClass(TopicProblem.class)
-                .addAnnotatedClass(UserCompletionPrediction.class)
+                .addAnnotatedClass(UserProblemCompletion.class)
                 .addAnnotatedClass(UserProblemAttempt.class)
                 .addAnnotatedClass(UserProblemPriority.class)
                 .addAnnotatedClass(UserSchedule.class)

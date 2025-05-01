@@ -1,7 +1,7 @@
 package com.hackertracker.security.user;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.hackertracker.security.Schedule.WeekdayName;
+//import com.hackertracker.security.Schedule.WeekdayName;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -59,7 +59,7 @@ public class User implements UserDetails {
     @Column(name = "token_version_updated_at")
     private Date tokenVersionUpdatedAt;
 
-    public User(int userId, String publicId, String firstName, String lastName, String userName, String password, String email, Role role) {
+    public User(int userId, String publicId, String firstName, String lastName, String userName, String password, String email, Role role, UserSchedule schedule) {
         this.userId = userId;
         this.publicId = publicId;
         this.firstName = firstName;
@@ -68,6 +68,7 @@ public class User implements UserDetails {
         this.password = password;
         this.email = email;
         this.role = role;
+        this.userSchedule = schedule;
     }
 
 
@@ -134,6 +135,14 @@ public class User implements UserDetails {
         this.tokenVersionUpdatedAt = new Date();
     }
 
+    public UserSchedule getUserSchedule() {
+        return userSchedule;
+    }
+
+    public void setUserSchedule(UserSchedule userSchedule) {
+        this.userSchedule = userSchedule;
+    }
+
     @PrePersist
     protected void onCreate() {
         if (publicId == null) {
@@ -188,10 +197,6 @@ public class User implements UserDetails {
     private Set<UserProblemPriority> problemPriorities = new HashSet<>();
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<UserCompletionPrediction> completionPredictions = new HashSet<>();
-
-
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_schedule_id")
     private UserSchedule userSchedule;
@@ -208,18 +213,6 @@ public class User implements UserDetails {
     }
 
     /**
-     * Get all predictions for this user's completion of the 150 questions
-     * Note: This method must be called within a transaction context
-     * to avoid LazyInitializationException
-     *
-     * @return List of UserCompletionPrediction associated with this user
-     */
-    public List<UserCompletionPrediction> getListCompletionPrediction() {
-        return completionPredictions.stream().toList();
-    }
-
-
-    /**
      * Get all attempts for this user of the 150 questions
      * Note: This method must be called within a transaction context
      * to avoid LazyInitializationException
@@ -230,21 +223,6 @@ public class User implements UserDetails {
         return problemAttempts.stream().toList();
     }
 
-
-    // Methods to manage the relationship
-    public void updateSchedule(String weekday, int newTargetCount) {
-        switch ( WeekdayName.valueOf(weekday) ) {
-            case WeekdayName.Monday -> userSchedule.getMonday().setTargetProblemCount(newTargetCount);
-            case WeekdayName.Tuesday -> userSchedule.getTuesday().setTargetProblemCount(newTargetCount);
-            case WeekdayName.Wednesday -> userSchedule.getWednesday().setTargetProblemCount(newTargetCount);
-            case WeekdayName.Thursday -> userSchedule.getThursday().setTargetProblemCount(newTargetCount);
-            case WeekdayName.Friday -> userSchedule.getFriday().setTargetProblemCount(newTargetCount);
-            case WeekdayName.Saturday -> userSchedule.getSaturday().setTargetProblemCount(newTargetCount);
-            case WeekdayName.Sunday -> userSchedule.getSunday().setTargetProblemCount(newTargetCount);
-        }
-    }
-
-
     @Override
     public String toString() {
         return "User{" + "userId=" + userId +
@@ -253,6 +231,8 @@ public class User implements UserDetails {
                 ", lastName=" + lastName +
                 ", userName=" + userName +
                 ", password=" + password +
-                ", email=" + email + '}';
+                ", email=" + email +
+                ", schedule=" + userSchedule +
+                '}';
     }
 }

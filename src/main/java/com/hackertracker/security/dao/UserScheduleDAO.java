@@ -2,6 +2,7 @@ package com.hackertracker.security.dao;
 
 import com.hackertracker.security.user.User;
 import com.hackertracker.security.user.UserSchedule;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -20,9 +21,15 @@ public class UserScheduleDAO {
     /**
      * Get a user's Schedule entity
      */
+    /**
+     * Get a user's Schedule entity
+     */
     public UserSchedule getScheduleByUser(User user) {
         try (Session session = sessionFactory.openSession()) {
-            Query<UserSchedule> q = session.createQuery("from UserSchedule where user=:user", UserSchedule.class);
+            // Use join fetch to eagerly load the schedule collection
+            Query<UserSchedule> q = session.createQuery(
+                    "from UserSchedule us join fetch us.schedule where us.user = :user",
+                    UserSchedule.class);
             q.setParameter("user", user);
             return q.uniqueResult();
         }

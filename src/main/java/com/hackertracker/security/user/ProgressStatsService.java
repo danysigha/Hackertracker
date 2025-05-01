@@ -1,0 +1,39 @@
+package com.hackertracker.security.user;
+
+import com.hackertracker.security.dao.ProblemDAO;
+import com.hackertracker.security.dao.UserProblemAttemptDAO;
+import com.hackertracker.security.dao.UserProblemCompletionDAO;
+import com.hackertracker.security.dto.ProgressStatsDTO;
+import com.hackertracker.security.problem.Problem;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class ProgressStatsService {
+    private final ProblemDAO problemDao;
+    private final UserProblemCompletionDAO userProblemCompletionDao;
+    private UserProblemAttemptDAO userProblemAttemptDao;
+
+    public ProgressStatsService(ProblemDAO problemDao, UserProblemCompletionDAO userProblemCompletionDao, UserProblemAttemptDAO userProblemAttemptDao) {
+        this.problemDao = problemDao;
+        this.userProblemCompletionDao = userProblemCompletionDao;
+        this.userProblemAttemptDao = userProblemAttemptDao;
+    }
+
+    public ProgressStatsDTO createProgressStats(UserSchedule userSchedule) {
+        ProgressStatsDTO dto = new ProgressStatsDTO(userSchedule);
+
+        // Populate with repository data
+        dto.setNumberOfQuestions(problemDao.getNumberOfProblems());
+        dto.setNumberOfCompletedQuestions(userProblemCompletionDao.getNumberOfProblemsCompleted());
+        dto.setNumberOfEasyQuestions(problemDao.getNumberOfProblemsByDifficultyLevel("Easy"));
+        dto.setNumberOfEasyCompletedQuestions(userProblemCompletionDao.getNumberOfProblemsByDifficultyLevel("Easy"));
+        dto.setNumberOfMediumQuestion(problemDao.getNumberOfProblemsByDifficultyLevel("Medium"));
+        dto.setNumberOfMediumCompletedQuestions(userProblemCompletionDao.getNumberOfProblemsByDifficultyLevel("Medium"));
+        dto.setNumberOfHardQuestions(problemDao.getNumberOfProblemsByDifficultyLevel("Hard"));
+        dto.setNumberOfHardCompletedQuestions(userProblemCompletionDao.getNumberOfProblemsByDifficultyLevel("Hard"));
+        dto.setNumberOfAttempts(userProblemAttemptDao.getNumberOfAttempts());
+        return dto;
+    }
+}

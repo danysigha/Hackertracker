@@ -5,6 +5,7 @@ import com.hackertracker.security.dao.UserDAO;
 import com.hackertracker.security.problem.UserProblemPriorityService;
 import com.hackertracker.security.user.Role;
 import com.hackertracker.security.user.User;
+import com.hackertracker.security.user.UserSchedule;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,15 +30,17 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse register(RegisterRequest request) {
-        var user = new User(
-                0,
-                null,
-                request.getFirstName(),
-                request.getLastName(),
-                request.getUserName(),
-                passwordEncoder.encode(request.getPassword()),
-                request.getEmail(),
-                Role.USER);
+        var user = new User();
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setUserName(request.getUserName());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setEmail(request.getEmail());
+        user.setRole(Role.USER);
+
+        UserSchedule schedule = new UserSchedule();
+        schedule.setUser(user);
+        user.setUserSchedule(schedule);
 
         userDao.saveUser(user);
         priorityService.initializeAllPrioritiesForNewUser(user);

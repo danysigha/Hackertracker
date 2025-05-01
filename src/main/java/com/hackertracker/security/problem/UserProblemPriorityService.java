@@ -24,19 +24,16 @@ public class UserProblemPriorityService {
     private final UserProblemPriorityDAO priorityDao;
     private final PriorityCalculator priorityCalculator;
     private final ProblemDAO problemDao;
-    private final UserDAO userDao;
 //    private final UserProblemService userProblemService;
 
 
     public UserProblemPriorityService(
             UserProblemPriorityDAO priorityDao,
             PriorityCalculator priorityCalculator,
-            ProblemDAO problemDao,
-            UserDAO userDao) {
+            ProblemDAO problemDao) {
         this.priorityDao = priorityDao;
         this.priorityCalculator = priorityCalculator;
         this.problemDao = problemDao;
-        this.userDao = userDao;
     }
 
     /**

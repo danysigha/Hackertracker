@@ -120,8 +120,8 @@ function loadQuestion(questionId = null, addToPast = true) {
                 return;
             }
 
-            console.log("what am I getting from the server then?!");
-            console.log(data);
+            //console.log("what am I getting from the server then?!");
+            //console.log(data);
 
             currentQuestionId = data.problem.problemId;
 
@@ -228,10 +228,14 @@ $("#nextQuestionBtn").on("click", function() {
     }
 });
 
+
+// $("#skipQuestionBtn").on("click", function() {
+//     loadQuestion();
+// });
+
 // Mark completed button could work like this
 $("#addAttemptBtn").on("click", function() {
     // Do whatever is needed to mark the question as completed
-
 
     //Problem problem, User user, byte difficultyRating, Date startTime, Date endTime, String notes
 
@@ -261,8 +265,8 @@ $("#addAttemptBtn").on("click", function() {
         ajaxData.endTime = null;
     }
 
-    console.log("startTime", ajaxData.startTime);
-    console.log("endTime", ajaxData.endTime);
+    // console.log("startTime", ajaxData.startTime);
+    // console.log("endTime", ajaxData.endTime);
 
 
     // Safely get TinyMCE content
@@ -284,6 +288,8 @@ $("#addAttemptBtn").on("click", function() {
         ajaxData.notes = DOMPurify.sanitize(rawHtml);
     }
 
+    console.log("sending the following to /api/challenges/recalculate \n\n");
+    console.log(ajaxData.questionId, ajaxData.difficultyRating, ajaxData.startTime, ajaxData.endTime, ajaxData.notes);
 
 
     // Then request the next question in sequence
@@ -330,8 +336,12 @@ function updateNavigationButtons() {
     // Enable/disable next button
     if (futureQuestions.length > 0) {
         $("#nextQuestionBtn").prop("disabled", false);
+        $("#addAttemptBtn").prop("disabled", true);
+        $("#skipQuestionBtn").prop("disabled", true);
     } else {
         $("#nextQuestionBtn").prop("disabled", true);
+        $("#addAttemptBtn").prop("disabled", false);
+        $("#skipQuestionBtn").prop("disabled", false);
     }
 }
 

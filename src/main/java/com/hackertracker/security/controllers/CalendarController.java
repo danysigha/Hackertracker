@@ -40,10 +40,13 @@ public class CalendarController {
 
         for (UserProblemAttempt attempt : myUser.getListAttempts()) {
             // Get the Date object
-            Date startTime = attempt.getStartTime();
+            Date time = attempt.getStartTime();
+            if(time == null) {
+                time = attempt.getEndTime();
+            }
 
             // Format to hour precision in ISO format
-            String hourKey = hourFormatter.format(startTime);
+            String hourKey = hourFormatter.format(time);
 
             // Increment the count for this hour
             hourlyStats.put(hourKey, hourlyStats.getOrDefault(hourKey, 0) + 1);

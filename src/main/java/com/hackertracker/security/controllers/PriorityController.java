@@ -1,14 +1,12 @@
 package com.hackertracker.security.controllers;
 
+import com.hackertracker.security.dao.*;
 import com.hackertracker.security.dto.ProblemWithAttemptDTO;
-import com.hackertracker.security.dao.ProblemDAO;
-import com.hackertracker.security.dao.UserDAO;
-import com.hackertracker.security.dao.UserProblemAttemptDAO;
-import com.hackertracker.security.dao.UserProblemPriorityDAO;
 import com.hackertracker.security.problem.Problem;
 import com.hackertracker.security.problem.UserProblemPriorityService;
 import com.hackertracker.security.user.User;
 import com.hackertracker.security.user.UserProblemAttempt;
+import com.hackertracker.security.user.UserProblemCompletion;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,17 +31,17 @@ public class PriorityController {
     private final UserProblemPriorityService priorityService;
     private final UserDAO userDao;
     private final ProblemDAO problemDao;
-    private final UserProblemPriorityDAO userProblemPriorityDao;
+    private final UserProblemCompletionDAO UserProblemCompletionDao;
     private final UserProblemAttemptDAO userProblemAttemptDao;
 
     public PriorityController(UserProblemPriorityService priorityService,
                               UserDAO userDao, ProblemDAO problemDAO,
-                              UserProblemPriorityDAO userProblemPriorityDao,
+                              UserProblemCompletionDAO UserProblemCompletionDao,
                               UserProblemAttemptDAO userProblemAttemptDao){
         this.priorityService = priorityService;
         this.userDao = userDao;
         this.problemDao = problemDAO;
-        this.userProblemPriorityDao = userProblemPriorityDao;
+        this.UserProblemCompletionDao = UserProblemCompletionDao;
         this.userProblemAttemptDao = userProblemAttemptDao;
     }
 
@@ -92,6 +90,9 @@ public class PriorityController {
             @RequestParam(value = "notes", required = false) String notes,
             @AuthenticationPrincipal User user) {
 
+        System.out.println("Receiving the following from loadview.js\n\n");
+        System.out.println(questionId + " " + difficultyRating + " " + startTime + " " + endTime + " " + notes);
+
         Problem problem = problemDao.getProblemById(Integer.parseInt(questionId));
 
         User myUser = userDao.getUserByUserName(user.getUserName());
@@ -102,7 +103,7 @@ public class PriorityController {
             // Parse the time string to get a Date object
             UserProblemAttempt userProblemAttempt;
 
-            if (startTime != null && endTime != null) {
+            if (!startTime.isEmpty() && !endTime.isEmpty()) {
                 Date startTimeDate = Date.from(Instant.parse(startTime));
                 Date endTimeDate = Date.from(Instant.parse(endTime));
 
@@ -115,6 +116,7 @@ public class PriorityController {
                 userProblemAttempt.setProblem(problem);
                 userProblemAttempt.setUser(myUser);
                 userProblemAttempt.setDifficultyRating(difficultyRatingByte);
+                userProblemAttempt.setEndTime(new Date());
 
                 // In your controller
                 String cleanHtml = Jsoup.clean(notes, Safelist.relaxed());
@@ -123,6 +125,16 @@ public class PriorityController {
                 // userProblemAttempt.setNotes(notes);
             }
 
+            UserProblemCompletion completion = new UserProblemCompletion();
+            completion.setCompletionDate(new Date());
+            completion.setUser(user);
+            completion.setProblem(problem);
+            System.out.println("Completion supposedly getting saved.\n\n");
+            System.out.println(completion);
+            UserProblemCompletionDao.save(completion);
+
+            System.out.println("\n\nAttempt supposedly getting saved.\n\n");
+            System.out.println(userProblemAttempt);
             userProblemAttemptDao.saveAttempt(userProblemAttempt);
 
             priorityService.updatePriorityAfterAttempt(userProblemAttempt);
@@ -131,8 +143,8 @@ public class PriorityController {
             e.printStackTrace();
         }
 
-        priorityService.recalculateSinglePriority(problem, user);
+        priorityService.recalculateSinglePriority(problem, myUser);
 
-        return priorityService.getNextTopPriorityProblemForUser(user);
+        return priorityService.getNextTopPriorityProblemForUser(myUser);
     }
 }
