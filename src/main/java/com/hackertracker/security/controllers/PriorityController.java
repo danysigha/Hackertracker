@@ -2,23 +2,23 @@ package com.hackertracker.security.controllers;
 
 import com.hackertracker.security.dao.*;
 import com.hackertracker.security.dto.ProblemWithAttemptDTO;
+import com.hackertracker.security.dto.TopicDTO;
 import com.hackertracker.security.problem.Problem;
 import com.hackertracker.security.problem.UserProblemPriorityService;
+import com.hackertracker.security.topic.Topic;
 import com.hackertracker.security.user.User;
 import com.hackertracker.security.user.UserProblemAttempt;
 import com.hackertracker.security.user.UserProblemCompletion;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -33,16 +33,21 @@ public class PriorityController {
     private final ProblemDAO problemDao;
     private final UserProblemCompletionDAO UserProblemCompletionDao;
     private final UserProblemAttemptDAO userProblemAttemptDao;
+    private final TopicDAO topicDao;
+    private final UserProblemPriorityService userProblemPriorityService;
 
     public PriorityController(UserProblemPriorityService priorityService,
                               UserDAO userDao, ProblemDAO problemDAO,
                               UserProblemCompletionDAO UserProblemCompletionDao,
-                              UserProblemAttemptDAO userProblemAttemptDao){
+                              UserProblemAttemptDAO userProblemAttemptDao,
+                              TopicDAO topicDao, UserProblemPriorityService userProblemPriorityService){
         this.priorityService = priorityService;
         this.userDao = userDao;
         this.problemDao = problemDAO;
         this.UserProblemCompletionDao = UserProblemCompletionDao;
         this.userProblemAttemptDao = userProblemAttemptDao;
+        this.topicDao = topicDao;
+        this.userProblemPriorityService = userProblemPriorityService;
     }
 
     /**
@@ -146,5 +151,30 @@ public class PriorityController {
         priorityService.recalculateSinglePriority(problem, myUser);
 
         return priorityService.getNextTopPriorityProblemForUser(myUser);
+    }
+
+
+    /**
+     * Get the programming topics
+     */
+    @GetMapping("/topics")
+    public List<TopicDTO> getAllTopics(@AuthenticationPrincipal User user) {
+        List<TopicDTO> topics = new ArrayList<>();
+
+        for(Topic topic : topicDao.getAllTopics()) {
+            topics.add(TopicDTO.fromEntity(topic));
+        }
+
+        return topics;
+    }
+
+    @PostMapping("/update-topic-priority")
+    public void updateTopicPriorities(@RequestBody List<TopicDTO> topics) {
+        for(TopicDTO topic : topics) {
+            Topic myTopic = topicDao.getTopicById(topic.getTopicId());
+            myTopic.setTopicRank(topic.getTopicRank());
+            topicDao.updateTopic(myTopic);
+        }
+        userProblemPriorityService.recalculateAllPriorities();
     }
 }

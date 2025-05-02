@@ -2,6 +2,7 @@ package com.hackertracker.security.dao;
 
 import com.hackertracker.security.problem.Problem;
 import com.hackertracker.security.topic.Topic;
+import com.hackertracker.security.user.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -27,7 +28,7 @@ public class TopicDAO {
 
     public List<Topic> getAllTopics(){
         try (Session session = sessionFactory.openSession()) {
-            return session.createQuery("FROM Topic", Topic.class).list();
+            return session.createQuery("FROM Topic order by topicRank", Topic.class).list();
         } catch (Exception e) {
             throw e;
         }
@@ -35,7 +36,7 @@ public class TopicDAO {
 
     public Topic getTopicById(byte topicId) {
         Session session = sessionFactory.openSession();
-        Query<Topic> q = session.createQuery("from Tag where topicId=:topicId", Topic.class);
+        Query<Topic> q = session.createQuery("from Topic where topicId=:topicId", Topic.class);
         q.setParameter("topicId", topicId);
         return q.uniqueResult();
     }
@@ -59,6 +60,23 @@ public class TopicDAO {
             throw e;
         } finally {
             session.close();
+        }
+    }
+
+
+    /**
+     * Update an existing topic entity
+     */
+    public void updateTopic(Topic topic) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            try {
+                session.merge(topic);
+                tx.commit();
+            } catch (Exception e) {
+                tx.rollback();
+                throw e;
+            }
         }
     }
 }

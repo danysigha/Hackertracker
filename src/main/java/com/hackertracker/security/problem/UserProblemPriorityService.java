@@ -24,16 +24,18 @@ public class UserProblemPriorityService {
     private final UserProblemPriorityDAO priorityDao;
     private final PriorityCalculator priorityCalculator;
     private final ProblemDAO problemDao;
+    private final UserDAO userDao;
 //    private final UserProblemService userProblemService;
 
 
     public UserProblemPriorityService(
             UserProblemPriorityDAO priorityDao,
             PriorityCalculator priorityCalculator,
-            ProblemDAO problemDao) {
+            ProblemDAO problemDao, UserDAO userDAO) {
         this.priorityDao = priorityDao;
         this.priorityCalculator = priorityCalculator;
         this.problemDao = problemDao;
+        this.userDao = userDAO;
     }
 
     /**
@@ -144,24 +146,23 @@ public class UserProblemPriorityService {
     @Transactional
     public void recalculateAllPriorities() {
 
-        List<UserProblemPriority> allPrioritiesDto = priorityDao.findAll();
-        List<UserProblemPriority> allPriorities = new ArrayList<>();
+        List<UserProblemPriority> newPriorities = new ArrayList<>();
 
-        for (UserProblemPriority priority : allPrioritiesDto) {
-            Problem problem = priority.getProblem();
-            User user = priority.getUser();
+        List<UserProblemPriority> allPriorities = priorityDao.findAll();
 
-            UserProblemPriority userProblemPriority = priorityDao.findByProblemAndUser(problem, user);
+        for (UserProblemPriority priority : allPriorities) {
+            Problem problem = problemDao.getProblemByIdWithCollections(priority.getProblem().getProblemId());
+            User user = userDao.getUserByIdWithCollections(priority.getUser().getUserId());
 
             // Recalculate score
             double newScore = priorityCalculator.calculatePriorityScore(problem, user);
 
             priority.setPriorityScore(newScore);
             priority.setLastCalculation(new Date());
-            allPriorities.add(priority);
+            newPriorities.add(priority);
         }
 
-        priorityDao.saveAll(allPriorities);
+        priorityDao.updateAll(newPriorities);
 
         // After recalculating all scores, normalize them to prevent inflation
         normalizeAllScores(allPriorities);
@@ -216,7 +217,7 @@ public class UserProblemPriorityService {
         }
 
         // Only call saveAll once with all updated priorities
-        priorityDao.saveAll(allPriorities);
+        priorityDao.updateAll(allPriorities);
     }
 
 

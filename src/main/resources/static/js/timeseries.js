@@ -35,18 +35,15 @@ function createPredictionVisualization(schedule, alreadyCompleted, totalQuestion
 
             // Initial state
             let questionsPerDay = {
-                Mon: schedule[1], Tue: schedule[2], Wed: schedule[3], Thu: schedule[4], Fri: schedule[5], Sat: schedule[6], Sun: schedule[0]
+                Sun: schedule[0], Mon: schedule[1], Tue: schedule[2], Wed: schedule[3], Thu: schedule[4], Fri: schedule[5], Sat: schedule[6]
             };
 
-            // let questionsPerDay = {
-            //     Mon: 2, Tue: 1, Wed: 0, Thu: 0, Fri: 0, Sat: 1, Sun: 0
-            // };
 
             let completedQuestions = {
                 Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0, Sun: 0
             };
 
-            setUpHtmlElements(questionsPerDay, completedQuestions, daysOfWeek);
+            setUpCalendar(questionsPerDay, completedQuestions, daysOfWeek);
 
             // Initialize projection chart
             chart = createChart(totalNumberOfQuestions, totalSolved);
@@ -63,6 +60,31 @@ function createPredictionVisualization(schedule, alreadyCompleted, totalQuestion
                     chart.destroy(); // Destroy previous chart if exists
                 }
                 chart = createChart(totalNumberOfQuestions, totalSolved);
+
+                let scheduleData = { userSchedule: Object.values(questionsPerDay) }
+
+                //ajax call here
+                $.ajax({
+                    url: "api/progress/update-schedule",
+                    method: "POST",
+                    data: scheduleData,
+                    dataType: "json",
+                    xhrFields : {
+                        withCredentials: true
+                    },
+                    success: function(data) {
+                        console.log("Successfully updated the schedule.")
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error response:", {
+                            status: xhr.status,
+                            statusText: xhr.statusText,
+                            responseText: xhr.responseText,
+                            error: error
+                        });
+                    },
+                });
+
             });
 
             // Initialize stats
@@ -71,7 +93,7 @@ function createPredictionVisualization(schedule, alreadyCompleted, totalQuestion
     });
 }
 
-function setUpHtmlElements(questionsPerDay, completedQuestions, daysOfWeek) {
+function setUpCalendar(questionsPerDay, completedQuestions, daysOfWeek) {
     // Setup the day headers
     const dayHeadersContainer = document.getElementById('day-headers');
     daysOfWeek.forEach(day => {
@@ -114,6 +136,7 @@ function setUpHtmlElements(questionsPerDay, completedQuestions, daysOfWeek) {
         input.className = 'completion-input';
         input.id = `completion-${day}`;
         input.setAttribute('aria-label', `Completed questions for ${day}`);
+        input.setAttribute('disabled', true);
         input.addEventListener('input', function() {
             handleCompletedChange(day, this.value, questionsPerDay, completedQuestions);
         });

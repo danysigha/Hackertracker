@@ -7,10 +7,10 @@ import com.hackertracker.security.user.ProgressStatsService;
 import com.hackertracker.security.user.User;
 import com.hackertracker.security.user.UserSchedule;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/progress")
@@ -42,5 +42,15 @@ public class ProgressController {
         }
 //        System.out.println("Schedule is null ? " + schedule.toString());
         return progressStatsService.createProgressStats(schedule);
+    }
+
+    @PostMapping("/update-schedule")
+    public void updateSchedule(
+            @RequestParam(value = "userSchedule", required = true) List<Integer> userSchedule,
+            @AuthenticationPrincipal User user
+    ) {
+        User myUser = userDao.getUserByUserName(user.getUserName());
+        myUser.getUserSchedule().setSchedule(userSchedule);
+        userScheduleDao.updateUserSchedule(myUser.getUserSchedule());
     }
 }

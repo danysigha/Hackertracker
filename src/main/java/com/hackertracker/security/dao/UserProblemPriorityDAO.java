@@ -173,15 +173,14 @@ public class UserProblemPriorityDAO {
     }
 
 
-
-    public void saveAll( List<UserProblemPriority> allPriorities) {
+    public void updateAll( List<UserProblemPriority> allPriorities) {
         Session session = sessionFactory.openSession();
 
         try {
             session.beginTransaction();
 
             for(UserProblemPriority priority : allPriorities) {
-                session.persist(priority);
+                session.merge(priority);
             }
             session.getTransaction().commit();
 

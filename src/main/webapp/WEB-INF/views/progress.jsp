@@ -125,6 +125,7 @@
         <ul id="topicList" class="topic-list">
             <!-- Topics will be inserted here by JavaScript -->
         </ul>
+        <button id="save-changes">Save changes</button>
         <section class="topic-navigation-section">
             <button id="show-topics">Show more topics</button>
             <button id="hide-topics">Hide topics</button>

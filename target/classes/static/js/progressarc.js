@@ -239,7 +239,7 @@ function drawElements(easyProgressData, mediumProgressData, hardProgressData, to
         .style("opacity", 0)
         .transition()
         .duration(500)
-        .delay(1800)
+        .delay(900)
         .style("opacity", 1);
 
 // "Attempting" label
@@ -254,7 +254,7 @@ function drawElements(easyProgressData, mediumProgressData, hardProgressData, to
         .style("opacity", 0)
         .transition()
         .duration(500)
-        .delay(2100)
+        .delay(1400)
         .style("opacity", 1);
 
 
@@ -407,7 +407,7 @@ function drawElements(easyProgressData, mediumProgressData, hardProgressData, to
         .style("opacity", 0)
         .transition()
         .duration(500)
-        .delay(1500)
+        .delay(900)
         .style("opacity", 1);
 
     animate(totalSolved, progressText, easyProgressData, mediumProgressData, hardProgressData, easyCount, mediumCount, hardCount);
@@ -417,7 +417,7 @@ function drawElements(easyProgressData, mediumProgressData, hardProgressData, to
 function animate(totalSolved, progressText, easyProgressData, mediumProgressData, hardProgressData, easyCount, mediumCount, hardCount) {
     // Animate progress number
     const startCount = 0;
-    const duration = 2000;
+    const duration = 1300;
 
     const progressNumber = progressText.select("tspan:first-child");
 
@@ -457,6 +457,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     createPredictionVisualization();
-    renderTopics();
-    addEventListeners();
+
+    createTopicList();
 });
