@@ -9,8 +9,10 @@ import com.hackertracker.security.user.UserProblemAttempt;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.List;
 import java.util.OptionalInt;
 
@@ -112,7 +114,7 @@ public class PriorityCalculator {
         User myUser = userDao.getUserByIdWithCollections(user.getUserId());
 
         List<UserProblemAttempt> attempts = myUser.getListAttempts().stream()
-                .filter(attempt -> attempt.getProblem().equals(problem))
+                .filter(attempt -> attempt.getProblem().getProblemId() == problem.getProblemId() )
                 .toList();
 
         if (attempts.isEmpty()) {
@@ -167,7 +169,7 @@ public class PriorityCalculator {
         User myUser = userDao.getUserByIdWithCollections(user.getUserId());
 
         List<UserProblemAttempt> attempts = myUser.getListAttempts().stream()
-                .filter(attempt -> attempt.getProblem().equals(problem))
+                .filter(attempt -> attempt.getProblem().getProblemId() == problem.getProblemId())
                 .toList();
 
         if (attempts.isEmpty()) {
@@ -180,7 +182,8 @@ public class PriorityCalculator {
 
         for (UserProblemAttempt attempt : attempts) {
             if (attempt.getStartTime() != null && attempt.getEndTime() != null) {
-                long minutes = (attempt.getEndTime().getTime() - attempt.getStartTime().getTime()) / (1000 * 60);
+                // Calculate minutes between LocalDateTimes
+                long minutes = ChronoUnit.MINUTES.between(attempt.getStartTime(), attempt.getEndTime());
                 totalMinutes += minutes;
                 attemptCount++;
             }
@@ -208,7 +211,7 @@ public class PriorityCalculator {
         User myUser = userDao.getUserByIdWithCollections(user.getUserId());
 
         List<UserProblemAttempt> attempts = myUser.getListAttempts().stream()
-                .filter(attempt -> attempt.getProblem().equals(problem))
+                .filter(attempt -> attempt.getProblem().getProblemId() == problem.getProblemId() )
                 .toList();
 
         if (attempts.isEmpty()) {
@@ -216,9 +219,9 @@ public class PriorityCalculator {
         }
 
         // Find latest attempt
-        Date latestAttempt = attempts.stream()
+        LocalDateTime latestAttempt = attempts.stream()
                 .map(UserProblemAttempt::getEndTime)
-                .max(Date::compareTo)
+                .max(LocalDateTime::compareTo)
                 .orElse(null);
 
         if (latestAttempt == null) {
@@ -226,9 +229,7 @@ public class PriorityCalculator {
         }
 
         // Calculate days since latest attempt
-        long daysSince = ChronoUnit.DAYS.between(
-                latestAttempt.toInstant(),
-                Instant.now());
+        long daysSince = ChronoUnit.DAYS.between(latestAttempt, LocalDateTime.now(ZoneOffset.UTC));
 
         // More attempts and shorter times may indicate mastery
         int attemptCount = attempts.size();
@@ -260,7 +261,8 @@ public class PriorityCalculator {
 
         for (UserProblemAttempt attempt : attempts) {
             if (attempt.getStartTime() != null && attempt.getEndTime() != null) {
-                long minutes = (attempt.getEndTime().getTime() - attempt.getStartTime().getTime()) / (1000 * 60);
+                // Use ChronoUnit to calculate minutes between LocalDateTimes
+                long minutes = ChronoUnit.MINUTES.between(attempt.getStartTime(), attempt.getEndTime());
                 totalMinutes += minutes;
                 validAttempts++;
             }

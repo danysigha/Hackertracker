@@ -266,7 +266,7 @@ function createTopicList() {
             if (autoHide) {
                 setTimeout(() => {
                     feedback.style.display = 'none';
-                }, 2000);
+                }, 4000);
             }
         }
     }

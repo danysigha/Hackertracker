@@ -13,7 +13,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -33,10 +33,10 @@ public class UserProblemPriority {
     private double priorityScore;
 
     @Column(name = "last_calculation", nullable = false)
-    private Date lastCalculation;
+    private LocalDateTime lastCalculation;
 
     @Column(name = "last_attempted") // is this needed??
-    private Date lastAttempted;
+    private LocalDateTime lastAttempted;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "problem_id")
@@ -52,7 +52,7 @@ public class UserProblemPriority {
         return priorityId;
     }
 
-    public UserProblemPriority(int priorityId, double priorityScore, Date lastCalculation, Date lastAttempted, Problem problem, User user) {
+    public UserProblemPriority(int priorityId, double priorityScore, LocalDateTime lastCalculation, LocalDateTime lastAttempted, Problem problem, User user) {
         this.priorityId = priorityId;
         this.priorityScore = priorityScore;
         this.lastCalculation = lastCalculation;
@@ -76,19 +76,19 @@ public class UserProblemPriority {
         this.priorityScore = priorityScore;
     }
 
-    public Date getLastCalculation() {
+    public LocalDateTime getLastCalculation() {
         return lastCalculation;
     }
 
-    public void setLastCalculation(Date lastCalculation) {
+    public void setLastCalculation(LocalDateTime lastCalculation) {
         this.lastCalculation = lastCalculation;
     }
 
-    public Date getLastAttempted() {
+    public LocalDateTime getLastAttempted() {
         return lastAttempted;
     }
 
-    public void setLastAttempted(Date lastAttempted) {
+    public void setLastAttempted(LocalDateTime lastAttempted) {
         this.lastAttempted = lastAttempted;
     }
 

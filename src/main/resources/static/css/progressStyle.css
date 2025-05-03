@@ -237,7 +237,7 @@ input[type=number] {
     width: 4rem;
 }
 
-.update-btn {
+#update-chart {
     display: block;
     margin: 20px auto;
     padding: 10px 20px;
@@ -248,8 +248,20 @@ input[type=number] {
     cursor: pointer;
 }
 
-.update-btn:hover {
+#update-chart:hover, #save-changes:hover {
     background-color: #2563eb;
+}
+
+#save-changes {
+    width: 100%;
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 

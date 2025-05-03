@@ -100,7 +100,7 @@
                     <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
                 </div>
 
-                <button class="update-btn" id="update-chart">Update Schedule</button>
+                <button id="update-chart">Update Schedule</button>
             </aside>
 
             <section class="schedule-chart-container">

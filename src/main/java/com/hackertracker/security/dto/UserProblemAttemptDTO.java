@@ -2,14 +2,14 @@ package com.hackertracker.security.dto;
 
 import com.hackertracker.security.user.UserProblemAttempt;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class UserProblemAttemptDTO {
     private int attemptId;
     private byte difficultyRating;
     private String notes;
-    private Date startTime;
-    private Date endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 
     // Default constructor
     public UserProblemAttemptDTO() {}
@@ -38,9 +38,9 @@ public class UserProblemAttemptDTO {
     public String getNotes() { return notes; }
     public void setNotes(String notes) { this.notes = notes; }
 
-    public Date getStartTime() { return startTime; }
-    public void setStartTime(Date startTime) { this.startTime = startTime; }
+    public LocalDateTime getStartTime() { return startTime; }
+    public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }
 
-    public Date getEndTime() { return endTime; }
-    public void setEndTime(Date endTime) { this.endTime = endTime; }
+    public LocalDateTime getEndTime() { return endTime; }
+    public void setEndTime(LocalDateTime endTime) { this.endTime = endTime; }
 }

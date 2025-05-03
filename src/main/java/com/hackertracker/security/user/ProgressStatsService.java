@@ -4,9 +4,12 @@ import com.hackertracker.security.dao.ProblemDAO;
 import com.hackertracker.security.dao.UserProblemAttemptDAO;
 import com.hackertracker.security.dao.UserProblemCompletionDAO;
 import com.hackertracker.security.dto.ProgressStatsDTO;
+import com.hackertracker.security.dto.UserProblemCompletionDTO;
 import com.hackertracker.security.problem.Problem;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,19 +24,26 @@ public class ProgressStatsService {
         this.userProblemAttemptDao = userProblemAttemptDao;
     }
 
-    public ProgressStatsDTO createProgressStats(UserSchedule userSchedule) {
+    public ProgressStatsDTO createProgressStats(UserSchedule userSchedule, User user) {
         ProgressStatsDTO dto = new ProgressStatsDTO(userSchedule);
 
         // Populate with repository data
         dto.setNumberOfQuestions(problemDao.getNumberOfProblems());
-        dto.setNumberOfCompletedQuestions(userProblemCompletionDao.getNumberOfProblemsCompleted());
+        dto.setNumberOfCompletedQuestions(userProblemCompletionDao.getNumberOfProblemsCompletedByUserId(user.getUserId()));
         dto.setNumberOfEasyQuestions(problemDao.getNumberOfProblemsByDifficultyLevel("Easy"));
-        dto.setNumberOfEasyCompletedQuestions(userProblemCompletionDao.getNumberOfProblemsByDifficultyLevel("Easy"));
+        dto.setNumberOfEasyCompletedQuestions(userProblemCompletionDao.getNumberOfProblemsByDifficultyLevelByUserId("Easy", user.getUserId()));
         dto.setNumberOfMediumQuestion(problemDao.getNumberOfProblemsByDifficultyLevel("Medium"));
-        dto.setNumberOfMediumCompletedQuestions(userProblemCompletionDao.getNumberOfProblemsByDifficultyLevel("Medium"));
+        dto.setNumberOfMediumCompletedQuestions(userProblemCompletionDao.getNumberOfProblemsByDifficultyLevelByUserId("Medium", user.getUserId()));
         dto.setNumberOfHardQuestions(problemDao.getNumberOfProblemsByDifficultyLevel("Hard"));
-        dto.setNumberOfHardCompletedQuestions(userProblemCompletionDao.getNumberOfProblemsByDifficultyLevel("Hard"));
+        dto.setNumberOfHardCompletedQuestions(userProblemCompletionDao.getNumberOfProblemsByDifficultyLevelByUserId("Hard", user.getUserId()));
         dto.setNumberOfAttempts(userProblemAttemptDao.getNumberOfAttempts());
+
+        List<UserProblemCompletionDTO> upcDtos = new ArrayList<>();
+        userProblemCompletionDao.getAllCompletedProblemsByUserId(user.getUserId()).forEach(
+                upc -> upcDtos.add(UserProblemCompletionDTO.fromEntity(upc))
+        );
+        dto.setUserProblemCompletionDtos(upcDtos);
+
         return dto;
     }
 }

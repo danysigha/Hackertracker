@@ -89,6 +89,8 @@ public class HibernateConfig {
         hibernateProps.put("hibernate.show_sql", "true");
         hibernateProps.put("hibernate.format_sql", "true");
         hibernateProps.put("hibernate.hbm2ddl.auto", "update");
+        hibernateProps.put("hibernate.jdbc.time_zone", "UTC");
+
 
         // Add Hibernate Search configuration
 //        hibernateProps.put("hibernate.search.backend.directory.root", "./hibernate-search-indexes");

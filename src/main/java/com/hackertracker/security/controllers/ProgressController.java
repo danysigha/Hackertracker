@@ -32,16 +32,17 @@ public class ProgressController {
     ) {
 //        UserSchedule schedule = new UserSchedule();
         UserSchedule schedule;
+        User myUser = userDao.getUserByUserName(user.getUsername());
 
 //        System.out.println("INSIDE ProgressController. Here is the schedule\n\n");
         if(userSchedule == null) {
 //            System.out.println("No schedule passed. Using the userScheduleDao\n\n");
-            schedule = userScheduleDao.getScheduleByUser(userDao.getUserByUserName(user.getUsername()));
+            schedule = userScheduleDao.getScheduleByUser(myUser);
         } else {
             schedule = userSchedule;
         }
 //        System.out.println("Schedule is null ? " + schedule.toString());
-        return progressStatsService.createProgressStats(schedule);
+        return progressStatsService.createProgressStats(schedule, myUser);
     }
 
     @PostMapping("/update-schedule")

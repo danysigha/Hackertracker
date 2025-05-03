@@ -27,10 +27,79 @@ $.ajaxSetup({
     }
 });
 
-function getTimeDifference(startDateString, endDateString) {
-    // Parse the ISO strings to Date objects
-    const startDate = new Date(startDateString);
-    const endDate = new Date(endDateString);
+function formatTimeFromDateArray(dateArray) {
+    if (!dateArray || !Array.isArray(dateArray) || dateArray.length < 6) {
+        return '--:--:--';
+    }
+
+    // Extract components from the array
+    const [year, month, day, hour, minute, second] = dateArray;
+
+    // Create a date object in UTC, then JavaScript will automatically
+    // convert it to local time when displaying
+    const date = new Date(Date.UTC(year, month - 1, day, hour, minute, second));
+
+    // Format time as "hh:mm:ss AM/PM" - no manual timezone adjustment needed
+    return date.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+    });
+}
+
+// Assuming you have a date string from your AJAX response
+// function formatTimeFromDateArray(dateArray) {
+//     if (!dateArray || !Array.isArray(dateArray) || dateArray.length < 6) {
+//         return '--:--:--';
+//     }
+//
+//     // Extract components from the array
+//     const [year, month, day, hour, minute, second] = dateArray;
+//
+//     // Note: JavaScript months are 0-indexed (0-11), but the array uses 1-indexed (1-12)
+//     // So we need to subtract 1 from the month
+//     const date = new Date(year, month - 1, day, hour, minute, second);
+//
+//     const localTimezoneOffsetMinutes = new Date().getTimezoneOffset();
+//     const localTimestamp = date.getTime() - (localTimezoneOffsetMinutes * 60 * 1000);
+//     const localDate = new Date(localTimestamp);
+//
+//     // Format time as "hh:mm:ss AM/PM"
+//     return localDate.toLocaleTimeString('en-US', {
+//         hour: '2-digit',
+//         minute: '2-digit',
+//         second: '2-digit',
+//         hour12: true
+//     });
+// }
+
+function getTimeDifference(startDateArray, endDateArray) {
+    // Check if inputs are valid
+    if (!startDateArray || !endDateArray) {
+        return "00:00:00"; // Default if either date is missing
+    }
+
+    let startDate, endDate;
+
+    // Convert date array to JavaScript Date object
+    if (Array.isArray(startDateArray) && startDateArray.length >= 6) {
+        const [year, month, day, hour, minute, second, nanosecond = 0] = startDateArray;
+        // JavaScript months are 0-indexed
+        startDate = new Date(year, month - 1, day, hour, minute, second, nanosecond / 1000000);
+    } else {
+        // Handle ISO string or other format
+        startDate = new Date(startDateArray);
+    }
+
+    if (Array.isArray(endDateArray) && endDateArray.length >= 6) {
+        const [year, month, day, hour, minute, second, nanosecond = 0] = endDateArray;
+        // JavaScript months are 0-indexed
+        endDate = new Date(year, month - 1, day, hour, minute, second, nanosecond / 1000000);
+    } else {
+        // Handle ISO string or other format
+        endDate = new Date(endDateArray);
+    }
 
     // Calculate difference in milliseconds
     let diffMs = Math.abs(endDate - startDate);
@@ -44,7 +113,7 @@ function getTimeDifference(startDateString, endDateString) {
 
     const seconds = Math.floor(diffMs / 1000);
 
-    // Format as "--:--:--"
+    // Format as "hh:mm:ss"
     const formattedHours = hours.toString().padStart(2, '0');
     const formattedMinutes = minutes.toString().padStart(2, '0');
     const formattedSeconds = seconds.toString().padStart(2, '0');
@@ -52,20 +121,27 @@ function getTimeDifference(startDateString, endDateString) {
     return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
 }
 
-// Assuming you have a date string from your AJAX response
-function formatTimeFromISOString(isoString) {
-    const date = new Date(isoString);
 
-    // Format time as "hh:mm:ss AM/PM"
-    return date.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true
-    });
-}
+// function timeStringToDate(timeString) {
+//     // Parse the time string
+//     const [timePart, period] = timeString.split(' ');
+//     let [hours, minutes, seconds] = timePart.split(':').map(Number);
+//
+//     // Convert 12-hour format to 24-hour format
+//     if (period.toUpperCase() === 'PM' && hours < 12) {
+//         hours += 12;
+//     } else if (period.toUpperCase() === 'AM' && hours === 12) {
+//         hours = 0;
+//     }
+//
+//     // Create a new Date object with today's date and the parsed time
+//     const date = new Date();
+//     date.setHours(hours, minutes, seconds, 0);
+//
+//     return date;
+// }
 
-function timeStringToDate(timeString) {
+function timeStringToDateWithNanos(timeString) {
     // Parse the time string
     const [timePart, period] = timeString.split(' ');
     let [hours, minutes, seconds] = timePart.split(':').map(Number);
@@ -81,7 +157,15 @@ function timeStringToDate(timeString) {
     const date = new Date();
     date.setHours(hours, minutes, seconds, 0);
 
-    return date;
+    // Get the ISO string without the 'Z' at the end
+    const isoWithoutZ = date.toISOString().slice(0, -1);
+
+    // Replace the millisecond part with nanoseconds (000000 for your case)
+    // First, remove the milliseconds that are in the ISO string
+    const isoWithoutMillis = isoWithoutZ.split('.')[0];
+
+    // Then add your nanosecond precision
+    return `${isoWithoutMillis}.000000Z`;
 }
 
 function loadQuestion(questionId = null, addToPast = true) {
@@ -120,8 +204,8 @@ function loadQuestion(questionId = null, addToPast = true) {
                 return;
             }
 
-            //console.log("what am I getting from the server then?!");
-            //console.log(data);
+            console.log("what am I getting from the server then?!");
+            console.log(data);
 
             currentQuestionId = data.problem.problemId;
 
@@ -153,10 +237,10 @@ function loadQuestion(questionId = null, addToPast = true) {
 
                 $("#timerDisplay").text(getTimeDifference(data.attempt.startTime, data.attempt.endTime));
 
-                $("#startTimeDisplay").text(formatTimeFromISOString(data.attempt.startTime));
+                $("#startTimeDisplay").text(formatTimeFromDateArray(data.attempt.startTime));
                 originalStartDate = new Date(data.attempt.startTime);
 
-                $("#endTimeDisplay").text(formatTimeFromISOString(data.attempt.endTime));
+                $("#endTimeDisplay").text(formatTimeFromDateArray(data.attempt.endTime));
                 originalEndDate = new Date(data.attempt.endTime);
 
                 //$("#myEditor").text(data.attempt.notes);
@@ -195,6 +279,11 @@ function loadQuestion(questionId = null, addToPast = true) {
             }
 
             // Update button states
+            updateNavigationButtons();
+        },
+        error: function(xhr, status, error) {
+            console.error("Error loading question:", error);
+            // Update button states even if AJAX fails
             updateNavigationButtons();
         }
     });
@@ -249,18 +338,18 @@ $("#addAttemptBtn").on("click", function() {
     // Make sure we're not sending empty strings
     if(document.getElementById("startTimeDisplay").innerHTML !== "--:--:--") {
         if(!originalStartDate) {
-            originalStartDate = timeStringToDate(document.getElementById("startTimeDisplay").innerHTML);
+            originalStartDate = timeStringToDateWithNanos(document.getElementById("startTimeDisplay").innerHTML);
         }
-        ajaxData.startTime = originalStartDate.toISOString();
+        ajaxData.startTime = originalStartDate;
     }else {
         ajaxData.startTime = null;
     }
 
     if(document.getElementById("endTimeDisplay").innerHTML !== "--:--:--") {
         if(!originalEndDate) {
-            originalEndDate = timeStringToDate(document.getElementById("endTimeDisplay").innerHTML);
+            originalEndDate = timeStringToDateWithNanos(document.getElementById("endTimeDisplay").innerHTML);
         }
-        ajaxData.endTime = originalEndDate.toISOString();
+        ajaxData.endTime = originalEndDate;
     }else {
         ajaxData.endTime = null;
     }
@@ -357,6 +446,15 @@ $(document).ready(function() {
             loadQuestion();
             loadDataAndDisplayCalendarData(cal);
             // console.log("supposedly called loadQuestion");
+
+            // Add this line to ensure buttons are updated on initial load
+            updateNavigationButtons();
+
+            // Add a listener for URL changes
+            $(window).on('popstate', function() {
+                updateNavigationButtons();
+            });
+
         } else {
             // No token, redirect to login
             window.location.href = '/login';

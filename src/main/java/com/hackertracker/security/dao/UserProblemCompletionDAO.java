@@ -73,10 +73,11 @@ public class UserProblemCompletionDAO {
     /**
      * Get number of problems completed
      */
-    public int getNumberOfProblemsCompleted() {
+    public int getNumberOfProblemsCompletedByUserId(int userId) {
         try (Session session = sessionFactory.openSession()) {
             // Using the typed version of createQuery, specifying the return type as Long
-            Query<Long> query = session.createQuery("select count(*) from UserProblemCompletion", Long.class);
+            Query<Long> query = session.createQuery("select count(*) from UserProblemCompletion where user.userId=:userId", Long.class);
+            query.setParameter("userId", userId);
             Long count = query.uniqueResult();
             return count.intValue();
         } catch (Exception e) {
@@ -88,13 +89,14 @@ public class UserProblemCompletionDAO {
     /**
      * Get number of problem entities by level
      */
-    public int getNumberOfProblemsByDifficultyLevel(String difficultyLevel) {
+    public int getNumberOfProblemsByDifficultyLevelByUserId(String difficultyLevel, int userId) {
         try (Session session = sessionFactory.openSession()) {
             // Query with filter condition
             Query<Long> query = session.createQuery(
-                    "select count(*) from UserProblemCompletion upc where upc.problem.difficultyLevel = :level",
+                    "select count(*) from UserProblemCompletion upc where upc.problem.difficultyLevel=:level and user.userId=:userId",
                     Long.class);
             query.setParameter("level", difficultyLevel);
+            query.setParameter("userId", userId);
             Long count = query.uniqueResult();
             return count.intValue();
         } catch (Exception e) {
@@ -106,13 +108,14 @@ public class UserProblemCompletionDAO {
     /**
      * Find all completions
      */
-    public List<UserProblemCompletion> getAllCompletedProblems() {
+    public List<UserProblemCompletion> getAllCompletedProblemsByUserId(int userId) {
         Session session = sessionFactory.openSession();
 
         try {
             Query<UserProblemCompletion> q = session.createQuery(
-                    "from UserProblemCompletion", UserProblemCompletion.class);
+                    "from UserProblemCompletion where user.userId=:userId", UserProblemCompletion.class);
 
+            q.setParameter("userId", userId);
             return q.list();
         } catch (Exception e) {
             throw e;

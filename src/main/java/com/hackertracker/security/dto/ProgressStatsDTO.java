@@ -1,7 +1,12 @@
 package com.hackertracker.security.dto;
 
 import com.hackertracker.security.dao.UserProblemAttemptDAO;
+import com.hackertracker.security.user.UserProblemCompletion;
 import com.hackertracker.security.user.UserSchedule;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ProgressStatsDTO {
     private int numberOfQuestions;
@@ -14,6 +19,7 @@ public class ProgressStatsDTO {
     private int numberOfHardCompletedQuestions;
     private int numberOfAttempts;
     private UserScheduleDTO userScheduleDto;
+    private List<UserProblemCompletionDTO> userProblemCompletionDtos;
 
     public ProgressStatsDTO() {}
 
@@ -99,5 +105,13 @@ public class ProgressStatsDTO {
 
     public void setUserScheduleDto(UserScheduleDTO userScheduleDto) {
         this.userScheduleDto = userScheduleDto;
+    }
+
+    public List<UserProblemCompletionDTO> getUserProblemCompletionDtos() {
+        return userProblemCompletionDtos;
+    }
+
+    public void setUserProblemCompletionDtos(List<UserProblemCompletionDTO> userProblemCompletions) {
+        this.userProblemCompletionDtos = userProblemCompletions;
     }
 }

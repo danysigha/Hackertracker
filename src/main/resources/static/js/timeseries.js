@@ -15,16 +15,30 @@ function createPredictionVisualization(schedule, alreadyCompleted, totalQuestion
             const attempts = data.numberOfAttempts;
             const totalNumberOfQuestions = data.numberOfQuestions;
             const schedule = data.userScheduleDto.schedule;
+            const questionsCompletedByDay = [0, 0, 0, 0, 0, 0, 0];
 
-            console.log("the schedule");
-            console.log(schedule[0]);
-            console.log(schedule[1]);
-            console.log(schedule[2]);
-            console.log(schedule[3]);
-            console.log(schedule[4]);
-            console.log(schedule[5]);
-            console.log(schedule[6]);
+            data.userProblemCompletionDtos.forEach(
+                (questionsCompletedDetails) => {
+                    let checkWeekDayCompleted = weekDayFromDateArray(questionsCompletedDetails.completionDate);
+                    if(checkWeekDayCompleted > -1) {
+                        questionsCompletedByDay[ checkWeekDayCompleted ] += 1;
+                    }
+                }
+            );
 
+            // console.log("the schedule");
+            // console.log(schedule[0]);
+            // console.log(schedule[1]);
+            // console.log(schedule[2]);
+            // console.log(schedule[3]);
+            // console.log(schedule[4]);
+            // console.log(schedule[5]);
+            // console.log(schedule[6]);
+            //
+            // console.log(questionsCompletedByDay);
+            // for(let i = 0; i < questionsCompletedDetails.length; i++) {
+            //     console.log(weekDayFromDateArray(questionsCompletedDetails[i].completionDate));
+            // }
 
             let chart; // Reference to the chart object
 
@@ -38,10 +52,14 @@ function createPredictionVisualization(schedule, alreadyCompleted, totalQuestion
                 Sun: schedule[0], Mon: schedule[1], Tue: schedule[2], Wed: schedule[3], Thu: schedule[4], Fri: schedule[5], Sat: schedule[6]
             };
 
-
             let completedQuestions = {
-                Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0, Sun: 0
-            };
+                Sun: questionsCompletedByDay[0], Mon: questionsCompletedByDay[1], Tue: questionsCompletedByDay[2], Wed: questionsCompletedByDay[3], Thu: questionsCompletedByDay[4], Fri: questionsCompletedByDay[5], Sat: questionsCompletedByDay[6]
+            }
+
+
+            // let completedQuestions = {
+            //     Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0, Sun: 0
+            // };
 
             setUpCalendar(questionsPerDay, completedQuestions, daysOfWeek);
 
@@ -51,6 +69,14 @@ function createPredictionVisualization(schedule, alreadyCompleted, totalQuestion
             // Update chart when button is clicked
             document.getElementById('update-chart').addEventListener('click', function() {
                 // Get the current schedule from inputs
+
+                for (const day of daysOfWeek) {
+                    const input = document.getElementById(`target-${day}`);
+                    if (!input.reportValidity()) {
+                        return;
+                    }
+                }
+
                 daysOfWeek.forEach(day => {
                     questionsPerDay[day] = parseInt(document.getElementById(`target-${day}`).value) || 0;
                 });
@@ -68,7 +94,6 @@ function createPredictionVisualization(schedule, alreadyCompleted, totalQuestion
                     url: "api/progress/update-schedule",
                     method: "POST",
                     data: scheduleData,
-                    dataType: "json",
                     xhrFields : {
                         withCredentials: true
                     },
@@ -114,10 +139,15 @@ function setUpCalendar(questionsPerDay, completedQuestions, daysOfWeek) {
         input.min = '0';
         input.value = questionsPerDay[day];
         input.id = `target-${day}`;
+        input.setAttribute('required', true);
         input.setAttribute('aria-label', `Target questions for ${day}`);
         input.addEventListener('input', function() {
             handleTargetChange(day, this.value, questionsPerDay, completedQuestions);
         });
+
+        // input.addEventListener("invalid", (e) => {
+        //     input.reportValidity();
+        // });
 
         inputContainer.appendChild(input);
         targetInputsContainer.appendChild(inputContainer);
@@ -137,6 +167,13 @@ function setUpCalendar(questionsPerDay, completedQuestions, daysOfWeek) {
         input.id = `completion-${day}`;
         input.setAttribute('aria-label', `Completed questions for ${day}`);
         input.setAttribute('disabled', true);
+
+        if(questionsPerDay[day] <= completedQuestions[day]) {
+            input.style.backgroundColor = "#A8DCAB";
+        } else if(questionsPerDay[day] > completedQuestions[day]) {
+            input.style.backgroundColor = "#FF7F7F";
+        }
+
         input.addEventListener('input', function() {
             handleCompletedChange(day, this.value, questionsPerDay, completedQuestions);
         });
@@ -150,6 +187,15 @@ function setUpCalendar(questionsPerDay, completedQuestions, daysOfWeek) {
 function handleTargetChange(day, value, questionsPerDay, completedQuestions) {
     const numValue = Math.max(0, parseInt(value) || 0);
     questionsPerDay[day] = numValue;
+
+    const input = document.getElementById(`completion-${day}`);
+
+    if(questionsPerDay[day] <= completedQuestions[day]) {
+        input.style.backgroundColor = "#A8DCAB";
+    } else if(questionsPerDay[day] > completedQuestions[day]) {
+        input.style.backgroundColor = "#FF7F7F";
+    }
+
     updateStats(questionsPerDay, completedQuestions);
 }
 
@@ -164,13 +210,92 @@ function handleCompletedChange(day, value, questionsPerDay, completedQuestions) 
 function updateStats(questionsPerDay, completedQuestions) {
     const weeklyTotal = Object.values(questionsPerDay).reduce((sum, val) => sum + val, 0);
     const completedTotal = Object.values(completedQuestions).reduce((sum, val) => sum + val, 0);
-    const percentage = weeklyTotal > 0 ? Math.round((completedTotal / weeklyTotal) * 100) : 100;
+    const percentage = weeklyTotal > 0 ? Math.min(100, Math.round((completedTotal / weeklyTotal) * 100)) : 100;
 
     document.getElementById('target-total').textContent = `Target: ${weeklyTotal}`;
     document.getElementById('done-total').textContent = `Done: ${completedTotal}`;
     document.getElementById('percentage').textContent = `${percentage}%`;
     document.getElementById('progress-fill').style.width = `${percentage}%`;
 }
+
+function weekDayFromDateArray(dateArray) {
+    // Helper function to calculate ISO week number
+    function getISOWeekNumber(date) {
+        // Create a copy of the date to avoid modifying the original
+        const target = new Date(date.valueOf());
+        // Find Thursday of this week (ISO weeks start on Monday, Thursday is used as reference)
+        const dayNum = date.getUTCDay() || 7;
+        target.setUTCDate(target.getUTCDate() + 4 - dayNum);
+        // Get first day of the year
+        const yearStart = new Date(Date.UTC(target.getUTCFullYear(), 0, 1));
+        // Calculate week number: Jan 1-3 might be in previous year's week
+        return Math.ceil((((target - yearStart) / 86400000) + 1) / 7);
+    }
+
+    // Create a date from the UTC array
+    const utcDate = new Date(Date.UTC(
+        dateArray[0],                // year
+        dateArray[1] - 1,            // month (0-indexed)
+        dateArray[2],                // day
+        dateArray[3] || 0,           // hour (default 0 if undefined)
+        dateArray[4] || 0,           // minute (default 0 if undefined)
+        dateArray[5] || 0,           // second (default 0 if undefined)
+        dateArray[6] % 1000  || 0            // milliseconds (default 0 if undefined)
+    ));
+
+    // Get the date in local time (no manual timezone offset adjustment needed)
+    // JavaScript's Date methods automatically handle this conversion
+    const localDate = new Date(utcDate);
+
+    // Get week numbers for comparison
+    const currentWeek = getISOWeekNumber(new Date());
+    const dateWeek = getISOWeekNumber(localDate);
+    const currentYear = new Date().getFullYear();
+    const dateYear = localDate.getFullYear();
+
+    // Return day of week if in current week, otherwise return -1
+    if (dateWeek === currentWeek && dateYear === currentYear) {
+        // console.log(dateArray);
+        // console.log(localDate);
+        // console.log("dateWeek = " + dateWeek + "\ncurrentWeek = " + currentWeek + "\ndateYear = " + dateYear  + "\ncurrentYear = " + currentYear);
+        return localDate.getDay();
+    } else {
+        return -1;
+    }
+}
+
+// function weekDayFromDateArray(dateArray) {
+//     Date.prototype.getWeekNumber = function(){
+//         var d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
+//         var dayNum = d.getUTCDay() || 7;
+//         d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+//         var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+//         return Math.ceil((((d - yearStart) / 86400000) + 1)/7)
+//     };
+//
+//     // JavaScript months are 0-indexed (0 = January, 11 = December)
+//     // So we need to subtract 1 from the month
+//     const date = new Date(
+//         dateArray[0],  // year
+//         dateArray[1] - 1,  // month (0-indexed)
+//         dateArray[2],  // day
+//         dateArray[3],  // hour
+//         dateArray[4],  // minute
+//         dateArray[5],  // second
+//         dateArray[6] % 1000  // milliseconds (taking only the millisecond part)
+//     );
+//
+//     const localTimezoneOffsetMinutes = new Date().getTimezoneOffset();
+//     const localTimestamp = date.getTime() - (localTimezoneOffsetMinutes * 60 * 1000);
+//     const localDate = new Date(localTimestamp);
+//
+//     // getDay() returns 0 for Sunday, 1 for Monday, etc.
+//     if(localDate.getWeekNumber() ===  new Date().getWeekNumber()) {
+//         return localDate.getDay();
+//     } else {
+//         return -1;
+//     }
+// }
 
 // Generate projection data based on the weekly schedule
 function generateProjection(totalQuestions, alreadyCompleted) {

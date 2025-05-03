@@ -14,7 +14,7 @@ import jakarta.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -27,7 +27,7 @@ public class UserProblemCompletion {
     private int completionId;
 
     @Column(name = "completion_date", nullable = false)
-    private Date completionDate;
+    private LocalDateTime completionDate;
 
     @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
@@ -39,7 +39,7 @@ public class UserProblemCompletion {
     @JoinColumn(name = "problem_id")
     private Problem problem;
 
-    public UserProblemCompletion(int completionId, Date completionDate, User user, Problem problem) {
+    public UserProblemCompletion(int completionId, LocalDateTime completionDate, User user, Problem problem) {
         this.completionId = completionId;
         this.completionDate = completionDate;
         this.user = user;
@@ -57,11 +57,11 @@ public class UserProblemCompletion {
         this.user = user;
     }
 
-    public Date getCompletionDate() {
+    public LocalDateTime getCompletionDate() {
         return completionDate;
     }
 
-    public void setCompletionDate(Date completionDate) {
+    public void setCompletionDate(LocalDateTime completionDate) {
         this.completionDate = completionDate;
     }
 

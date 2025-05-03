@@ -20,7 +20,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import java.util.Date;
+
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Collection;
 import java.util.UUID;
@@ -57,7 +59,7 @@ public class User implements UserDetails {
     @Column(name = "token_version")
     private int tokenVersion = 0;
     @Column(name = "token_version_updated_at")
-    private Date tokenVersionUpdatedAt;
+    private LocalDateTime tokenVersionUpdatedAt;
 
     public User(int userId, String publicId, String firstName, String lastName, String userName, String password, String email, Role role, UserSchedule schedule) {
         this.userId = userId;
@@ -132,7 +134,7 @@ public class User implements UserDetails {
 
     public void incrementTokenVersion() {
         this.tokenVersion++;
-        this.tokenVersionUpdatedAt = new Date();
+        this.tokenVersionUpdatedAt = LocalDateTime.now(ZoneOffset.UTC);
     }
 
     public UserSchedule getUserSchedule() {

@@ -54,7 +54,8 @@ function displayCalendar(cal, processedData, startDate) {
                 start: getPastSunday(new Date()),
                 min: getPastSunday(startDate),
                 max: new Date(getNextSaturday(new Date())),
-                // Explicitly set timezone to UTC
+                // timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                // Explicitly set timezone to use the browser's local timezone
                 timezone: 'UTC'
             },
             range: 7,
@@ -110,38 +111,36 @@ function loadDataAndDisplayCalendarData(cal) {
             if(data.length === 0) {
                 displayCalendar(cal, data, new Date());
             } else {
+                // Get the user's timezone offset in minutes
+                const localTimezoneOffsetMinutes = new Date().getTimezoneOffset();
+
+                // Process the data with explicit timezone conversion
                 const processedData = data.map(item => {
-                    // Parse date as local time
-                    // console.log(item.date);
-                    const fixedDateString = item.date + ":00:00Z";
-                    const localDate = new Date(fixedDateString);
+                    // Parse the UTC time from the server
+                    const utcDate = new Date(item.date);
 
-                    // Get timezone offset in hours
-                    const tzOffset = localDate.getTimezoneOffset() / 60;
+                    if (isNaN(utcDate.getTime())) {
+                        console.error("Invalid date created from:", item.date);
+                        return null; // Skip invalid dates
+                    }
 
-                    // Adjust the hour to compensate for timezone conversion
-                    // This keeps the hour in local time when the date is parsed later
-                    localDate.setHours(localDate.getHours() - tzOffset);
+                    // Convert to local time by adjusting for timezone offset
+                    // Note: getTimezoneOffset returns minutes WEST of UTC, so we subtract to go east
+                    const localTimestamp = utcDate.getTime() - (localTimezoneOffsetMinutes * 60 * 1000);
+                    const localDate = new Date(localTimestamp);
 
+                    // Format as ISO string for CalHeatmap
+                    // But we need to ensure CalHeatmap doesn't try to convert again
                     return {
-                        // Use adjusted ISO string with explicit timezone
                         date: localDate.toISOString(),
                         value: item.value,
-                        // Store the timestamp for min/max calculations
-                        timestamp: localDate.getTime()
+                        timestamp: localTimestamp
                     };
-                });
+                }).filter(item => item !== null);
 
-                // Get min and max timestamps for start and end dates
+                // Get min timestamp for start date
                 const minTimestamp = Math.min(...processedData.map(item => item.timestamp));
-                const maxTimestamp = Math.max(...processedData.map(item => item.timestamp));
-
-                // Create Date objects from the timestamps
                 const startDate = new Date(minTimestamp);
-                //const endDate = new Date(maxTimestamp);
-
-                console.log(startDate);
-                //console.log(endDate);
 
                 displayCalendar(cal, processedData, startDate);
             }

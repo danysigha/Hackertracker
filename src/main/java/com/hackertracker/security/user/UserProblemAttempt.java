@@ -11,7 +11,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.util.Date;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -32,10 +34,10 @@ public class UserProblemAttempt {
     private String notes;
 
     @Column(name = "start_time")
-    private Date startTime;
+    private LocalDateTime startTime;
 
     @Column(name = "end_time")
-    private Date endTime;
+    private LocalDateTime endTime;
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
@@ -47,7 +49,7 @@ public class UserProblemAttempt {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public UserProblemAttempt(Problem problem, User user, byte difficultyRating, Date startTime, Date endTime, String notes) {
+    public UserProblemAttempt(Problem problem, User user, byte difficultyRating, LocalDateTime startTime, LocalDateTime endTime, String notes) {
         this.problem = problem;
         this.user = user;
         this.difficultyRating = difficultyRating;
@@ -56,7 +58,7 @@ public class UserProblemAttempt {
         this.notes = notes;
     }
 
-    public UserProblemAttempt(int attemptId, byte difficultyRating, String notes, Date startTime, Date endTime, Problem problem, User user) {
+    public UserProblemAttempt(int attemptId, byte difficultyRating, String notes, LocalDateTime startTime, LocalDateTime endTime, Problem problem, User user) {
         this.attemptId = attemptId;
         this.difficultyRating = difficultyRating;
         this.notes = notes;
@@ -93,11 +95,11 @@ public class UserProblemAttempt {
         this.notes = notes;
     }
 
-    public Date getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 
@@ -109,11 +111,11 @@ public class UserProblemAttempt {
         this.problem = problem;
     }
 
-    public Date getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Date endTime) {
+    public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
 

@@ -16,8 +16,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -109,8 +110,9 @@ public class PriorityController {
             UserProblemAttempt userProblemAttempt;
 
             if (!startTime.isEmpty() && !endTime.isEmpty()) {
-                Date startTimeDate = Date.from(Instant.parse(startTime));
-                Date endTimeDate = Date.from(Instant.parse(endTime));
+
+                LocalDateTime startTimeDate = LocalDateTime.ofInstant(Instant.parse(startTime), ZoneOffset.UTC);
+                LocalDateTime endTimeDate = LocalDateTime.ofInstant(Instant.parse(endTime), ZoneOffset.UTC);
 
                 String cleanHtml = Jsoup.clean(notes, Safelist.relaxed());
 
@@ -121,7 +123,7 @@ public class PriorityController {
                 userProblemAttempt.setProblem(problem);
                 userProblemAttempt.setUser(myUser);
                 userProblemAttempt.setDifficultyRating(difficultyRatingByte);
-                userProblemAttempt.setEndTime(new Date());
+                userProblemAttempt.setEndTime(LocalDateTime.now(ZoneOffset.UTC));
 
                 // In your controller
                 String cleanHtml = Jsoup.clean(notes, Safelist.relaxed());
@@ -131,7 +133,7 @@ public class PriorityController {
             }
 
             UserProblemCompletion completion = new UserProblemCompletion();
-            completion.setCompletionDate(new Date());
+            completion.setCompletionDate(LocalDateTime.now(ZoneOffset.UTC));
             completion.setUser(user);
             completion.setProblem(problem);
             System.out.println("Completion supposedly getting saved.\n\n");
@@ -158,23 +160,24 @@ public class PriorityController {
      * Get the programming topics
      */
     @GetMapping("/topics")
-    public List<TopicDTO> getAllTopics(@AuthenticationPrincipal User user) {
+    public List<TopicDTO> getAllTopics() {
         List<TopicDTO> topics = new ArrayList<>();
 
         for(Topic topic : topicDao.getAllTopics()) {
             topics.add(TopicDTO.fromEntity(topic));
         }
-
         return topics;
     }
 
     @PostMapping("/update-topic-priority")
-    public void updateTopicPriorities(@RequestBody List<TopicDTO> topics) {
+    public void updateTopicPriorities(@RequestBody List<TopicDTO> topics, @AuthenticationPrincipal User user) {
+        User myUser = userDao.getUserByUserName(user.getUserName());
+
         for(TopicDTO topic : topics) {
             Topic myTopic = topicDao.getTopicById(topic.getTopicId());
             myTopic.setTopicRank(topic.getTopicRank());
             topicDao.updateTopic(myTopic);
         }
-        userProblemPriorityService.recalculateAllPriorities();
+        userProblemPriorityService.recalculateAllPrioritiesByUser(myUser);
     }
 }

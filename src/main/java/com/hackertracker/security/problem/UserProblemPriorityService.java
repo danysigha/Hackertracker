@@ -12,7 +12,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+
 
 
 /**
@@ -59,7 +65,7 @@ public class UserProblemPriorityService {
         priority.setProblem(problem);
         priority.setUser(user);
         priority.setPriorityScore(initialScore);
-        priority.setLastCalculation(new Date());
+        priority.setLastCalculation(LocalDateTime.now(ZoneOffset.UTC));
 
         return priorityDao.save(priority);
     }
@@ -86,7 +92,7 @@ public class UserProblemPriorityService {
         // Recalculate priority score
         double newScore = priorityCalculator.calculatePriorityScore(problem, user);
         priority.setPriorityScore(newScore);
-        priority.setLastCalculation(new Date());
+        priority.setLastCalculation(LocalDateTime.now(ZoneOffset.UTC));
 
         priorityDao.update(priority);
     }
@@ -102,15 +108,41 @@ public class UserProblemPriorityService {
         if(priority == null) {
             priority = new UserProblemPriority(problem, user, newScore);
             priority.setPriorityScore(newScore);
-            priority.setLastCalculation(new Date());
+            priority.setLastCalculation(LocalDateTime.now(ZoneOffset.UTC));
             priorityDao.save(priority);
         } else {
             priority.setPriorityScore(newScore);
-            priority.setLastCalculation(new Date());
+            priority.setLastCalculation(LocalDateTime.now(ZoneOffset.UTC));
             priorityDao.update(priority);
         }
 
         return newScore;
+    }
+
+
+    @Transactional
+    public void recalculateAllPrioritiesByUser(User user) {
+
+        List<UserProblemPriority> newPriorities = new ArrayList<>();
+
+        List<UserProblemPriority> allPriorities = priorityDao.findByUser(user);
+
+        for (UserProblemPriority priority : allPriorities) {
+            Problem problem = problemDao.getProblemByIdWithCollections(priority.getProblem().getProblemId());
+            User myUser = userDao.getUserByIdWithCollections(priority.getUser().getUserId());
+
+            // Recalculate score
+            double newScore = priorityCalculator.calculatePriorityScore(problem, myUser);
+
+            priority.setPriorityScore(newScore);
+            priority.setLastCalculation(LocalDateTime.now(ZoneOffset.UTC));
+            newPriorities.add(priority);
+        }
+
+        priorityDao.updateAll(newPriorities);
+
+        // After recalculating all scores, normalize them to prevent inflation
+        normalizeAllScores(allPriorities);
     }
 
 
@@ -139,7 +171,7 @@ public class UserProblemPriorityService {
 
 
     /**
-     * Scheduled job to recalculate all problem priorities
+     * Scheduled job to recalculate all problem priorities for all users
      * Runs once daily
      */
     @Scheduled(cron = "0 0 0 * * ?")  // Run at midnight every day
@@ -158,7 +190,7 @@ public class UserProblemPriorityService {
             double newScore = priorityCalculator.calculatePriorityScore(problem, user);
 
             priority.setPriorityScore(newScore);
-            priority.setLastCalculation(new Date());
+            priority.setLastCalculation(LocalDateTime.now(ZoneOffset.UTC));
             newPriorities.add(priority);
         }
 
@@ -170,7 +202,7 @@ public class UserProblemPriorityService {
 
 
     /**
-     * Normalize all priority scores for all users to ensure they stay within 0-100 range
+     * Normalize all priority scores passed to ensure they stay within 0-100 range
      * This prevents score inflation over time
      * Run after recalculating priorities
      */
