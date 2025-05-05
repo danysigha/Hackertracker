@@ -4,7 +4,9 @@ function createTopicList() {
     let topics = [];
     let nextHiddenItem = 6;
     let pendingChanges = false;
-    let updateTimer = null;
+    // let updateTimer = null;
+    // Track the active timeout
+    let feedbackTimeout = null;
 
     $.ajax({
         url: "api/challenges/topics",
@@ -148,9 +150,9 @@ function createTopicList() {
                     showFeedback("Order changed - click Save to update");
 
                     // Set up debounced server update
-                    if (updateTimer) {
-                        clearTimeout(updateTimer);
-                    }
+                    // if (updateTimer) {
+                    //     clearTimeout(updateTimer);
+                    // }
 
                     // console.log(topics)
 
@@ -260,12 +262,19 @@ function createTopicList() {
     function showFeedback(message, autoHide = true) {
         const feedback = document.getElementById('feedback');
         if (feedback) {
+            // Clear any existing timeout
+            if (feedbackTimeout) {
+                clearTimeout(feedbackTimeout);
+                feedbackTimeout = null;
+            }
+
             feedback.textContent = message;
             feedback.style.display = 'block';
 
             if (autoHide) {
-                setTimeout(() => {
+                feedbackTimeout = setTimeout(() => {
                     feedback.style.display = 'none';
+                    feedbackTimeout = null;
                 }, 4000);
             }
         }

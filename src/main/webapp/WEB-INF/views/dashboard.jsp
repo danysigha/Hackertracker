@@ -5,30 +5,26 @@
 <html lang="en">
     <head>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+        <link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
         <!-- Include D3.js (required dependency) -->
         <script src="https://d3js.org/d3.v7.min.js"></script>
 
         <!-- Include Cal-HeatMap JS and CSS -->
-        <script src="https://unpkg.com/cal-heatmap/dist/plugins/Legend.min.js"></script>
         <script src="https://unpkg.com/cal-heatmap/dist/cal-heatmap.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.3/dist/purify.min.js"></script>
+        <script src="https://unpkg.com/cal-heatmap/dist/plugins/Legend.min.js"></script>
         <link rel="stylesheet" href="https://unpkg.com/cal-heatmap/dist/cal-heatmap.css">
+
+
+        <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.3/dist/purify.min.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
+
+
+        <link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg">
 
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
         <script src="<c:url value='tinymce/js/tinymce/tinymce.min.js'/>"></script>
-
-        <script>
-            tinymce.init({
-                selector: '#myEditor',
-                plugins: 'link lists code',
-                toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link code',
-                height: 400,
-                // skin: 'oxide-dark',
-                // content_css: 'dark'
-            });
-        </script>
 
         <link rel="stylesheet" href="/css/baseStyle.css">
         <link rel="stylesheet" href="/css/homeStyle.css">
@@ -37,7 +33,7 @@
 
     <body>
         <nav>
-            <img class="logo" src="/assets/hackertracker.png" alt="HackerTracker Logo">
+            <img class="logo" src="/assets/hackertracker.svg" alt="HackerTracker Logo">
 
             <div class="navigation-buttons">
 
@@ -86,108 +82,280 @@
                 </div>
             </section>
 
+            <section id="overlay">
+                <section id="search-section">
+                    <div class="s010" id="s010">
+                        <form>
+                            <div class="inner-form">
+                                <div class="basic-search">
+                                    <div class="input-field">
+                                        <input id="search" type="text" placeholder="Type Keywords" />
+                                        <div class="icon-wrap">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="advance-search">
+                                    <span class="desc">ADVANCED SEARCH</span>
+                                    <div class="row">
+                                        <select id="select-topics"  multiple data-placeholder="Topics" class="form-control">
+                                            <optgroup label="Topics">
+                                                <option value="Array / String" selected>Array / String</option>
+                                                <option value="Two Pointers">Two Pointers</option>
+                                                <option value="Sliding Window">Sliding Window</option>
+                                                <option value="Matrix">Matrix</option>
+                                                <option value="Hashmap">Hashmap</option>
+                                                <option value="Intervals">Intervals</option>
+                                                <option value="Stack">Stack</option>
+                                                <option value="Linked List">Linked List</option>
+                                                <option value="Binary Tree General">Binary Tree General</option>
+                                                <option value="Binary Tree BFS">Binary Tree BFS</option>
+                                                <option value="Binary Search Tree">Binary Search Tree</option>
+                                                <option value="Graph General">Graph General</option>
+                                                <option value="Graph BFS">Graph BFS</option>
+                                                <option value="Trie">Trie</option>
+                                                <option value="Backtracking">Backtracking</option>
+                                                <option value="Divide & Conquer">Divide & Conquer</option>
+                                                <option value="Kadane's Algorithm">Kadane's Algorithm</option>
+                                                <option value="Binary Search">Binary Search</option>
+                                                <option value="Heap">Heap</option>
+                                                <option value="Bit Manipulation">Bit Manipulation</option>
+                                                <option value="Math">Math</option>
+                                                <option value="1D DP">1D DP</option>
+                                                <option value="Multidimensional DP">Multidimensional DP</option>
+                                            </optgroup>
+                                        </select>
+
+                                        <select id="select-tags"  multiple data-placeholder="Tags" class="form-control">
+                                            <optgroup label="Tags">
+                                                <option placeholder="" value="">Tags</option>
+                                                <option value="Array" selected>Array</option>
+                                                <option value="Sorting">Sorting</option>
+                                                <option value="Two Pointers">Two Pointers</option>
+                                                <option value="Counting">Counting</option>
+                                                <option value="Divide and Conquer">Divide and Conquer</option>
+                                                <option value="Hash Table">Hash Table</option>
+                                                <option value="Math">Math</option>
+                                                <option value="Dynamic Programming">Dynamic Programming</option>
+                                                <option value="Greedy">Greedy</option>
+                                                <option value="Counting Sort">Counting Sort</option>
+                                                <option value="Design">Design</option>
+                                                <option value="Randomized">Randomized</option>
+                                                <option value="Prefix Sum">Prefix Sum</option>
+                                                <option value="Monotonic Stack">Monotonic Stack</option>
+                                                <option value="Stack">Stack</option>
+                                                <option value="String">String</option>
+                                                <option value="Trie">Trie</option>
+                                                <option value="String Matching">String Matching</option>
+                                                <option value="Simulation">Simulation</option>
+                                                <option value="Binary Search">Binary Search</option>
+                                                <option value="Sliding Window">Sliding Window</option>
+                                                <option value="Matrix">Matrix</option>
+                                                <option value="Union Find">Union Find</option>
+                                                <option value="Recursion">Recursion</option>
+                                                <option value="Linked List">Linked List</option>
+                                                <option value="Doubly-Linked List">Doubly-Linked List</option>
+                                                <option value="Binary Tree">Binary Tree</option>
+                                                <option value="Breadth-First Search">Breadth-First Search</option>
+                                                <option value="Depth-First Search">Depth-First Search</option>
+                                                <option value="Tree">Tree</option>
+                                                <option value="Binary Search Tree">Binary Search Tree</option>
+                                                <option value="Iterator">Iterator</option>
+                                                <option value="Bit Manipulation">Bit Manipulation</option>
+                                                <option value="Graph">Graph</option>
+                                                <option value="Shortest Path">Shortest Path</option>
+                                                <option value="Topological Sort">Topological Sort</option>
+                                                <option value="Backtracking">Backtracking</option>
+                                                <option value="Merge Sort">Merge Sort</option>
+                                                <option value="Heap (Priority Queue)">Heap (Priority Queue)</option>
+                                                <option value="Monotonic Queue">Monotonic Queue</option>
+                                                <option value="Queue">Queue</option>
+                                                <option value="Quickselect">Quickselect</option>
+                                                <option value="Data Stream">Data Stream</option>
+                                                <option value="Geometry">Geometry</option>
+                                                <option value="Memoization">Memoization</option>
+                                            </optgroup>
+                                        </select>
+
+                                        <select id="select-level"  multiple data-placeholder="Difficulty Level" class="form-control">
+                                            <optgroup label="Difficulty Level">
+                                                <option placeholder="" value="">Difficulty Level</option>
+                                                <option value="Easy" selected>Easy</option>
+                                                <option value="Medium">Medium</option>
+                                                <option value="Hard">Hard</option>
+                                            </optgroup>
+                                        </select>
+
+                                        <select id="select-status"  multiple data-placeholder="Completion status" class="form-control">
+                                            <optgroup label="Completition status">
+                                                <option placeholder="" value="">Completion status</option>
+                                                <option value="Completed" selected>Completed</option>
+                                                <option value="Not completed" selected>Not completed</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="row third">
+                                        <div class="input-field">
+                                            <div class="result-count">
+                                                <span>108 </span>results</div>
+                                            <div class="group-btn">
+                                                <button class="btn-delete" id="delete">RESET</button>
+                                                <button type="button" class="btn-search">SEARCH</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            </section>
+
+
             <section>
 
                 <section id="challenge-card">
 
-                    <section class="challenge-card-head">
-                        <div>
-                            <h3 id="challengeTitle">Two Sums</h3>
-                            <div id="challengeTopic">Topic: Algorithms</div>
-                        </div>
-                        <div class="access-challenge">
-                            <p id="challengeLevel">Easy</p>
-                            <a id="challengeUrl" href="" target='_blank'>
-                                <button type="button">
-                                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="2 0 90 85" style="enable-background:new 0 0 100 100;" xml:space="preserve"><title>61 all</title><path d="M28.8,84.1h36l0,0c7.2,0,13-5.8,13-13v-22c0-1.7-1.3-3-3-3l0,0c-1.7,0-3,1.3-3,3v22c0,3.9-3.1,7-7,7l0,0h-36  c-3.9,0-7-3.1-7-7v-36c0-3.9,3.1-7,7-7l0,0h22l0,0c1.7,0,3-1.3,3-3s-1.3-3-3-3h-22l0,0c-7.2,0-13,5.8-13,13l0,0v36  C15.8,78.3,21.6,84.1,28.8,84.1z"/><path d="M84.2,37.2V18.9c0-0.2,0-0.4-0.1-0.6c0-0.1,0-0.2-0.1-0.2c0-0.1-0.1-0.2-0.1-0.3c0-0.1-0.1-0.2-0.2-0.3  c0-0.1-0.1-0.2-0.1-0.2c-0.2-0.3-0.5-0.6-0.8-0.8l-0.2-0.1C82.4,16.1,82.2,16,82,16l-0.3-0.1c-0.2,0-0.4-0.1-0.6-0.1l0,0H62.8l0,0  c-1.7,0-3,1.3-3,3s1.3,3,3,3h11.1L46.4,49.4c-1.2,1.2-1.2,3.1,0,4.2c1.2,1.2,3.1,1.2,4.2,0l27.6-27.5v11.1c0,1.7,1.3,3,3,3l0,0  C82.8,40.2,84.1,38.8,84.2,37.2z"/></svg>
+                    <aside class="question-navigation">
+                        <section class="sticky-menu">
+                            <button id="previousQuestionBtn" type="button">
+                                <svg id="backward-arrow" viewBox="0 0 40 24">
+                                    <path d="M35,12 L5,12 M15,2 L5,12 L15,22"></path>
+                                </svg>
+                            </button>
+                            <button id="nextQuestionBtn" type="button">
+                                <svg id="forward-arrow" viewBox="0 0 40 24">
+                                    <path d="M5,12 L35,12 M25,2 L35,12 L25,22"></path>
+                                </svg>
+                            </button>
+
+                            <button id="searchBtn">
+                                <svg id="searchIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 900 900"><path d="M796-121 533-384q-30 26-69.96 40.5Q423.08-329 378-329q-108.16 0-183.08-75Q120-479 120-585t75-181q75-75 181.5-75t181 75Q632-691 632-584.85 632-542 618-502q-14 40-42 75l264 262-44 44ZM377-389q81.25 0 138.13-57.5Q572-504 572-585t-56.87-138.5Q458.25-781 377-781q-82.08 0-139.54 57.5Q180-666 180-585t57.46 138.5Q294.92-389 377-389Z"/></svg>
+                            </button>
+
+                            <a href="#challengeDifficultyRating">
+                                <button id="clockBtn">
+                                    <svg id="clockIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
                                 </button>
                             </a>
-                        </div>
-                    </section>
 
-                    <section>
+                            <a href="#timerDisplay">
+                                <button id="textAreaBtn">
+                                    <svg id="textIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 900 800"><path d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z"/></svg>
+                                </button>
+                            </a>
 
-                        <section class="tag-section">
-                            <h4 class="tags-heading">Tags</h4>
-                            <div id="challengeTags" class="tags-list">
-                            </div>
+                            <button id="skipQuestionBtn" type="button">
+                                <svg id="skipIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 900 900">
+                                    <path d="M680-240v-480h60v480h-60Zm-460 0v-480l346 240-346 240Zm60-240Zm0 125 181-125-181-125v250Z"/>
+                                </svg>
+                            </button>
+
+                            <button id="addAttemptBtn">
+                                <svg id="checkmark" viewBox="0 0 36 25"><path d="M3,14.1L12,23L33,2"></path></svg>
+                            </button>
                         </section>
+                    </aside>
 
-                        <section class="difficulty-section">
-
-                            <h4 id="challengeDifficultyRating" class="difficulty-heading">Difficulty Rating (3/10)</h4>
-
-                            <div class="difficulty-container">
-                                <input
-                                        type="range"
-                                        min="0"
-                                        max="10"
-                                        value="3"
-                                        class="difficulty-slider"
-                                        id="difficultySlider"
-                                >
-                                <div class="difficulty-ticks">
-                                    <span>0</span>
-                                    <span>1</span>
-                                    <span>2</span>
-                                    <span>3</span>
-                                    <span>4</span>
-                                    <span>5</span>
-                                    <span>6</span>
-                                    <span>7</span>
-                                    <span>8</span>
-                                    <span>9</span>
-                                    <span>10</span>
-                                </div>
-                            </div>
-
-                        </section>
-
-
-                        <section class="timer-section">
+                    <section id="challenge-card-section">
+                        <section class="challenge-card-head">
                             <div>
-                                <div class="timer-header">
-                                    <h3 class="timer-title">
-                                        <svg class="clock-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <polyline points="12 6 12 12 16 14"></polyline>
-                                        </svg>
-                                        Timer
-                                    </h3>
-                                    <div class="timer-display" id="timerDisplay">00:00:00</div>
-                                </div>
-
-                                <div class="timer-info">
-                                    <div class="time-item">
-                                        <span class="time-label">Start Time</span>
-                                        <span class="time-value" id="startTimeDisplay">--:--:--</span>
-                                    </div>
-                                    <div class="time-item">
-                                        <span class="time-label">End Time</span>
-                                        <span class="time-value" id="endTimeDisplay">--:--:--</span>
-                                    </div>
-                                </div>
-
-                                <div class="timer-controls">
-                                    <button type = "button" class="timer-button start-button" id="startTimerBtn">Start Timer</button>
-                                    <button type = "button" class="timer-button stop-button" id="stopTimerBtn" style="display: none;">Stop Timer</button>
-                                </div>
+                                <h3 id="challengeTitle">Two Sums</h3>
+                                <div id="challengeTopic">Topic: Algorithms</div>
                             </div>
-
-                        </section>
-
-                        <section class="notes-section">
-                            <h4 class="notes-heading">Notes</h4>
-                            <textarea id="myEditor" name="content"></textarea>
-                            <br/>
-                            <div>
-                                <button id="previousQuestionBtn" type="button">← Back</button>
-                                <button id="nextQuestionBtn" type="button">Next →</button>
-                                <button id="skipQuestionBtn" type="button">Skip</button>
-                                <input type="submit" value="Mark completed" id="addAttemptBtn">
+                            <div class="access-challenge">
+                                <p id="challengeLevel">Easy</p>
+                                <a id="challengeUrl" href="" target='_blank'>
+                                    <button type="button">
+                                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="2 0 90 85" style="enable-background:new 0 0 100 100;" xml:space="preserve"><title>61 all</title><path d="M28.8,84.1h36l0,0c7.2,0,13-5.8,13-13v-22c0-1.7-1.3-3-3-3l0,0c-1.7,0-3,1.3-3,3v22c0,3.9-3.1,7-7,7l0,0h-36  c-3.9,0-7-3.1-7-7v-36c0-3.9,3.1-7,7-7l0,0h22l0,0c1.7,0,3-1.3,3-3s-1.3-3-3-3h-22l0,0c-7.2,0-13,5.8-13,13l0,0v36  C15.8,78.3,21.6,84.1,28.8,84.1z"/><path d="M84.2,37.2V18.9c0-0.2,0-0.4-0.1-0.6c0-0.1,0-0.2-0.1-0.2c0-0.1-0.1-0.2-0.1-0.3c0-0.1-0.1-0.2-0.2-0.3  c0-0.1-0.1-0.2-0.1-0.2c-0.2-0.3-0.5-0.6-0.8-0.8l-0.2-0.1C82.4,16.1,82.2,16,82,16l-0.3-0.1c-0.2,0-0.4-0.1-0.6-0.1l0,0H62.8l0,0  c-1.7,0-3,1.3-3,3s1.3,3,3,3h11.1L46.4,49.4c-1.2,1.2-1.2,3.1,0,4.2c1.2,1.2,3.1,1.2,4.2,0l27.6-27.5v11.1c0,1.7,1.3,3,3,3l0,0  C82.8,40.2,84.1,38.8,84.2,37.2z"/></svg>
+                                    </button>
+                                </a>
                             </div>
                         </section>
 
+                        <section>
+
+                            <section class="tag-section">
+                                <h4 class="tags-heading">Tags</h4>
+                                <div id="challengeTags" class="tags-list">
+                                </div>
+                            </section>
+
+                            <section class="difficulty-section">
+
+                                <h4 id="challengeDifficultyRating" class="difficulty-heading">Difficulty Rating (3/10)</h4>
+
+                                <div class="difficulty-container">
+                                    <input
+                                            type="range"
+                                            min="0"
+                                            max="10"
+                                            value="3"
+                                            class="difficulty-slider"
+                                            id="difficultySlider"
+                                    >
+                                    <div class="difficulty-ticks">
+                                        <span>0</span>
+                                        <span>1</span>
+                                        <span>2</span>
+                                        <span>3</span>
+                                        <span>4</span>
+                                        <span>5</span>
+                                        <span>6</span>
+                                        <span>7</span>
+                                        <span>8</span>
+                                        <span>9</span>
+                                        <span>10</span>
+                                    </div>
+                                </div>
+
+                            </section>
+
+
+                            <section class="timer-section">
+                                <div>
+                                    <div class="timer-header">
+                                        <h3 class="timer-title">
+                                            <svg class="clock-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <polyline points="12 6 12 12 16 14"></polyline>
+                                            </svg>
+                                            Timer
+                                        </h3>
+                                        <div class="timer-display" id="timerDisplay">00:00:00</div>
+                                    </div>
+
+                                    <div class="timer-info">
+                                        <div class="time-item">
+                                            <span class="time-label">Start Time</span>
+                                            <span class="time-value" id="startTimeDisplay">--:--:--</span>
+                                        </div>
+                                        <div class="time-item">
+                                            <span class="time-label">End Time</span>
+                                            <span class="time-value" id="endTimeDisplay">--:--:--</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="timer-controls">
+                                        <button type = "button" class="timer-button start-button" id="startTimerBtn">Start Timer</button>
+                                        <button type = "button" class="timer-button stop-button" id="stopTimerBtn" style="display: none;">Stop Timer</button>
+                                    </div>
+                                </div>
+
+                            </section>
+
+                            <section class="notes-section">
+                                <h4 class="notes-heading">Notes</h4>
+                                <textarea id="myEditor" name="content"></textarea>
+                                <br/>
+                            </section>
+
+                        </section>
                     </section>
 
                 </section>
@@ -196,11 +364,13 @@
 
         </main>
 
-        <script type="module" src="/js/loadview.js" ></script>
+        <script src="/js/searchscript.js"></script>
 
         <script src="/js/timer.js"></script>
 
         <script src="/js/heatmap.js"></script>
+
+        <script src="/js/loadview.js" ></script>
 
     </body>
 

@@ -54,7 +54,7 @@ public class PriorityCalculator {
      */
     public double calculatePriorityScore(Problem problem, User user) {
         // Get the highest topic rank for this problem (most important)
-        int topicRankScore = getTopicRankScore(problem);
+        int topicRankScore = getTopicRankScore(problem, user);
 
         // Get the user's difficulty rating for this problem
         int difficultyScore = getDifficultyScore(problem, user);
@@ -81,19 +81,27 @@ public class PriorityCalculator {
     /**
      * Get score based on topic rank (higher rank = higher score)
      */
-    private int getTopicRankScore(Problem problem) {
+    private int getTopicRankScore(Problem problem, User user) {
 
-        Problem myProblem = problemDao.getProblemByIdWithCollections(problem.getProblemId());
+        User myUser = userDao.getUserByIdWithTopics(user.getUserId());
 
-        List<Topic> topics = myProblem.getListTopics();
-        if (topics.isEmpty()) {
-            return 50; // Default middle value if no topics
-        }
+//        Problem myProblem = problemDao.getProblemByIdWithCollections(problem.getProblemId());
+
+        List<Byte> topicRanks = myUser.getTopicRanks().getTopics();
+
+        OptionalInt highestRank = topicRanks.stream()
+                .mapToInt(Byte::intValue)
+                .max();
+
+//        List<Topic> topics = myProblem.getListTopics();
+//        if (topics.isEmpty()) {
+//            return 50; // Default middle value if no topics
+//        }
 
         // Find the highest rank among all topics associated with this problem
-        OptionalInt highestRank = topics.stream()
-                .mapToInt(Topic::getTopicRank)
-                .max();
+//        OptionalInt highestRank = topics.stream()
+//                .mapToInt(Topic::getTopicRank)
+//                .max();
 
         if (highestRank.isPresent()) {
             // INVERTED normalization - lower ranks get higher scores
@@ -276,9 +284,9 @@ public class PriorityCalculator {
      * Calculate initial priority score when user first encounters a problem
      * This method uses problem metadata only (no attempt history)
      */
-    public double calculateInitialPriorityScore(Problem problem) {
+    public double calculateInitialPriorityScore(Problem problem, User user) {
         // Topic rank is the primary factor
-        int topicRankScore = getTopicRankScore(problem);
+        int topicRankScore = getTopicRankScore(problem, user);
 
         // Use problem's static difficulty level
         int difficultyScore = invertDifficultyScore(

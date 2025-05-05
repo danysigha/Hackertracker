@@ -90,6 +90,7 @@ public class UserDAO {
                 Hibernate.initialize(user.getListAttempts());
                 Hibernate.initialize(user.getListProblemPriorities());
                 Hibernate.initialize(user.getUserSchedule());
+                Hibernate.initialize(user.getTopicRanks());
             }
 
             return user;
@@ -128,6 +129,32 @@ public class UserDAO {
             // Initialize the collections within the same session
             if (user != null && user.getUserSchedule() != null) {
                 Hibernate.initialize(user.getUserSchedule().getSchedule());
+            }
+
+            return user;
+        }
+        finally {
+            session.close();
+        }
+    }
+
+    /**
+     * Get a User entity by username with schedule
+     */
+    @Transactional(readOnly = true)
+    public User getUserByIdWithTopics(int userId) {
+        // Use the current transaction's session rather than opening a new one
+        Session session = sessionFactory.openSession();
+
+        try {
+            // Query directly in this method instead of calling getUserByUserName
+            Query<User> q = session.createQuery("from User where userId=:userId", User.class);
+            q.setParameter("userId", userId);
+            User user = q.uniqueResult();
+
+            // Initialize the collections within the same session
+            if (user != null && user.getTopicRanks() != null) {
+                Hibernate.initialize(user.getTopicRanks().getTopics());
             }
 
             return user;

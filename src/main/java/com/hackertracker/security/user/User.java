@@ -61,7 +61,25 @@ public class User implements UserDetails {
     @Column(name = "token_version_updated_at")
     private LocalDateTime tokenVersionUpdatedAt;
 
-    public User(int userId, String publicId, String firstName, String lastName, String userName, String password, String email, Role role, UserSchedule schedule) {
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserProblemAttempt> problemAttempts = new HashSet<>();
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserProblemPriority> problemPriorities = new HashSet<>();
+
+    @JsonManagedReference
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_schedule_id")
+    private UserSchedule userSchedule;
+
+    @JsonManagedReference
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_topic_id")
+    private UserTopics topicRanks;
+
+    public User(int userId, String publicId, String firstName, String lastName, String userName, String password, String email, Role role, UserSchedule schedule, UserTopics topicRanks) {
         this.userId = userId;
         this.publicId = publicId;
         this.firstName = firstName;
@@ -71,8 +89,8 @@ public class User implements UserDetails {
         this.email = email;
         this.role = role;
         this.userSchedule = schedule;
+        this.topicRanks = topicRanks;
     }
-
 
     public User() {}
 
@@ -145,6 +163,14 @@ public class User implements UserDetails {
         this.userSchedule = userSchedule;
     }
 
+    public UserTopics getTopicRanks() {
+        return topicRanks;
+    }
+
+    public void setTopicRanks(UserTopics topicRanks) {
+        this.topicRanks = topicRanks;
+    }
+
     @PrePersist
     protected void onCreate() {
         if (publicId == null) {
@@ -190,19 +216,6 @@ public class User implements UserDetails {
         return true;
     }
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<UserProblemAttempt> problemAttempts = new HashSet<>();
-
-    @JsonManagedReference
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<UserProblemPriority> problemPriorities = new HashSet<>();
-
-    @JsonManagedReference
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_schedule_id")
-    private UserSchedule userSchedule;
-
     /**
      * Get all priorities for this user's problems
      * Note: This method must be called within a transaction context
@@ -235,6 +248,7 @@ public class User implements UserDetails {
                 ", password=" + password +
                 ", email=" + email +
                 ", schedule=" + userSchedule +
+                ", topicRanks=" + topicRanks +
                 '}';
     }
 }

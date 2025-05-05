@@ -119,6 +119,21 @@ public class UserProblemAttemptDAO {
         }
     }
 
+
+    /**
+     * Get number of attempts
+     */
+    public int getNumberOfAttemptsByUserId(int userId) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Long> query = session.createQuery("select count(*) from UserProblemAttempt where user.userId=:userId", Long.class);
+            query.setParameter("userId", userId);
+            Long count = query.uniqueResult();
+            return count.intValue();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
     /**
      * Get number of attempts
      */

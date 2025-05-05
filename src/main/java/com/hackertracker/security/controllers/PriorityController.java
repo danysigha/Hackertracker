@@ -19,6 +19,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -160,24 +162,33 @@ public class PriorityController {
      * Get the programming topics
      */
     @GetMapping("/topics")
-    public List<TopicDTO> getAllTopics() {
+    public List<TopicDTO> getAllTopics(@AuthenticationPrincipal User user) {
+
+        User myUser = userDao.getUserByIdWithTopics(userDao.getUserByUserName(user.getUserName()).getUserId());
+
         List<TopicDTO> topics = new ArrayList<>();
 
         for(Topic topic : topicDao.getAllTopics()) {
+            topic.setTopicRank( myUser.getTopicRanks().getTopics().get( topic.getTopicId() - 1 ) );
             topics.add(TopicDTO.fromEntity(topic));
         }
+
+        Collections.sort(topics, Comparator.comparing(TopicDTO::getTopicRank));
+
         return topics;
     }
 
     @PostMapping("/update-topic-priority")
     public void updateTopicPriorities(@RequestBody List<TopicDTO> topics, @AuthenticationPrincipal User user) {
-        User myUser = userDao.getUserByUserName(user.getUserName());
+        User myUser = userDao.getUserByIdWithTopics(user.getUserId());
 
         for(TopicDTO topic : topics) {
-            Topic myTopic = topicDao.getTopicById(topic.getTopicId());
-            myTopic.setTopicRank(topic.getTopicRank());
-            topicDao.updateTopic(myTopic);
+            myUser.getTopicRanks().getTopics().set(topic.getTopicId() - 1, topic.getTopicRank());
+//            Topic myTopic = topicDao.getTopicById(topic.getTopicId());
+//            myTopic.setTopicRank(topic.getTopicRank());
+//            topicDao.updateTopic(myTopic);
         }
+        userDao.updateUser(myUser);
         userProblemPriorityService.recalculateAllPrioritiesByUser(myUser);
     }
 }

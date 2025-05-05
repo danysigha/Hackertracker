@@ -1,9 +1,8 @@
 package com.hackertracker.security.problem;
 
 import com.hackertracker.security.Schedule.PriorityCalculator;
-import com.hackertracker.security.dao.ProblemDAO;
-import com.hackertracker.security.dao.UserDAO;
-import com.hackertracker.security.dao.UserProblemPriorityDAO;
+import com.hackertracker.security.dao.*;
+import com.hackertracker.security.topic.Topic;
 import com.hackertracker.security.user.*;
 import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
@@ -31,17 +30,23 @@ public class UserProblemPriorityService {
     private final PriorityCalculator priorityCalculator;
     private final ProblemDAO problemDao;
     private final UserDAO userDao;
+    private final TopicDAO topicDao;
+    private final UserTopicsDAO userTopicsDao;
 //    private final UserProblemService userProblemService;
 
 
     public UserProblemPriorityService(
             UserProblemPriorityDAO priorityDao,
             PriorityCalculator priorityCalculator,
-            ProblemDAO problemDao, UserDAO userDAO) {
+            ProblemDAO problemDao, UserDAO userDAO,
+            TopicDAO topicDao,
+            UserTopicsDAO userTopicsDao) {
         this.priorityDao = priorityDao;
         this.priorityCalculator = priorityCalculator;
         this.problemDao = problemDao;
         this.userDao = userDAO;
+        this.topicDao = topicDao;
+        this.userTopicsDao = userTopicsDao;
     }
 
     /**
@@ -58,7 +63,7 @@ public class UserProblemPriorityService {
         }
 
         // Calculate initial priority score
-        double initialScore = priorityCalculator.calculateInitialPriorityScore(problem);
+        double initialScore = priorityCalculator.calculateInitialPriorityScore(problem, user);
 
         // Create new priority record
         UserProblemPriority priority = new UserProblemPriority();
@@ -258,6 +263,21 @@ public class UserProblemPriorityService {
      */
     @Transactional
     public void initializeAllPrioritiesForNewUser(User user) {
+
+        UserTopics userTopics = new UserTopics();
+        userTopics.setUser(user);
+
+        List<Byte> myTopics = new ArrayList<>();
+        for(Topic topic : topicDao.getAllTopics()) {
+            myTopics.add(topic.getTopicRank());
+        }
+
+        userTopics.setTopics(myTopics);
+        userTopicsDao.saveUserTopics(userTopics);
+
+        user.setTopicRanks(userTopics);
+        userDao.updateUser(user);
+
         for (Problem problem : problemDao.getAllProblems()) {
             initializePriority(problem, user);
         }

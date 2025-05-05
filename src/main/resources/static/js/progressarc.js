@@ -15,7 +15,7 @@ function createVisualization() {
             const easyProgressData = {
                 total: data.numberOfEasyQuestions,
                 completed: data.numberOfEasyCompletedQuestions,
-                color: "#A8DCAB", // Teal for Easy
+                color: "#A8DCAB", // light green for Easy
                 progressColor: "green"
             };
 

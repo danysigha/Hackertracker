@@ -112,7 +112,7 @@ public class HibernateConfig {
         return new MetadataSources(serviceRegistry)
                 .addAnnotatedClass(User.class)
                 .addAnnotatedClass(Problem.class)
-//                .addAnnotatedClass(Weekday.class)
+                .addAnnotatedClass(UserTopics.class)
                 .addAnnotatedClass(Tag.class)
                 .addAnnotatedClass(TagProblem.class)
                 .addAnnotatedClass(Topic.class)

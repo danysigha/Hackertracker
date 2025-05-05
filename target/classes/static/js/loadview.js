@@ -220,6 +220,15 @@ function loadQuestion(questionId = null, addToPast = true) {
             $("#challengeTopic").html(topicHtmlList);
 
             $("#challengeLevel").text(data.problem.difficultyLevel);
+
+            if(data.problem.difficultyLevel === "Easy") {
+                $("#challengeLevel").addClass("easy-level");
+            } else if(data.problem.difficultyLevel === "Medium") {
+                $("#challengeLevel").addClass("medium-level");
+            } else {
+                $("#challengeLevel").addClass("hard-level");
+            }
+
             $("#challengeUrl").attr("href", data.problem.pageUrl);
             let tagHtmlList = "";
 
@@ -317,6 +326,18 @@ $("#nextQuestionBtn").on("click", function() {
     }
 });
 
+// For continuous updates as the user drags the slider
+$('#difficultySlider').on('input', function() {
+    const value = $(this).val();
+    $("#challengeDifficultyRating").text("Difficulty Rating (" + value + "/10)");
+});
+
+// For when the user finishes moving the slider
+$('#difficultySlider').on('change', function() {
+    const value = $(this).val();
+    $("#challengeDifficultyRating").text("Difficulty Rating (" + value + "/10)");
+});
+
 
 // $("#skipQuestionBtn").on("click", function() {
 //     loadQuestion();
@@ -327,6 +348,8 @@ $("#addAttemptBtn").on("click", function() {
     // Do whatever is needed to mark the question as completed
 
     //Problem problem, User user, byte difficultyRating, Date startTime, Date endTime, String notes
+
+    stopTimer();
 
     // Set up AJAX parameters
     let ajaxData = {};
@@ -426,10 +449,14 @@ function updateNavigationButtons() {
     if (futureQuestions.length > 0) {
         $("#nextQuestionBtn").prop("disabled", false);
         $("#addAttemptBtn").prop("disabled", true);
+        $("#checkmark path").attr("stroke", "#D3D3D3");
+        // $("#skipIcon path").attr("fill", "#D3D3D3");
         $("#skipQuestionBtn").prop("disabled", true);
     } else {
         $("#nextQuestionBtn").prop("disabled", true);
         $("#addAttemptBtn").prop("disabled", false);
+        $("#checkmark path").attr("stroke", "#4CAF50");
+        // $("#skipIcon path").attr("fill", "#000000");
         $("#skipQuestionBtn").prop("disabled", false);
     }
 }
@@ -441,6 +468,16 @@ $(document).ready(function() {
         // console.log("we outsiiiiiiddddde!");
         const token = getJwtToken();
         if (token) {
+
+            tinymce.init({
+                selector: '#myEditor',
+                plugins: 'link lists code',
+                toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link code',
+                height: 400,
+                // skin: 'oxide-dark',
+                // content_css: 'dark'
+            });
+
             // console.log("we insiiiiiiddddde!");
             // Token found, load question
             loadQuestion();

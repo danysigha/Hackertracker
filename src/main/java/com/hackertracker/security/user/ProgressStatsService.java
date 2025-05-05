@@ -36,7 +36,7 @@ public class ProgressStatsService {
         dto.setNumberOfMediumCompletedQuestions(userProblemCompletionDao.getNumberOfProblemsByDifficultyLevelByUserId("Medium", user.getUserId()));
         dto.setNumberOfHardQuestions(problemDao.getNumberOfProblemsByDifficultyLevel("Hard"));
         dto.setNumberOfHardCompletedQuestions(userProblemCompletionDao.getNumberOfProblemsByDifficultyLevelByUserId("Hard", user.getUserId()));
-        dto.setNumberOfAttempts(userProblemAttemptDao.getNumberOfAttempts());
+        dto.setNumberOfAttempts(userProblemAttemptDao.getNumberOfAttemptsByUserId(user.getUserId()));
 
         List<UserProblemCompletionDTO> upcDtos = new ArrayList<>();
         userProblemCompletionDao.getAllCompletedProblemsByUserId(user.getUserId()).forEach(

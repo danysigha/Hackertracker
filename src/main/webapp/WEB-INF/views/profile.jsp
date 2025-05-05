@@ -8,10 +8,17 @@
     <link rel="stylesheet" href="/css/profileStyle.css">
     <link rel="stylesheet" href="/css/baseStyle.css">
     <link rel="stylesheet" href="/css/homeStyle.css">
+<%--    <link rel="icon" href="/assets/favicon/favicon.ico" />--%>
+    <!-- Alternative PNG favicon in different sizes -->
+<%--    <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon/favicon-96x96.png">--%>
+    <!-- SVG Icon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg">
+    <!-- Apple Touch Icon -->
+<%--    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">--%>
 </head>
 <body>
     <nav>
-        <img id="logo" src="/assets/hackertracker.png" alt="HackerTracker Logo">
+        <img id="logo" src="/assets/hackertracker.svg" alt="HackerTracker Logo">
 
         <div class="navigation-buttons">
 
