@@ -79,10 +79,14 @@ public class PriorityController {
 
             attempt = userProblemAttemptDao.getLatestAttempt(problem, myUser);
 
-            return new ProblemWithAttemptDTO(problem, attempt);
+            ProblemWithAttemptDTO problemWithAttemptDto = new ProblemWithAttemptDTO(problem, attempt);
+
+            problemWithAttemptDto.setCompleted(attempt != null);
+
+            return problemWithAttemptDto;
         } catch (Exception e) {
             e.printStackTrace();
-            return new ProblemWithAttemptDTO(null, null);
+            return new ProblemWithAttemptDTO();
         }
     }
 

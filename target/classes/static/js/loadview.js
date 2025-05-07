@@ -192,7 +192,7 @@ function loadQuestion(questionId = null, addToPast = true) {
         url: "/api/challenges/next",
         method: "GET",
         data: ajaxData,
-        dataType: "json",
+        // dataType: "json",
         xhrFields: {
             withCredentials: true
         },

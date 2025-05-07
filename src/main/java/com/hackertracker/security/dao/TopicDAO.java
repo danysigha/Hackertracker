@@ -1,5 +1,6 @@
 package com.hackertracker.security.dao;
 
+import com.hackertracker.security.dto.TopicDTO;
 import com.hackertracker.security.problem.Problem;
 import com.hackertracker.security.topic.Topic;
 import com.hackertracker.security.user.User;
@@ -29,6 +30,15 @@ public class TopicDAO {
     public List<Topic> getAllTopics(){
         try (Session session = sessionFactory.openSession()) {
             return session.createQuery("FROM Topic order by topicRank", Topic.class).list();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public List<TopicDTO> getAllTopicsDtos(){
+        try (Session session = sessionFactory.openSession()) {
+            List<Topic> topics = session.createQuery("FROM Topic order by topicRank", Topic.class).list();
+            return topics.stream().map(TopicDTO::fromEntity).toList();
         } catch (Exception e) {
             throw e;
         }

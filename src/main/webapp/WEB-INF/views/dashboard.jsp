@@ -97,85 +97,85 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="advance-search">
+                                <div class="advance-search" id="advance-search">
                                     <span class="desc">ADVANCED SEARCH</span>
                                     <div class="row">
                                         <select id="select-topics"  multiple data-placeholder="Topics" class="form-control">
-                                            <optgroup label="Topics">
-                                                <option value="Array / String" selected>Array / String</option>
-                                                <option value="Two Pointers">Two Pointers</option>
-                                                <option value="Sliding Window">Sliding Window</option>
-                                                <option value="Matrix">Matrix</option>
-                                                <option value="Hashmap">Hashmap</option>
-                                                <option value="Intervals">Intervals</option>
-                                                <option value="Stack">Stack</option>
-                                                <option value="Linked List">Linked List</option>
-                                                <option value="Binary Tree General">Binary Tree General</option>
-                                                <option value="Binary Tree BFS">Binary Tree BFS</option>
-                                                <option value="Binary Search Tree">Binary Search Tree</option>
-                                                <option value="Graph General">Graph General</option>
-                                                <option value="Graph BFS">Graph BFS</option>
-                                                <option value="Trie">Trie</option>
-                                                <option value="Backtracking">Backtracking</option>
-                                                <option value="Divide & Conquer">Divide & Conquer</option>
-                                                <option value="Kadane's Algorithm">Kadane's Algorithm</option>
-                                                <option value="Binary Search">Binary Search</option>
-                                                <option value="Heap">Heap</option>
-                                                <option value="Bit Manipulation">Bit Manipulation</option>
-                                                <option value="Math">Math</option>
-                                                <option value="1D DP">1D DP</option>
-                                                <option value="Multidimensional DP">Multidimensional DP</option>
-                                            </optgroup>
+<%--                                            <optgroup label="Topics">--%>
+<%--                                                <option value="Array / String" selected>Array / String</option>--%>
+<%--                                                <option value="Two Pointers">Two Pointers</option>--%>
+<%--                                                <option value="Sliding Window">Sliding Window</option>--%>
+<%--                                                <option value="Matrix">Matrix</option>--%>
+<%--                                                <option value="Hashmap">Hashmap</option>--%>
+<%--                                                <option value="Intervals">Intervals</option>--%>
+<%--                                                <option value="Stack">Stack</option>--%>
+<%--                                                <option value="Linked List">Linked List</option>--%>
+<%--                                                <option value="Binary Tree General">Binary Tree General</option>--%>
+<%--                                                <option value="Binary Tree BFS">Binary Tree BFS</option>--%>
+<%--                                                <option value="Binary Search Tree">Binary Search Tree</option>--%>
+<%--                                                <option value="Graph General">Graph General</option>--%>
+<%--                                                <option value="Graph BFS">Graph BFS</option>--%>
+<%--                                                <option value="Trie">Trie</option>--%>
+<%--                                                <option value="Backtracking">Backtracking</option>--%>
+<%--                                                <option value="Divide & Conquer">Divide & Conquer</option>--%>
+<%--                                                <option value="Kadane's Algorithm">Kadane's Algorithm</option>--%>
+<%--                                                <option value="Binary Search">Binary Search</option>--%>
+<%--                                                <option value="Heap">Heap</option>--%>
+<%--                                                <option value="Bit Manipulation">Bit Manipulation</option>--%>
+<%--                                                <option value="Math">Math</option>--%>
+<%--                                                <option value="1D DP">1D DP</option>--%>
+<%--                                                <option value="Multidimensional DP">Multidimensional DP</option>--%>
+<%--                                            </optgroup>--%>
                                         </select>
 
                                         <select id="select-tags"  multiple data-placeholder="Tags" class="form-control">
-                                            <optgroup label="Tags">
-                                                <option placeholder="" value="">Tags</option>
-                                                <option value="Array" selected>Array</option>
-                                                <option value="Sorting">Sorting</option>
-                                                <option value="Two Pointers">Two Pointers</option>
-                                                <option value="Counting">Counting</option>
-                                                <option value="Divide and Conquer">Divide and Conquer</option>
-                                                <option value="Hash Table">Hash Table</option>
-                                                <option value="Math">Math</option>
-                                                <option value="Dynamic Programming">Dynamic Programming</option>
-                                                <option value="Greedy">Greedy</option>
-                                                <option value="Counting Sort">Counting Sort</option>
-                                                <option value="Design">Design</option>
-                                                <option value="Randomized">Randomized</option>
-                                                <option value="Prefix Sum">Prefix Sum</option>
-                                                <option value="Monotonic Stack">Monotonic Stack</option>
-                                                <option value="Stack">Stack</option>
-                                                <option value="String">String</option>
-                                                <option value="Trie">Trie</option>
-                                                <option value="String Matching">String Matching</option>
-                                                <option value="Simulation">Simulation</option>
-                                                <option value="Binary Search">Binary Search</option>
-                                                <option value="Sliding Window">Sliding Window</option>
-                                                <option value="Matrix">Matrix</option>
-                                                <option value="Union Find">Union Find</option>
-                                                <option value="Recursion">Recursion</option>
-                                                <option value="Linked List">Linked List</option>
-                                                <option value="Doubly-Linked List">Doubly-Linked List</option>
-                                                <option value="Binary Tree">Binary Tree</option>
-                                                <option value="Breadth-First Search">Breadth-First Search</option>
-                                                <option value="Depth-First Search">Depth-First Search</option>
-                                                <option value="Tree">Tree</option>
-                                                <option value="Binary Search Tree">Binary Search Tree</option>
-                                                <option value="Iterator">Iterator</option>
-                                                <option value="Bit Manipulation">Bit Manipulation</option>
-                                                <option value="Graph">Graph</option>
-                                                <option value="Shortest Path">Shortest Path</option>
-                                                <option value="Topological Sort">Topological Sort</option>
-                                                <option value="Backtracking">Backtracking</option>
-                                                <option value="Merge Sort">Merge Sort</option>
-                                                <option value="Heap (Priority Queue)">Heap (Priority Queue)</option>
-                                                <option value="Monotonic Queue">Monotonic Queue</option>
-                                                <option value="Queue">Queue</option>
-                                                <option value="Quickselect">Quickselect</option>
-                                                <option value="Data Stream">Data Stream</option>
-                                                <option value="Geometry">Geometry</option>
-                                                <option value="Memoization">Memoization</option>
+<%--                                            <optgroup label="Tags">--%>
+<%--                                                <option placeholder="" value="">Tags</option>--%>
+<%--                                                <option value="Array" selected>Array</option>--%>
+<%--                                                <option value="Sorting">Sorting</option>--%>
+<%--                                                <option value="Two Pointers">Two Pointers</option>--%>
+<%--                                                <option value="Counting">Counting</option>--%>
+<%--                                                <option value="Divide and Conquer">Divide and Conquer</option>--%>
+<%--                                                <option value="Hash Table">Hash Table</option>--%>
+<%--                                                <option value="Math">Math</option>--%>
+<%--                                                <option value="Dynamic Programming">Dynamic Programming</option>--%>
+<%--                                                <option value="Greedy">Greedy</option>--%>
+<%--                                                <option value="Counting Sort">Counting Sort</option>--%>
+<%--                                                <option value="Design">Design</option>--%>
+<%--                                                <option value="Randomized">Randomized</option>--%>
+<%--                                                <option value="Prefix Sum">Prefix Sum</option>--%>
+<%--                                                <option value="Monotonic Stack">Monotonic Stack</option>--%>
+<%--                                                <option value="Stack">Stack</option>--%>
+<%--                                                <option value="String">String</option>--%>
+<%--                                                <option value="Trie">Trie</option>--%>
+<%--                                                <option value="String Matching">String Matching</option>--%>
+<%--                                                <option value="Simulation">Simulation</option>--%>
+<%--                                                <option value="Binary Search">Binary Search</option>--%>
+<%--                                                <option value="Sliding Window">Sliding Window</option>--%>
+<%--                                                <option value="Matrix">Matrix</option>--%>
+<%--                                                <option value="Union Find">Union Find</option>--%>
+<%--                                                <option value="Recursion">Recursion</option>--%>
+<%--                                                <option value="Linked List">Linked List</option>--%>
+<%--                                                <option value="Doubly-Linked List">Doubly-Linked List</option>--%>
+<%--                                                <option value="Binary Tree">Binary Tree</option>--%>
+<%--                                                <option value="Breadth-First Search">Breadth-First Search</option>--%>
+<%--                                                <option value="Depth-First Search">Depth-First Search</option>--%>
+<%--                                                <option value="Tree">Tree</option>--%>
+<%--                                                <option value="Binary Search Tree">Binary Search Tree</option>--%>
+<%--                                                <option value="Iterator">Iterator</option>--%>
+<%--                                                <option value="Bit Manipulation">Bit Manipulation</option>--%>
+<%--                                                <option value="Graph">Graph</option>--%>
+<%--                                                <option value="Shortest Path">Shortest Path</option>--%>
+<%--                                                <option value="Topological Sort">Topological Sort</option>--%>
+<%--                                                <option value="Backtracking">Backtracking</option>--%>
+<%--                                                <option value="Merge Sort">Merge Sort</option>--%>
+<%--                                                <option value="Heap (Priority Queue)">Heap (Priority Queue)</option>--%>
+<%--                                                <option value="Monotonic Queue">Monotonic Queue</option>--%>
+<%--                                                <option value="Queue">Queue</option>--%>
+<%--                                                <option value="Quickselect">Quickselect</option>--%>
+<%--                                                <option value="Data Stream">Data Stream</option>--%>
+<%--                                                <option value="Geometry">Geometry</option>--%>
+<%--                                                <option value="Memoization">Memoization</option>--%>
                                             </optgroup>
                                         </select>
 
@@ -192,7 +192,7 @@
                                             <optgroup label="Completition status">
                                                 <option placeholder="" value="">Completion status</option>
                                                 <option value="Completed" selected>Completed</option>
-                                                <option value="Not completed" selected>Not completed</option>
+                                                <option value="Not Completed" selected>Not completed</option>
                                             </optgroup>
                                         </select>
                                     </div>
@@ -202,7 +202,7 @@
                                                 <span>108 </span>results</div>
                                             <div class="group-btn">
                                                 <button class="btn-delete" id="delete">RESET</button>
-                                                <button type="button" class="btn-search">SEARCH</button>
+                                                <button type="button" id="searchQueryBtn" class="searchQueryBtn">SEARCH</button>
                                             </div>
                                         </div>
                                     </div>

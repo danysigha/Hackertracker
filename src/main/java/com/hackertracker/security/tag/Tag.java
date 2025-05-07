@@ -18,6 +18,8 @@ import java.util.HashSet;
 import java.util.stream.Collectors;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.search.engine.backend.types.Sortable;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 
 @Entity
 @Table(name="tag")
@@ -29,6 +31,7 @@ public class Tag {
     private byte tagId;
 
     @Column(name = "tag_name", nullable = false)
+    @KeywordField(normalizer = "lowercase", sortable = Sortable.YES)
     private String tagName;
 
     @JsonManagedReference

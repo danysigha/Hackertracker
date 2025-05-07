@@ -13,6 +13,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -20,6 +22,7 @@ import java.util.Objects;
 @Entity
 @Table(name="user_problem_completion")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Indexed
 public class UserProblemCompletion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +40,7 @@ public class UserProblemCompletion {
     @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "problem_id")
+    @IndexedEmbedded
     private Problem problem;
 
     public UserProblemCompletion(int completionId, LocalDateTime completionDate, User user, Problem problem) {

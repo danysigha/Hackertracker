@@ -16,8 +16,16 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.service.ServiceRegistry;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionException;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.support.AbstractPlatformTransactionManager;
+import org.springframework.transaction.support.DefaultTransactionStatus;
 
 import javax.cache.CacheManager;
 import javax.cache.Caching;
@@ -25,6 +33,7 @@ import java.util.Properties;
 
 
 @Configuration
+@EnableTransactionManagement
 public class HibernateConfig {
 
     @Bean
@@ -78,6 +87,42 @@ public class HibernateConfig {
         return cacheManager;
     }
 
+    @Value("${hibernate.search.index.directory}")
+    private String indexBaseDir;
+
+    @Bean
+    public PlatformTransactionManager hibernateTransactionManager(SessionFactory sessionFactory) {
+        return new AbstractPlatformTransactionManager() {
+            @Override
+            protected Object doGetTransaction() throws TransactionException {
+                return sessionFactory.getCurrentSession();
+            }
+
+            @Override
+            protected void doBegin(Object transaction, TransactionDefinition definition) throws TransactionException {
+                if (!((org.hibernate.Session) transaction).getTransaction().isActive()) {
+                    ((org.hibernate.Session) transaction).beginTransaction();
+                }
+            }
+
+            @Override
+            protected void doCommit(DefaultTransactionStatus status) throws TransactionException {
+                org.hibernate.Session session = (org.hibernate.Session) status.getTransaction();
+                if (session.getTransaction().isActive()) {
+                    session.getTransaction().commit();
+                }
+            }
+
+            @Override
+            protected void doRollback(DefaultTransactionStatus status) throws TransactionException {
+                org.hibernate.Session session = (org.hibernate.Session) status.getTransaction();
+                if (session.getTransaction().isActive()) {
+                    session.getTransaction().rollback();
+                }
+            }
+        };
+    }
+
     @Bean
     public SessionFactory sessionFactory(CacheManager jCacheManager) {
         Properties hibernateProps = new Properties();
@@ -93,7 +138,12 @@ public class HibernateConfig {
 
 
         // Add Hibernate Search configuration
-//        hibernateProps.put("hibernate.search.backend.directory.root", "./hibernate-search-indexes");
+        hibernateProps.put("hibernate.search.backend.directory.root", indexBaseDir);
+// Add this line to register your analyzer configurer
+        hibernateProps.put("hibernate.search.backend.analysis.configurer", "com.hackertracker.security.config.MyLuceneAnalysisConfigurer");
+
+        // Add this to your hibernateProps in the sessionFactory method
+        hibernateProps.put("hibernate.current_session_context_class", "thread");
 
         /// Second-level cache configuration
         hibernateProps.put("hibernate.cache.use_second_level_cache", "true");

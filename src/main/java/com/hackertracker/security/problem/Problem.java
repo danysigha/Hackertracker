@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hackertracker.security.tag.Tag;
 import com.hackertracker.security.topic.Topic;
 import com.hackertracker.security.user.UserProblemAttempt;
+import com.hackertracker.security.user.UserProblemCompletion;
 import com.hackertracker.security.user.UserProblemPriority;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,6 +16,11 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.search.engine.backend.types.Sortable;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,6 +28,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name="problem")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Indexed
 public class Problem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,32 +36,43 @@ public class Problem {
     private int problemId;
 
     @Column(name = "public_problem_id", unique = true, nullable = false)
+    @KeywordField
     private String publicProblemId;
 
     @Column(name = "question_title", nullable = false)
+    @FullTextField(analyzer = "english")
     private String questionTitle;
 
     @Column(name = "difficulty_level", nullable = false)
+    @KeywordField(normalizer = "lowercase", sortable = Sortable.YES)
     private String difficultyLevel;
 
     @Column(name = "page_url", nullable = false)
+    @FullTextField
     private String pageUrl;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
+    @IndexedEmbedded
     private Set<TagProblem> problemTags = new HashSet<>();
 
     @JsonManagedReference
     @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
+    @IndexedEmbedded
     private Set<TopicProblem> problemTopics = new HashSet<>();
 
     @JsonManagedReference
     @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
+    @IndexedEmbedded
     private Set<UserProblemAttempt> problemAttempts = new HashSet<>();
 
     @JsonManagedReference
     @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserProblemPriority> problemPriorities = new HashSet<>();
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserProblemCompletion> problemCompletions = new HashSet<>();
 
     public Problem(int problemId, String publicProblemId, String questionTitle, String difficultyLevel, String pageUrl, Set<TagProblem> problemTags, Set<TopicProblem> problemTopics, Set<UserProblemAttempt> problemAttempts, Set<UserProblemPriority> problemPriorities) {
         this.problemId = problemId;
@@ -190,6 +208,28 @@ public class Problem {
      */
     public List<UserProblemPriority> getListProblemPriorities() {
         return problemPriorities.stream().toList();
+    }
+
+    // Add getter and setter
+    public Set<UserProblemCompletion> getProblemCompletions() {
+        return problemCompletions;
+    }
+
+    public void setProblemCompletions(Set<UserProblemCompletion> problemCompletions) {
+        this.problemCompletions = problemCompletions;
+    }
+
+    // Add a helper method to check if problem is completed by a specific user
+    public boolean isCompletedByUser(int userId) {
+        return problemCompletions.stream()
+                .anyMatch(completion -> completion.getUser().getUserId() == userId);
+    }
+
+    // Add a helper method to get completion for a specific user
+    public Optional<UserProblemCompletion> getCompletionByUser(int userId) {
+        return problemCompletions.stream()
+                .filter(completion -> completion.getUser().getUserId() == userId)
+                .findFirst();
     }
 
     @Override

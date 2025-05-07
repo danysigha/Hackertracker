@@ -13,6 +13,7 @@ import jakarta.persistence.FetchType;
 import com.hackertracker.security.tag.Tag;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 
 import java.util.Objects;
 
@@ -34,6 +35,7 @@ public class TagProblem {
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_id")
+    @IndexedEmbedded
     private Tag tag;
 
     TagProblem(Problem problem, Tag tag) {

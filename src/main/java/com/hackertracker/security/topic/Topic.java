@@ -18,11 +18,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.search.engine.backend.types.Sortable;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 
 @Entity
 @Table(name = "topic")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-//@Indexed
 public class Topic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +31,7 @@ public class Topic {
     private byte topicId;
 
     @Column(name = "topic_name", unique = true, nullable = false)
-//  @KeywordField
+    @KeywordField(normalizer = "lowercase", sortable = Sortable.YES)
     private String topicName;
 
     @Column(name = "topic_rank", nullable = false)

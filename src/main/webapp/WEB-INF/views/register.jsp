@@ -33,7 +33,7 @@
         <main>
             <form:form modelAttribute = "user" method = "POST">
                 <div class="login-form">
-                    <img class="logo" src="/assets/hackertracker.png" alt="HackerTracker Logo">
+                    <img class="logo" src="/assets/hackertracker.svg" alt="HackerTracker Logo">
                     <h1>Register for Hackertracker</h1>
                     <form:input path = "firstName" class="input"  placeholder = "First Name"/> <form:errors path = "firstName" cssClass="error"/>
                     <form:input path = "lastName" class="input"  placeholder = "Last Name"/> <form:errors path = "lastName" cssClass="error"/>

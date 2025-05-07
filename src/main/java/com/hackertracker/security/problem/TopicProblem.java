@@ -14,6 +14,7 @@ import jakarta.persistence.FetchType;
 import java.util.Objects;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 
 @Entity
 @Table(name="topic_problems")
@@ -32,6 +33,7 @@ public class TopicProblem {
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "topic_id")
+    @IndexedEmbedded
     private Topic topic;
 
     TopicProblem(Problem problem, Topic topic) {

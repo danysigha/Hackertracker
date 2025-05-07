@@ -1,7 +1,10 @@
 package com.hackertracker.security.dao;
 
+import com.hackertracker.security.dto.TagDTO;
+import com.hackertracker.security.dto.TopicDTO;
 import com.hackertracker.security.problem.Problem;
 import com.hackertracker.security.tag.Tag;
+import com.hackertracker.security.topic.Topic;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -28,6 +31,15 @@ public class TagDAO {
     public List<Tag> getAllTags(){
         try (Session session = sessionFactory.openSession()) {
             return session.createQuery("FROM Tag", Tag.class).list();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public List<TagDTO> getAllTagDtos(){
+        try (Session session = sessionFactory.openSession()) {
+            List<Tag> tags = session.createQuery("FROM Tag", Tag.class).list();
+            return tags.stream().map(TagDTO::fromEntity).toList();
         } catch (Exception e) {
             throw e;
         }
