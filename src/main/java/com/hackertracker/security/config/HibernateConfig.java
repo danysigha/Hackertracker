@@ -1,6 +1,5 @@
 package com.hackertracker.security.config;
 
-//import com.hackertracker.security.Schedule.Weekday;
 import com.hackertracker.security.problem.Problem;
 import com.hackertracker.security.problem.TagProblem;
 import com.hackertracker.security.problem.TopicProblem;
@@ -20,20 +19,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionException;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.support.AbstractPlatformTransactionManager;
-import org.springframework.transaction.support.DefaultTransactionStatus;
-
 import javax.cache.CacheManager;
 import javax.cache.Caching;
 import java.util.Properties;
 
 
 @Configuration
-@EnableTransactionManagement
 public class HibernateConfig {
 
     @Bean
@@ -90,38 +81,6 @@ public class HibernateConfig {
     @Value("${hibernate.search.index.directory}")
     private String indexBaseDir;
 
-    @Bean
-    public PlatformTransactionManager hibernateTransactionManager(SessionFactory sessionFactory) {
-        return new AbstractPlatformTransactionManager() {
-            @Override
-            protected Object doGetTransaction() throws TransactionException {
-                return sessionFactory.getCurrentSession();
-            }
-
-            @Override
-            protected void doBegin(Object transaction, TransactionDefinition definition) throws TransactionException {
-                if (!((org.hibernate.Session) transaction).getTransaction().isActive()) {
-                    ((org.hibernate.Session) transaction).beginTransaction();
-                }
-            }
-
-            @Override
-            protected void doCommit(DefaultTransactionStatus status) throws TransactionException {
-                org.hibernate.Session session = (org.hibernate.Session) status.getTransaction();
-                if (session.getTransaction().isActive()) {
-                    session.getTransaction().commit();
-                }
-            }
-
-            @Override
-            protected void doRollback(DefaultTransactionStatus status) throws TransactionException {
-                org.hibernate.Session session = (org.hibernate.Session) status.getTransaction();
-                if (session.getTransaction().isActive()) {
-                    session.getTransaction().rollback();
-                }
-            }
-        };
-    }
 
     @Bean
     public SessionFactory sessionFactory(CacheManager jCacheManager) {

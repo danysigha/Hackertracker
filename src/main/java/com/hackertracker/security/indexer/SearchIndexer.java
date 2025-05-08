@@ -4,39 +4,96 @@ import com.hackertracker.security.problem.Problem;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.hibernate.SessionFactory;
 import org.hibernate.search.mapper.orm.Search;
 import org.hibernate.search.mapper.orm.session.SearchSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.io.File;
 
 
+
 @Component
 public class SearchIndexer {
-    @PersistenceContext
-    private EntityManager entityManager;
-
     private static final Logger logger = LoggerFactory.getLogger(SearchIndexer.class);
+
+    private final SessionFactory sessionFactory;
 
     @Value("${hibernate.search.index.directory}")
     private String indexBaseDir;
 
-    @Transactional
-    @EventListener(ApplicationReadyEvent.class)
-    public void rebuildIndexAfterStartup() throws InterruptedException {
-        logger.info("Rebuilding search index on application startup...");
-        SearchSession searchSession = Search.session(entityManager);
-        searchSession.massIndexer(Problem.class)
-                .threadsToLoadObjects(7)
-                .startAndWait();
-        logger.info("Index rebuild completed on startup");
+    public SearchIndexer(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void buildIndexAfterStartup() {
+        logger.info("Rebuilding search index on application startup...");
+
+        // Use Hibernate Session directly
+        org.hibernate.Session session = sessionFactory.openSession();
+        org.hibernate.Transaction tx = null;
+
+        try {
+            tx = session.beginTransaction();
+
+            // Use the Hibernate Search API with the Session
+            org.hibernate.search.mapper.orm.Search.session(session)
+                    .massIndexer(Problem.class)
+                    .threadsToLoadObjects(7)
+                    .startAndWait();
+
+            tx.commit();
+            logger.info("Index rebuild completed on startup");
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) {
+                tx.rollback();
+            }
+            logger.error("Failed to rebuild index", e);
+        } finally {
+            session.close();
+        }
+    }
+
+    private void buildIndex() {
+        org.hibernate.Session session = sessionFactory.openSession();
+        org.hibernate.Transaction tx = null;
+        long startTime = System.currentTimeMillis();
+
+        try {
+            tx = session.beginTransaction();
+
+            org.hibernate.search.mapper.orm.Search.session(session)
+                    .massIndexer(Problem.class)
+                    .threadsToLoadObjects(7)
+                    .startAndWait();
+
+            tx.commit();
+
+            long endTime = System.currentTimeMillis();
+            logger.info("Indexing completed in {} ms", (endTime - startTime));
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) {
+                tx.rollback();
+            }
+            logger.error("Failed to rebuild index", e);
+        } finally {
+            session.close();
+        }
+    }
+}
+
+
 
 //    @PostConstruct
 //    @Transactional
@@ -62,48 +119,3 @@ public class SearchIndexer {
 //
 //        buildIndex();
 //    }
-
-    // Extracted common method for building the index
-    private void buildIndex() throws InterruptedException {
-        long startTime = System.currentTimeMillis();
-
-        SearchSession searchSession = Search.session(entityManager);
-        searchSession.massIndexer(Problem.class)
-                .threadsToLoadObjects(7)
-                .startAndWait();
-
-        long endTime = System.currentTimeMillis();
-        logger.info("Indexing completed in {} ms", (endTime - startTime));
-    }
-}
-
-//@Component
-//public class SearchIndexer {
-//    @PersistenceContext
-//    private EntityManager entityManager;
-//
-//    private static final Logger logger = LoggerFactory.getLogger(SearchIndexer.class);
-//
-//    @Value("${hibernate.search.index.directory}")
-//    private String indexBaseDir;
-//
-//    @PostConstruct
-//    public void checkAndBuildIndex() throws InterruptedException {
-//        File indexDir = new File(indexBaseDir);
-//        // Only build indexes if they don't exist
-//        if (!indexDir.exists() || indexDir.list().length == 0) {
-//            logger.info("Index directory empty or not found. Starting initial indexing...");
-//            long startTime = System.currentTimeMillis();
-//
-//            SearchSession searchSession = Search.session(entityManager);
-//            searchSession.massIndexer(Problem.class)
-//                    .threadsToLoadObjects(7)
-//                    .startAndWait();
-//
-//            long endTime = System.currentTimeMillis();
-//            logger.info("Initial indexing completed in {} ms", (endTime - startTime));
-//        } else {
-//            logger.info("Index directory found. Skipping initial indexing.");
-//        }
-//    }
-//}
