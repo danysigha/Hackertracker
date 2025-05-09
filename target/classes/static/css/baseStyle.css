@@ -49,7 +49,7 @@ a:hover {
     gap: 2em;
 }
 
-nav {
+#main-nav {
     /*margin-top: 2em;*/
     position: sticky;
     top: 1em;

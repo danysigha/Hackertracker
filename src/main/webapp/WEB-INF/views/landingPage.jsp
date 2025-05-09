@@ -25,7 +25,7 @@
 
     <body class="pattern-container">
 
-        <nav>
+        <nav id="main-nav">
             <img id="logo" src="/assets/hackertracker.svg" alt="HackerTracker Logo">
 
             <div class="menu">

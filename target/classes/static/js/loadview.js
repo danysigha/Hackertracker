@@ -182,7 +182,7 @@ function loadQuestion(questionId = null, addToPast = true) {
     // Set up AJAX parameters
     let ajaxData = {};
 
-    // Only include currentId if we have one
+    // Only include question id if we have one
     if(questionId !== null) {
         ajaxData.questionId = questionId;
         ajaxData.fetchById = !addToPast; // We want to fetch by ID when navigating history
@@ -222,11 +222,11 @@ function loadQuestion(questionId = null, addToPast = true) {
             $("#challengeLevel").text(data.problem.difficultyLevel);
 
             if(data.problem.difficultyLevel === "Easy") {
-                $("#challengeLevel").addClass("easy-level");
+                $("#challengeLevel").css("background-color", "#A8DCAB");
             } else if(data.problem.difficultyLevel === "Medium") {
-                $("#challengeLevel").addClass("medium-level");
+                $("#challengeLevel").css("background-color", "#FFDBBB");
             } else {
-                $("#challengeLevel").addClass("hard-level");
+                $("#challengeLevel").css("background-color", "#FF7F7F");
             }
 
             $("#challengeUrl").attr("href", data.problem.pageUrl);
@@ -338,10 +338,6 @@ $('#difficultySlider').on('change', function() {
     $("#challengeDifficultyRating").text("Difficulty Rating (" + value + "/10)");
 });
 
-
-// $("#skipQuestionBtn").on("click", function() {
-//     loadQuestion();
-// });
 
 // Mark completed button could work like this
 $("#addAttemptBtn").on("click", function() {
@@ -486,6 +482,13 @@ $(document).ready(function() {
 
             // Add this line to ensure buttons are updated on initial load
             updateNavigationButtons();
+
+            // ensure skip button is initialized on initial load
+            // NOT FUNCITONAL YET BECAUSE IT DOES NOT UPDATE PRIORITY
+            // SHOULD USE THE SKIP ENDPOINT
+            document.getElementById("skipQuestionBtn").addEventListener("click", function (e) {
+                loadQuestion();
+            })
 
             // Add a listener for URL changes
             $(window).on('popstate', function() {

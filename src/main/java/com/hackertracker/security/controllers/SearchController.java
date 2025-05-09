@@ -59,7 +59,7 @@ public class SearchController {
             }
         }
 
-        return problemSearchService.searchProblems(title, tags, topics, difficultyLevels, completed, myUser.getUserId(), 20);
+        return problemSearchService.searchProblems(title, tags, topics, difficultyLevels, completed, myUser.getUserId(), 150);
     }
 
     /**

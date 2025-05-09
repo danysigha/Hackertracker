@@ -21,7 +21,7 @@
     </head>
 
     <body>
-        <nav>
+        <nav id="main-nav">
             <img class="logo" src="/assets/hackertracker.svg" alt="HackerTracker Logo">
 
             <div class="navigation-buttons">

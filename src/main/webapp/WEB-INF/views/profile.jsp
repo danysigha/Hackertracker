@@ -17,7 +17,7 @@
 <%--    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">--%>
 </head>
 <body>
-    <nav>
+    <nav id="main-nav">
         <img id="logo" src="/assets/hackertracker.svg" alt="HackerTracker Logo">
 
         <div class="navigation-buttons">

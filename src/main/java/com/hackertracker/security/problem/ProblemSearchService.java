@@ -52,7 +52,7 @@ public class ProblemSearchService {
                 boolPredicate.must(f.match()
                         .field("questionTitle")
                         .matching(title)
-                        .fuzzy(2));
+                        .fuzzy(1));
             }
 
             if (tags != null && !tags.isEmpty()) {
