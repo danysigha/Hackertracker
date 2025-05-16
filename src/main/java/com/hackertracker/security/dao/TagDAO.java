@@ -5,6 +5,7 @@ import com.hackertracker.security.dto.TopicDTO;
 import com.hackertracker.security.problem.Problem;
 import com.hackertracker.security.tag.Tag;
 import com.hackertracker.security.topic.Topic;
+import com.hackertracker.security.user.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -26,6 +27,23 @@ public class TagDAO {
 
     public TagDAO(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
+    }
+
+    /**
+     * Save a new Tag entity
+     */
+    public void saveTag(Tag tag) {
+//        System.out.println("The user we want to save \n" + user);
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            try {
+                session.persist(tag);
+                tx.commit();
+            } catch (Exception e) {
+                tx.rollback();
+                throw e;
+            }
+        }
     }
 
     public List<Tag> getAllTags(){

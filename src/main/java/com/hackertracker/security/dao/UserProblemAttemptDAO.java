@@ -4,6 +4,7 @@ package com.hackertracker.security.dao;
 import com.hackertracker.security.problem.Problem;
 import com.hackertracker.security.user.User;
 import com.hackertracker.security.user.UserProblemAttempt;
+import com.hackertracker.security.user.UserProblemCompletion;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -14,6 +15,8 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,9 +28,11 @@ import java.util.List;
 public class UserProblemAttemptDAO {
 
     private final SessionFactory sessionFactory;
+    private final UserProblemCompletionDAO userProblemCompletionDao;
 
-    public UserProblemAttemptDAO(SessionFactory sessionFactory) {
+    public UserProblemAttemptDAO(SessionFactory sessionFactory, UserProblemCompletionDAO userProblemCompletionDao) {
         this.sessionFactory = sessionFactory;
+        this.userProblemCompletionDao = userProblemCompletionDao;
     }
 
     /**
@@ -40,12 +45,12 @@ public class UserProblemAttemptDAO {
             try {
                 List<UserProblemAttempt> attempts = findByProblemAndUser(newAttempt.getProblem(), newAttempt.getUser());
 
-                System.out.println("Attempts found that match \n");
-                for(UserProblemAttempt attempt : attempts) {
-                    if( attempt.equals(newAttempt) ) {
-                        System.out.println(attempt);
-                    }
-                }
+//                System.out.println("Attempts found that match \n");
+//                for(UserProblemAttempt attempt : attempts) {
+//                    if( attempt.equals(newAttempt) ) {
+//                        System.out.println(attempt);
+//                    }
+//                }
 
                 for(UserProblemAttempt attempt : attempts) {
                     if( attempt.equals(newAttempt) ) {
@@ -53,6 +58,16 @@ public class UserProblemAttemptDAO {
                         return;
                     }
                 }
+
+//                UserProblemCompletion completion = new UserProblemCompletion();
+//                completion.setCompletionDate(LocalDateTime.now(ZoneOffset.UTC));
+//                completion.setUser(newAttempt.getUser());
+//                completion.setProblem(newAttempt.getProblem());
+//                System.out.println("Completion supposedly getting saved.\n\n");
+//                System.out.println(completion);
+
+//                userProblemCompletionDao.save(completion);
+
                 session.persist(newAttempt);
                 tx.commit();
             } catch (Exception e) {

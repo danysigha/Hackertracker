@@ -38,7 +38,7 @@ public class TagProblem {
     @IndexedEmbedded
     private Tag tag;
 
-    TagProblem(Problem problem, Tag tag) {
+    public TagProblem(Problem problem, Tag tag) {
         this.problem = problem;
         this.tag = tag;
     }

@@ -6,14 +6,7 @@ import com.hackertracker.security.topic.Topic;
 import com.hackertracker.security.user.UserProblemAttempt;
 import com.hackertracker.security.user.UserProblemCompletion;
 import com.hackertracker.security.user.UserProblemPriority;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.search.engine.backend.types.Sortable;
@@ -225,11 +218,30 @@ public class Problem {
                 .anyMatch(completion -> completion.getUser().getUserId() == userId);
     }
 
-    // Add a helper method to get completion for a specific user
-    public Optional<UserProblemCompletion> getCompletionByUser(int userId) {
-        return problemCompletions.stream()
-                .filter(completion -> completion.getUser().getUserId() == userId)
-                .findFirst();
+//    // Add a helper method to get completion for a specific user
+//    public Optional<UserProblemCompletion> getCompletionByUser(int userId) {
+//        return problemCompletions.stream()
+//                .filter(completion -> completion.getUser().getUserId() == userId)
+//                .findFirst();
+//    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (publicProblemId == null) {
+            publicProblemId = UUID.randomUUID().toString();
+        }
+    }
+
+    public void addTopic(Topic topic, TopicProblem association) {
+        // Update in-memory collections
+        this.getProblemTopics().add(association);
+        topic.getProblemTopics().add(association);
+    }
+
+    public void addTag(Tag tag, TagProblem association) {
+        // Update in-memory collections
+        this.getProblemTags().add(association);
+        tag.getProblemTags().add(association);
     }
 
     @Override

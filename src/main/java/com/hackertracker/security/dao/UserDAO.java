@@ -90,6 +90,7 @@ public class UserDAO {
                 Hibernate.initialize(user.getListAttempts());
                 Hibernate.initialize(user.getListProblemPriorities());
                 Hibernate.initialize(user.getUserSchedule());
+                Hibernate.initialize(user.getTopicRanks().getTopics());
                 Hibernate.initialize(user.getTopicRanks());
             }
 

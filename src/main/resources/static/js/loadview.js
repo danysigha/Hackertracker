@@ -405,15 +405,16 @@ $("#addAttemptBtn").on("click", function() {
         url: "/api/challenges/recalculate",
         method: "POST",
         data: ajaxData,
-        dataType: "json",
+        // dataType: "json",
         xhrFields: {
             withCredentials: true
         },
         success: function(data) {
             // Load the new question, adding current to history
             console.log("loading new question!!!! calling loadQuestion with problem id and addToPast = true");
-            console.log(data);
-            loadQuestion(data.problemId);
+            // console.log(data);
+            // loadQuestion(data.problemId);
+            loadQuestion();
             setTimeout(function() { loadDataAndDisplayCalendarData(cal); }, 100);
         },
         error: function(xhr, status, error) {

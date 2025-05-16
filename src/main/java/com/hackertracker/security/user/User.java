@@ -35,7 +35,7 @@ import java.util.HashSet;
  */
 
 @Entity
-@Table(name="user")
+@Table(name="app_user")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User implements UserDetails {
     @Id
@@ -68,6 +68,10 @@ public class User implements UserDetails {
     @JsonManagedReference
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserProblemPriority> problemPriorities = new HashSet<>();
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserProblemCompletion> problemCompletions = new HashSet<>();
 
     @JsonManagedReference
     @OneToOne(cascade = CascadeType.ALL)
@@ -163,6 +167,14 @@ public class User implements UserDetails {
         this.userSchedule = userSchedule;
     }
 
+    public Set<UserProblemCompletion> getProblemCompletions() {
+        return problemCompletions;
+    }
+
+    public void setProblemCompletions(Set<UserProblemCompletion> problemCompletions) {
+        this.problemCompletions = problemCompletions;
+    }
+
     public UserTopics getTopicRanks() {
         return topicRanks;
     }
@@ -236,6 +248,17 @@ public class User implements UserDetails {
      */
     public List<UserProblemAttempt> getListAttempts() {
         return problemAttempts.stream().toList();
+    }
+
+    /**
+     * Get all problems completed by this user out of the 150 questions
+     * Note: This method must be called within a transaction context
+     * to avoid LazyInitializationException
+     *
+     * @return List of UserProblemCompletions associated with this user
+     */
+    public List<UserProblemCompletion> getListCompletions() {
+        return problemCompletions.stream().toList();
     }
 
     @Override

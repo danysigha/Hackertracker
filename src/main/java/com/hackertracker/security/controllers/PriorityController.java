@@ -37,20 +37,20 @@ public class PriorityController {
     private final UserProblemCompletionDAO UserProblemCompletionDao;
     private final UserProblemAttemptDAO userProblemAttemptDao;
     private final TopicDAO topicDao;
-    private final UserProblemPriorityService userProblemPriorityService;
+    private final UserTopicsDAO userTopicsDao;
 
     public PriorityController(UserProblemPriorityService priorityService,
                               UserDAO userDao, ProblemDAO problemDAO,
                               UserProblemCompletionDAO UserProblemCompletionDao,
                               UserProblemAttemptDAO userProblemAttemptDao,
-                              TopicDAO topicDao, UserProblemPriorityService userProblemPriorityService){
+                              TopicDAO topicDao, UserTopicsDAO userTopicsDAO){
         this.priorityService = priorityService;
         this.userDao = userDao;
         this.problemDao = problemDAO;
         this.UserProblemCompletionDao = UserProblemCompletionDao;
         this.userProblemAttemptDao = userProblemAttemptDao;
         this.topicDao = topicDao;
-        this.userProblemPriorityService = userProblemPriorityService;
+        this.userTopicsDao = userTopicsDAO;
     }
 
     /**
@@ -70,7 +70,7 @@ public class PriorityController {
 
             if(questionId == null || !fetchById) {
                 // Get a problem ID first
-                Problem basicProblem = priorityService.getNextTopPriorityProblemForUser(myUser);
+                Problem basicProblem = priorityService.getNextRecommendedProblem(myUser);
                 // Then fetch it with all collections
                 problem = problemDao.getProblemByIdWithCollections(basicProblem.getProblemId());
             } else {
@@ -94,7 +94,7 @@ public class PriorityController {
      * Manually trigger priority recalculation for the current user
      */
     @PostMapping("/recalculate")
-    public Problem recalculatePriorities(
+    public void recalculatePriorities(
             @RequestParam(value = "questionId") String questionId,
             @RequestParam(value = "difficultyRating", required = false) String difficultyRating,
             @RequestParam(value = "startTime", required = false) String startTime,
@@ -138,6 +138,10 @@ public class PriorityController {
                 // userProblemAttempt.setNotes(notes);
             }
 
+            System.out.println("\n\nAttempt supposedly getting saved.\n\n");
+            System.out.println(userProblemAttempt);
+            userProblemAttemptDao.saveAttempt(userProblemAttempt);
+
             UserProblemCompletion completion = new UserProblemCompletion();
             completion.setCompletionDate(LocalDateTime.now(ZoneOffset.UTC));
             completion.setUser(user);
@@ -146,19 +150,12 @@ public class PriorityController {
             System.out.println(completion);
             UserProblemCompletionDao.save(completion);
 
-            System.out.println("\n\nAttempt supposedly getting saved.\n\n");
-            System.out.println(userProblemAttempt);
-            userProblemAttemptDao.saveAttempt(userProblemAttempt);
-
             priorityService.updatePriorityAfterAttempt(userProblemAttempt);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         priorityService.recalculateSinglePriority(problem, myUser);
-
-        return priorityService.getNextTopPriorityProblemForUser(myUser);
     }
 
 
@@ -184,7 +181,8 @@ public class PriorityController {
 
     @PostMapping("/update-topic-priority")
     public void updateTopicPriorities(@RequestBody List<TopicDTO> topics, @AuthenticationPrincipal User user) {
-        User myUser = userDao.getUserByIdWithTopics(user.getUserId());
+        User myUser = userDao.getUserById(user.getUserId());
+        myUser = userDao.getUserByIdWithCollections(myUser.getUserId());
 
         for(TopicDTO topic : topics) {
             myUser.getTopicRanks().getTopics().set(topic.getTopicId() - 1, topic.getTopicRank());
@@ -193,6 +191,6 @@ public class PriorityController {
 //            topicDao.updateTopic(myTopic);
         }
         userDao.updateUser(myUser);
-        userProblemPriorityService.recalculateAllPrioritiesByUser(myUser);
+        priorityService.recalculateAllPrioritiesByUser(myUser);
     }
 }

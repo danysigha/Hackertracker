@@ -1,6 +1,7 @@
 package com.hackertracker.security.config;
 
 import com.hackertracker.security.problem.Problem;
+import com.hackertracker.security.problem.ProblemHistory;
 import com.hackertracker.security.problem.TagProblem;
 import com.hackertracker.security.problem.TopicProblem;
 import com.hackertracker.security.tag.Tag;
@@ -26,6 +27,27 @@ import java.util.Properties;
 
 @Configuration
 public class HibernateConfig {
+
+    @Value("${spring.datasource.url}")
+    private String dbUrl;
+
+    @Value("${spring.datasource.username}")
+    private String dbUsername;
+
+    @Value("${spring.datasource.password}")
+    private String dbPassword;
+
+    @Value("${spring.datasource.driver-class-name}")
+    private String dbDriver;
+
+    @Value("${hibernate.dialect}")
+    private String hibernateDialect;
+
+    @Value("${hibernate.show_sql:false}")
+    private String showSql;
+
+    @Value("${hibernate.format_sql:false}")
+    private String formatSql;
 
     @Bean
     public CacheManager jCacheManager() {
@@ -85,13 +107,13 @@ public class HibernateConfig {
     @Bean
     public SessionFactory sessionFactory(CacheManager jCacheManager) {
         Properties hibernateProps = new Properties();
-        hibernateProps.put("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
-        hibernateProps.put("hibernate.connection.url", "jdbc:mysql://localhost:3306/hack_bis?createDatabaseIfNotExist=true");
-        hibernateProps.put("hibernate.connection.username", "root");
-        hibernateProps.put("hibernate.connection.password", "root");
-        hibernateProps.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-        hibernateProps.put("hibernate.show_sql", "true");
-        hibernateProps.put("hibernate.format_sql", "true");
+        hibernateProps.put("hibernate.connection.driver_class", dbDriver);
+        hibernateProps.put("hibernate.connection.url", dbUrl);
+        hibernateProps.put("hibernate.connection.username", dbUsername);
+        hibernateProps.put("hibernate.connection.password", dbPassword);
+        hibernateProps.put("hibernate.dialect", hibernateDialect);
+        hibernateProps.put("hibernate.show_sql", showSql);
+        hibernateProps.put("hibernate.format_sql", formatSql);
         hibernateProps.put("hibernate.hbm2ddl.auto", "update");
         hibernateProps.put("hibernate.jdbc.time_zone", "UTC");
 
@@ -130,6 +152,7 @@ public class HibernateConfig {
                 .addAnnotatedClass(UserProblemAttempt.class)
                 .addAnnotatedClass(UserProblemPriority.class)
                 .addAnnotatedClass(UserSchedule.class)
+                .addAnnotatedClass(ProblemHistory.class)
                 .buildMetadata()
                 .buildSessionFactory();
     }

@@ -1,9 +1,12 @@
 package com.hackertracker.security.dao;
 
+import com.hackertracker.security.problem.Problem;
 import com.hackertracker.security.user.UserTopics;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,6 +30,19 @@ public class UserTopicsDAO {
     public List<UserTopics> getAllUserTopics() {
         try (Session session = sessionFactory.openSession()) {
             return session.createQuery("FROM UserTopics", UserTopics.class).list();
+        }
+    }
+
+    /**
+     * Get User topics entities by user id
+     */
+    public UserTopics getUserTopicsByUserId(int userId) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<UserTopics> q = session.createQuery("FROM UserTopics where user.userId =: userId", UserTopics.class);
+            q.setParameter("userId", userId);
+            UserTopics userTopics = q.uniqueResult();
+            Hibernate.initialize(userTopics.getTopics());
+            return userTopics;
         }
     }
 

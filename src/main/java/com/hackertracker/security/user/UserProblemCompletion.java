@@ -40,7 +40,7 @@ public class UserProblemCompletion {
     @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "problem_id")
-    @IndexedEmbedded
+    @IndexedEmbedded(includePaths = {"publicProblemId", "questionTitle"})
     private Problem problem;
 
     public UserProblemCompletion(int completionId, LocalDateTime completionDate, User user, Problem problem) {

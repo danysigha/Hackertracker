@@ -1,23 +1,17 @@
 package com.hackertracker.security.problem;
 
-import com.hackertracker.security.Schedule.PriorityCalculator;
+import com.hackertracker.security.schedule.PriorityCalculator;
 import com.hackertracker.security.dao.*;
 import com.hackertracker.security.topic.Topic;
 import com.hackertracker.security.user.*;
-import org.hibernate.Hibernate;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -32,6 +26,8 @@ public class UserProblemPriorityService {
     private final UserDAO userDao;
     private final TopicDAO topicDao;
     private final UserTopicsDAO userTopicsDao;
+    private final ProblemHistoryDAO problemHistoryDao;
+    private final Map<Integer, LinkedList<String>> userRecentDifficulties = new ConcurrentHashMap<>();
 //    private final UserProblemService userProblemService;
 
 
@@ -40,13 +36,15 @@ public class UserProblemPriorityService {
             PriorityCalculator priorityCalculator,
             ProblemDAO problemDao, UserDAO userDAO,
             TopicDAO topicDao,
-            UserTopicsDAO userTopicsDao) {
+            UserTopicsDAO userTopicsDao,
+            ProblemHistoryDAO problemHistoryDao) {
         this.priorityDao = priorityDao;
         this.priorityCalculator = priorityCalculator;
         this.problemDao = problemDao;
         this.userDao = userDAO;
         this.topicDao = topicDao;
         this.userTopicsDao = userTopicsDao;
+        this.problemHistoryDao = problemHistoryDao;
     }
 
     /**
@@ -156,23 +154,117 @@ public class UserProblemPriorityService {
     /**
      * Get prioritized problems for a user
      */
-    @Transactional(readOnly = true)
-    public Problem getNextTopPriorityProblemForUser(User user) {
-        UserProblemPriority priority = priorityDao.findNextChallengeByPriorityScoreDesc(user);
-        if (priority == null) {
-            return null;
-        }
-
-        int problemId = priority.getProblem().getProblemId();
-        return problemDao.getProblemByIdWithCollections(problemId);
-    }
 //    @Transactional(readOnly = true)
 //    public Problem getNextTopPriorityProblemForUser(User user) {
-//        // Return all user's problems ordered by priority score descending
+//        UserProblemPriority priority = priorityDao.findNextChallengeByPriorityScoreDesc(user);
+//        if (priority == null) {
+//            return null;
+//        }
 //
-//        return priorityDao.findNextChallengeByPriorityScoreDesc(user).getProblem();
-//
+//        int problemId = priority.getProblem().getProblemId();
+//        return problemDao.getProblemByIdWithCollections(problemId);
 //    }
+
+
+    /**
+     * Get the next recommended problem for a user
+     * @param user
+     * @return The next recommended problem
+     */
+    @Transactional(readOnly = true)
+    public Problem getNextRecommendedProblem(User user) {
+        // Get or initialize recent difficulties
+        LinkedList<String> recentDifficulties = userRecentDifficulties.computeIfAbsent(
+                user.getUserId(), problemHistoryDao::loadRecentDifficulties);
+
+        // Determine what difficulty to recommend next
+        String nextDifficulty = determineNextDifficulty(user.getUserId(), recentDifficulties);
+//        System.out.println("\n\nREQUESTING "+ nextDifficulty + " problem \n\n");
+
+        // Get the highest priority problem of that difficulty
+        Problem problem = priorityDao.getHighestPriorityProblemOfDifficulty(user, nextDifficulty);
+
+//        System.out.println("\n\nGOT " + problem.getDifficultyLevel() + " PROBLEM \n\n");
+
+        // If no problems of preferred difficulty, get any problem
+        if (problem == null) {
+//            System.out.println("FALLING BACK TO findNextChallengeByPriorityScoreDesc");
+            problem = priorityDao.findNextChallengeByPriorityScoreDesc(user).getProblem();
+        }
+
+        // Record this problem in history
+        if (problem != null) {
+            // Update in-memory cache
+//            System.out.println("\n\nADDING " + problem.getDifficultyLevel() + " problem\n\n");
+//            System.out.println(problem);
+            recentDifficulties.addFirst(problem.getDifficultyLevel().toLowerCase());
+            userRecentDifficulties.put(user.getUserId(), recentDifficulties);
+
+            if (recentDifficulties.size() > 10) {
+                recentDifficulties.removeLast();
+            }
+
+            ProblemHistory ph = new ProblemHistory(user, problem, LocalDateTime.now(ZoneOffset.UTC));
+            // Persist to database (separate transaction)
+            problemHistoryDao.saveProblemHistory(ph);
+        }
+
+//        System.out.println("\n\nRETURNING " + problem.getDifficultyLevel() + " PROBLEM \n\n");
+
+        return problem;
+    }
+
+
+    /**
+     * Determine what difficulty level to show next
+     */
+    private String determineNextDifficulty(int userId, LinkedList<String> recentDifficulties) {
+        if (recentDifficulties.isEmpty()) {
+            return "Easy"; // Start with easy
+        }
+
+        // Last difficulty shown
+        String lastDifficulty = recentDifficulties.getFirst();
+
+        // After medium/hard, always show an easy
+        if ("medium".equals(lastDifficulty) || "hard".equals(lastDifficulty)) {
+            double spin = Math.random();
+            if (spin < 0.18) {
+                return "Hard";
+            } else if(spin < 0.36) {
+                return "Medium";
+            } else {
+                return "Easy";
+            }
+        }
+
+        // Count consecutive easy problems
+        int consecutiveEasy = 0;
+        for (String diff : recentDifficulties) {
+            if ("easy".equals(diff)) {
+                consecutiveEasy++;
+            } else {
+                break;
+            }
+        }
+
+        // After 2-3 consecutive easy problems, try medium or hard
+        if (consecutiveEasy >= 3) {
+//            System.out.println("DO WE EVEN GET IN HERE?!");
+            // Choose medium more often than hard (2:1 ratio)
+            double spin = Math.random();
+            if (spin < 0.40) {
+                return "Hard";
+            } else if(spin < 0.80) {
+                return "Medium";
+            } else {
+                return "Easy";
+            }
+        }
+
+        // Default to easy
+        return "Easy";
+    }
 
 
     /**
@@ -263,6 +355,8 @@ public class UserProblemPriorityService {
      */
     @Transactional
     public void initializeAllPrioritiesForNewUser(User user) {
+
+        //NEED TO THINK ABOUT THIS ONE
 
         UserTopics userTopics = new UserTopics();
         userTopics.setUser(user);

@@ -3,6 +3,7 @@ package com.hackertracker.security.dao;
 import com.hackertracker.security.problem.Problem;
 import com.hackertracker.security.user.User;
 import com.hackertracker.security.user.UserProblemPriority;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.Predicate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -52,6 +53,27 @@ public class UserProblemPriorityDAO {
             throw e;
         } finally {
             session.close();
+        }
+    }
+
+
+    /**
+     * Get highest priority problem of a specific difficulty
+     */
+    public Problem getHighestPriorityProblemOfDifficulty(User user, String difficulty) {
+        try(Session session = sessionFactory.openSession()) {
+            Query<Problem> q = session.createQuery("SELECT p FROM Problem p " +
+                    "JOIN UserProblemPriority pp ON p = pp.problem " +
+                    "WHERE pp.user = :user " +
+                    "AND p.difficultyLevel = :difficulty " +
+                    "ORDER BY pp.priorityScore DESC" , Problem.class).setMaxResults(1);
+
+            q.setParameter("user", user);
+            q.setParameter("difficulty", difficulty);
+
+            return q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
         }
     }
 

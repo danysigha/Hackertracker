@@ -36,7 +36,7 @@ public class TopicProblem {
     @IndexedEmbedded
     private Topic topic;
 
-    TopicProblem(Problem problem, Topic topic) {
+    public TopicProblem(Problem problem, Topic topic) {
         this.problem = problem;
         this.topic = topic;
     }

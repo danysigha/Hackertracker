@@ -4,6 +4,7 @@ import com.hackertracker.security.dto.TopicDTO;
 import com.hackertracker.security.problem.Problem;
 import com.hackertracker.security.topic.Topic;
 import com.hackertracker.security.user.User;
+import com.hackertracker.security.user.UserTopics;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -11,6 +12,7 @@ import org.hibernate.query.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,9 +24,39 @@ import java.util.List;
 public class TopicDAO {
 
     private final SessionFactory sessionFactory;
+    private final UserTopicsDAO userTopicsDao;
+    private final UserDAO userDao;
 
-    public TopicDAO(SessionFactory sessionFactory) {
+    public TopicDAO(SessionFactory sessionFactory, UserTopicsDAO userTopicsDao, UserDAO userDao) {
         this.sessionFactory = sessionFactory;
+        this.userTopicsDao = userTopicsDao;
+        this.userDao = userDao;
+    }
+
+    /**
+     * Save a new Topic entity
+     */
+    public void saveTopicByUserId(Topic topic, int userId) {
+//        System.out.println("The user we want to save \n" + user);
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            try {
+                session.persist(topic);
+
+                UserTopics userTopics = userTopicsDao.getUserTopicsByUserId(userId);
+                User myUser = userDao.getUserByIdWithCollections(userId);
+
+                if(userTopics != null) {
+                    userTopics.getTopics().addLast((byte) (userTopics.getTopics().size() + 1));
+                    myUser.setTopicRanks(userTopics);
+                    userDao.updateUser(myUser);
+                    tx.commit();
+                }
+            } catch (Exception e) {
+                tx.rollback();
+                throw e;
+            }
+        }
     }
 
     public List<Topic> getAllTopics(){

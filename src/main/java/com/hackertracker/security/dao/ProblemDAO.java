@@ -1,6 +1,7 @@
 package com.hackertracker.security.dao;
 
 import com.hackertracker.security.problem.Problem;
+import com.hackertracker.security.user.User;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -24,6 +25,38 @@ public class ProblemDAO {
 
     public ProblemDAO(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
+    }
+
+    /**
+     * Save a new Problem entity
+     */
+    public void saveProblem(Problem problem) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            try {
+                session.persist(problem);
+                tx.commit();
+            } catch (Exception e) {
+                tx.rollback();
+                throw e;
+            }
+        }
+    }
+
+    /**
+     * Update an existing Problem entity
+     */
+    public void updateProblem(Problem problem) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            try {
+                session.merge(problem);
+                tx.commit();
+            } catch (Exception e) {
+                tx.rollback();
+                throw e;
+            }
+        }
     }
 
     /**
@@ -134,4 +167,25 @@ public class ProblemDAO {
             }
         }
     }
+
+    /**
+     * Check if problems of a specific difficulty are available
+     */
+//    public boolean hasProblemsByDifficulty(int userId, String difficulty) {
+//        try (Session session = sessionFactory.openSession()){
+//            Query<Long> q = session.createQuery("SELECT COUNT(p) FROM Problem p " +
+//                    "WHERE p.difficultyLevel = :difficulty " +
+//                    "AND p.id NOT IN (SELECT cp.problem.problemId FROM UserProblemCompletion cp WHERE cp.user.userId = :userId)", Long.class);
+//
+//            q.setParameter("userId", userId);
+//            q.setParameter("difficulty", difficulty);
+//
+//            Long count = q.getSingleResult();
+//
+//            return count > 0;
+//
+//        } catch (Exception e) {
+//            throw e;
+//        }
+//    }
 }

@@ -145,8 +145,8 @@ public class UserProblemAttempt {
         if (o == null || getClass() != o.getClass()) return false;
         UserProblemAttempt that = (UserProblemAttempt) o;
 
-        return attemptId == that.attemptId || ( problem.equals(that.getProblem()) &&
-                user.equals(that.getUser()) &&
+        return attemptId == that.attemptId || ( problem.getProblemId() == that.getProblem().getProblemId() &&
+                user.getUserId() == that.getUser().getUserId() &&
                 difficultyRating == that.getDifficultyRating() &&
                 startTime.equals(that.getStartTime()) &&
                 endTime.equals(that.getEndTime()) &&
