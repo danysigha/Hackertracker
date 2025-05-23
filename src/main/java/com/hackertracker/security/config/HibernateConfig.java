@@ -116,6 +116,13 @@ public class HibernateConfig {
         hibernateProps.put("hibernate.format_sql", formatSql);
         hibernateProps.put("hibernate.hbm2ddl.auto", "update");
         hibernateProps.put("hibernate.jdbc.time_zone", "UTC");
+        hibernateProps.put("hibernate.jdbc.batch_size", 100);
+        hibernateProps.put("hibernate.order_inserts", true);
+        hibernateProps.put("hibernate.order_updates", true);
+        hibernateProps.put("hibernate.jdbc.batch_versioned_data", true);
+        hibernateProps.put("hibernate.connection.provider_disables_autocommit", true);
+        hibernateProps.put("hibernate.connection.pool_size", "10"); // Adjust based on your needs
+        hibernateProps.put("hibernate.default_batch_fetch_size", "50"); // Global batch fetching
 
 
         // Add Hibernate Search configuration
@@ -126,7 +133,7 @@ public class HibernateConfig {
         // Add this to your hibernateProps in the sessionFactory method
         hibernateProps.put("hibernate.current_session_context_class", "thread");
 
-        /// Second-level cache configuration
+        // Second-level cache configuration
         hibernateProps.put("hibernate.cache.use_second_level_cache", "true");
         hibernateProps.put("hibernate.cache.use_query_cache", "true");
         hibernateProps.put("hibernate.cache.region.factory_class", "org.hibernate.cache.jcache.JCacheRegionFactory");

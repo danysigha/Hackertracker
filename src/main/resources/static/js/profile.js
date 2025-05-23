@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
+    initializeTheme();
+
     const editButton = document.getElementById('editButton');
     const saveButton = document.getElementById('saveButton');
     const inputs = document.querySelectorAll('input');
@@ -36,4 +38,31 @@ document.addEventListener('DOMContentLoaded', function() {
         // Form will submit to the controller action
         return true;
     });
+
+    document.getElementById("lightSwitch").addEventListener("click", toggleTheme);
 });
+
+function toggleTheme() {
+    const root = document.documentElement;
+    const currentTheme = root.getAttribute('data-theme');
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
+    if (currentTheme) {
+        // Currently in a manual theme, remove it to follow system preference
+        root.removeAttribute('data-theme');
+        try {
+            localStorage.removeItem('theme');
+        } catch (e) {
+            console.warn('Could not remove theme preference:', e);
+        }
+    } else {
+        // Currently following system, switch to opposite
+        const newTheme = systemTheme === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', newTheme);
+        try {
+            localStorage.setItem('theme', newTheme);
+        } catch (e) {
+            console.warn('Could not save theme preference:', e);
+        }
+    }
+}

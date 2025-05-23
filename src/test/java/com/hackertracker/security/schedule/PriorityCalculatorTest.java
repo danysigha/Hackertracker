@@ -122,7 +122,7 @@ public class PriorityCalculatorTest {
 
     @Test
     void testGetTopicRankScoreMultipleCases() {
-        PriorityCalculator priorityCalculator = new PriorityCalculator(problemDao, userDao, attemptDao);
+        PriorityCalculator priorityCalculator = new PriorityCalculator();
 
         // Create topics with different ranks
         Topic topic1 = new Topic();
@@ -243,7 +243,7 @@ public class PriorityCalculatorTest {
             return mockRandom;
         };
 
-        PriorityCalculator priorityCalculator = new PriorityCalculator(problemDao, userDao, attemptDao, mockRandomProvider);
+        PriorityCalculator priorityCalculator = new PriorityCalculator(mockRandomProvider);
 
         int actualScore = priorityCalculator.getDifficultyScore(problem, testUser);
 

@@ -228,6 +228,22 @@ public class User implements UserDetails {
         return true;
     }
 
+    public Set<UserProblemPriority> getProblemPriorities() {
+        return problemPriorities;
+    }
+
+    public void setProblemPriorities(Set<UserProblemPriority> problemPriorities) {
+        this.problemPriorities = problemPriorities;
+    }
+
+    public Set<UserProblemAttempt> getProblemAttempts() {
+        return problemAttempts;
+    }
+
+    public void setProblemAttempts(Set<UserProblemAttempt> problemAttempts) {
+        this.problemAttempts = problemAttempts;
+    }
+
     /**
      * Get all priorities for this user's problems
      * Note: This method must be called within a transaction context

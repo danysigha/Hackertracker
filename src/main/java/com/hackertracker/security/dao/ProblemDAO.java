@@ -70,16 +70,39 @@ public class ProblemDAO {
         }
     }
 
-    /**
-     * Get a Problem entity by its ID
-     */
     @Transactional(readOnly = true)
     public Problem getProblemByIdWithCollections(int problemId) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Problem> query = session.createQuery(
+                    "FROM Problem p " +
+                            "LEFT JOIN FETCH p.problemTags ptag " +
+                            "LEFT JOIN FETCH ptag.tag " +
+                            "LEFT JOIN FETCH p.problemTopics pt " +
+                            "LEFT JOIN FETCH pt.topic " +  // Also fetch the actual topics
+                            "WHERE p.problemId = :problemId",
+                    Problem.class);
+            query.setParameter("problemId", problemId);
+            return query.uniqueResult();
+        }
+    }
+
+
+    public List<Problem> getProblemsWithCollectionsByIds(List<Integer> problemIds) {
         Session session = sessionFactory.openSession();
-        Problem problem = session.get(Problem.class, problemId);
-        Hibernate.initialize(problem.getProblemTags());
-        Hibernate.initialize(problem.getProblemTopics());
-        return problem;
+        try {
+            return session.createQuery(
+                            "FROM Problem p " +
+                                    "LEFT JOIN FETCH p.problemTags ptag " +
+                                    "LEFT JOIN FETCH ptag.tag " +
+                                    "LEFT JOIN FETCH p.problemTopics pt " +
+                                    "LEFT JOIN FETCH pt.topic " +
+                                    "WHERE p.problemId IN (:problemIds)",
+                            Problem.class)
+                    .setParameter("problemIds", problemIds)
+                    .getResultList();
+        } finally {
+            session.close();
+        }
     }
 
     /**
@@ -99,6 +122,22 @@ public class ProblemDAO {
     public List<Problem> getAllProblems() {
         try (Session session = sessionFactory.openSession()) {
             return session.createQuery("FROM Problem", Problem.class).list();
+        }
+    }
+
+    public List<Problem> getProblemsWithCollectionsPage(int pageNumber, int pageSize) {
+        Session session = sessionFactory.openSession();
+        try {
+            Query<Problem> query = session.createQuery("FROM Problem p " +
+                    "LEFT JOIN FETCH p.problemTags ptag " +
+                    "LEFT JOIN FETCH ptag.tag " +
+                    "LEFT JOIN FETCH p.problemTopics pt " +
+                    "LEFT JOIN FETCH pt.topic ", Problem.class);
+            query.setFirstResult(pageNumber * pageSize);
+            query.setMaxResults(pageSize);
+            return query.list();
+        } finally {
+            session.close();
         }
     }
 

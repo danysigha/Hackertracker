@@ -1,0 +1,12 @@
+{
+  "name": "hackertracker",
+  "version": "1.0.0",
+  "description": "Frontend resources for Hackertracker Spring Boot application",
+  "scripts": {
+    "compile-sass": "sass --no-source-map src/main/resources/static/scss:src/main/resources/static/css",
+    "watch-sass": "sass --no-source-map --watch src/main/resources/static/scss:src/main/resources/static/css"
+  },
+  "devDependencies": {
+    "sass": "^1.89.0"
+  }
+}

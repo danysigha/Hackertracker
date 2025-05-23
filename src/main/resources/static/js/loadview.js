@@ -4,7 +4,8 @@ let currentQuestionId = null;
 let originalStartDate = null;
 let originalEndDate = null;
 let cal = initializeCalendar();
-
+calTheme = 'dark';
+calColorScheme = 'YlOrBr';
 
 function getJwtToken() {
     const cookies = document.cookie.split(';');
@@ -222,11 +223,14 @@ function loadQuestion(questionId = null, addToPast = true) {
             $("#challengeLevel").text(data.problem.difficultyLevel);
 
             if(data.problem.difficultyLevel === "Easy") {
-                $("#challengeLevel").css("background-color", "#A8DCAB");
+                $("#challengeLevel").css("background-color", "#166534");
+                $("#challengeLevel").css("color", "#dcfce7");
             } else if(data.problem.difficultyLevel === "Medium") {
-                $("#challengeLevel").css("background-color", "#FFDBBB");
+                $("#challengeLevel").css("background-color", "#b45309");
+                $("#challengeLevel").css("color", "#fef3c7");
             } else {
-                $("#challengeLevel").css("background-color", "#FF7F7F");
+                $("#challengeLevel").css("background-color", "#b91c1c");
+                $("#challengeLevel").css("color", "#fee2e2");
             }
 
             $("#challengeUrl").attr("href", data.problem.pageUrl);
@@ -309,6 +313,8 @@ $("#previousQuestionBtn").on("click", function() {
 
         // Load it without adding to history
         loadQuestion(previousId, false);
+
+        tinymce.activeEditor.getBody().setAttribute('contenteditable', false);
     }
 });
 
@@ -320,6 +326,10 @@ $("#nextQuestionBtn").on("click", function() {
 
         // Get the next question
         let nextId = futureQuestions.pop();
+
+        if(futureQuestions.length === 0) {
+            tinymce.activeEditor.getBody().setAttribute('contenteditable', true);
+        }
 
         // Load it without adding to history
         loadQuestion(nextId, false);
@@ -337,6 +347,36 @@ $('#difficultySlider').on('change', function() {
     const value = $(this).val();
     $("#challengeDifficultyRating").text("Difficulty Rating (" + value + "/10)");
 });
+
+
+$('#skipQuestionBtn').on('click', function() {
+    let ajaxData = {};
+    ajaxData.questionId = currentQuestionId;
+    $.ajax({
+        url: "/api/challenges/skip",
+        method: "GET",
+        data: ajaxData,
+        xhrFields: {
+            withCredentials: true
+        },
+        success: function() {
+            // Load the new question, adding current to history
+            console.log("skipped question with id " + currentQuestionId);
+            loadQuestion();
+        },
+        error: function(xhr, status, error) {
+            console.error("Error response:", {
+                status: xhr.status,
+                statusText: xhr.statusText,
+                responseText: xhr.responseText,
+                error: error
+            });
+        },
+        // complete: function(xhr, status) {
+        //     console.log("Request completed with status:", status);
+        // }
+    });
+})
 
 
 // Mark completed button could work like this
@@ -415,7 +455,7 @@ $("#addAttemptBtn").on("click", function() {
             // console.log(data);
             // loadQuestion(data.problemId);
             loadQuestion();
-            setTimeout(function() { loadDataAndDisplayCalendarData(cal); }, 100);
+            setTimeout(function() { loadDataAndDisplayCalendarData(cal, calTheme, calColorScheme); }, 100);
         },
         error: function(xhr, status, error) {
             console.error("Error response:", {
@@ -424,10 +464,10 @@ $("#addAttemptBtn").on("click", function() {
                 responseText: xhr.responseText,
                 error: error
             });
-        },
-        complete: function(xhr, status) {
-            console.log("Request completed with status:", status);
         }
+        // complete: function(xhr, status) {
+        //     console.log("Request completed with status:", status);
+        // }
     });
 });
 
@@ -462,43 +502,147 @@ function updateNavigationButtons() {
 $(document).ready(function() {
     // Small delay to ensure cookie is fully processed
     setTimeout(function() {
-        // console.log("we outsiiiiiiddddde!");
         const token = getJwtToken();
         if (token) {
 
-            tinymce.init({
-                selector: '#myEditor',
-                plugins: 'link lists code',
-                toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link code',
-                height: 400,
-                // skin: 'oxide-dark',
-                // content_css: 'dark'
+            initializeTheme();
+
+            document.getElementById("lightSwitch").addEventListener("click", toggleTheme);
+
+            // Initialize TinyMCE with the current theme
+            // initTinyMCE();
+            //
+            // initializeCalendarWithTheme();
+            updateThemeRelatedComponents();
+
+            // Modify this listener in your document ready function
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                // When system theme changes, update to match the system theme
+                calTheme = e.matches ? 'dark' : 'light';
+                calColorScheme = e.matches ? 'YlOrBr' : 'Greens';
+
+                // Update the data-theme attribute to match system theme
+                document.documentElement.removeAttribute('data-theme');
+
+                // Reinitialize components to match system theme
+                updateThemeRelatedComponents();
+
+                // Clear any saved manual theme preference
+                try {
+                    localStorage.removeItem('theme');
+                } catch (e) {
+                    console.warn('Could not remove theme preference:', e);
+                }
             });
 
-            // console.log("we insiiiiiiddddde!");
-            // Token found, load question
+            // Load question and other initialization
             loadQuestion();
-            loadDataAndDisplayCalendarData(cal);
-            // console.log("supposedly called loadQuestion");
-
-            // Add this line to ensure buttons are updated on initial load
             updateNavigationButtons();
 
-            // ensure skip button is initialized on initial load
-            // NOT FUNCITONAL YET BECAUSE IT DOES NOT UPDATE PRIORITY
-            // SHOULD USE THE SKIP ENDPOINT
+            // Skip button initialization
             document.getElementById("skipQuestionBtn").addEventListener("click", function (e) {
                 loadQuestion();
-            })
+            });
 
-            // Add a listener for URL changes
+            // URL change listener
             $(window).on('popstate', function() {
                 updateNavigationButtons();
             });
-
         } else {
             // No token, redirect to login
             window.location.href = '/login';
         }
-    }, 100); // Even a short 100ms delay can help
+    }, 100);
+
+    // Function to initialize TinyMCE with current theme
+    function initTinyMCE() {
+        tinymce.init({
+            selector: '#myEditor',
+            plugins: 'link lists code',
+            toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link code',
+            height: 400,
+            skin: window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "oxide-dark"
+                : "oxide",
+            content_css: window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "default",
+        });
+    }
 });
+
+
+function getSystemColorScheme() {
+    // Check if media queries are supported
+    if (!window.matchMedia) {
+        return 'light'; // Default fallback
+    }
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+// Function to get the opposite of the system theme
+function getOppositeOfSystemTheme() {
+    return getSystemColorScheme() === 'dark' ? 'light' : 'dark';
+}
+
+
+
+function toggleTheme() {
+    const root = document.documentElement;
+    const currentTheme = root.getAttribute('data-theme');
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
+    if (currentTheme) {
+        // Currently in a manual theme, remove it to follow system preference
+        root.removeAttribute('data-theme');
+        try {
+            localStorage.removeItem('theme');
+        } catch (e) {
+            console.warn('Could not remove theme preference:', e);
+        }
+    } else {
+        // Currently following system, switch to opposite
+        const newTheme = systemTheme === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', newTheme);
+        try {
+            localStorage.setItem('theme', newTheme);
+        } catch (e) {
+            console.warn('Could not save theme preference:', e);
+        }
+    }
+
+    // Trigger theme-dependent updates
+    updateThemeRelatedComponents();
+}
+
+function updateThemeRelatedComponents() {
+    // Determine theme based on system preference when no manual theme is set
+    // const isDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    const currentTheme = document.documentElement.getAttribute('data-theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const isDarkTheme = currentTheme === 'dark';
+
+    // Reinitialize calendar
+    if (cal != null) {
+        cal.destroy();
+        cal = initializeCalendar();
+        loadDataAndDisplayCalendarData(cal,
+            isDarkTheme ? 'dark' : 'light',
+            isDarkTheme ? 'YlOrBr' : 'Greens'
+        );
+    }
+
+    // Reinitialize TinyMCE
+    tinymce.remove('#myEditor');
+    tinymce.init({
+        selector: '#myEditor',
+        plugins: 'link lists code',
+        toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link code',
+        height: 400,
+        skin: isDarkTheme ? "oxide-dark" : "oxide",
+        content_css: isDarkTheme ? "dark" : "default",
+    });
+
+}
+

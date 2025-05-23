@@ -2,7 +2,17 @@ function initializeCalendar() {
     return new CalHeatmap();
 }
 
-function displayCalendar(cal, processedData, startDate) {
+// Initialize calendar with appropriate theme based on current mode
+function initializeCalendarWithTheme() {
+    const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const theme = isDarkMode ? 'dark' : 'light';
+    const colorScheme = isDarkMode ? 'YlOrBr' : 'Greens'; // Using YlGn for dark mode
+
+    // Load data and display calendar
+    loadDataAndDisplayCalendarData(cal, theme, colorScheme);
+}
+
+function displayCalendar(cal, processedData, startDate, theme = 'light', colorScheme = 'Greens') {
 
 // Get the button element by ID
     const forwardButton = document.getElementById('navigation-forward');
@@ -45,6 +55,7 @@ function displayCalendar(cal, processedData, startDate) {
 // Using the paint method with explicit timezone settings
     cal.paint({
             itemSelector: "#cal-heatmap", // Make sure this element exists
+            theme: theme,
             data: {
                 source: processedData,
                 x: 'date',
@@ -76,7 +87,7 @@ function displayCalendar(cal, processedData, startDate) {
             },
             scale: {
                 color: {
-                    scheme: 'Greens',
+                    scheme: colorScheme,
                     type: 'linear',
                     domain: [0, 4]
                 }
@@ -95,7 +106,7 @@ function displayCalendar(cal, processedData, startDate) {
 }
 
 
-function loadDataAndDisplayCalendarData(cal) {
+function loadDataAndDisplayCalendarData(cal, theme = 'light', colorScheme = 'Greens') {
     $.ajax({
         url: "/api/calendar/update",
         method: "GET",
@@ -109,7 +120,7 @@ function loadDataAndDisplayCalendarData(cal) {
             console.log(data);
 
             if(data.length === 0) {
-                displayCalendar(cal, data, new Date());
+                displayCalendar(cal, data, new Date(), theme, colorScheme);
             } else {
                 // Get the user's timezone offset in minutes
                 const localTimezoneOffsetMinutes = new Date().getTimezoneOffset();
@@ -142,7 +153,7 @@ function loadDataAndDisplayCalendarData(cal) {
                 const minTimestamp = Math.min(...processedData.map(item => item.timestamp));
                 const startDate = new Date(minTimestamp);
 
-                displayCalendar(cal, processedData, startDate);
+                displayCalendar(cal, processedData, startDate, theme, colorScheme);
             }
         }
     });

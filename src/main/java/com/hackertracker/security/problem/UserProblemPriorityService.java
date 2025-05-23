@@ -1,9 +1,11 @@
 package com.hackertracker.security.problem;
 
-import com.hackertracker.security.schedule.PriorityCalculator;
 import com.hackertracker.security.dao.*;
+import com.hackertracker.security.schedule.PriorityCalculatorOptimized;
+import com.hackertracker.security.schedule.ProcessProblemPriorityService;
 import com.hackertracker.security.topic.Topic;
 import com.hackertracker.security.user.*;
+import org.hibernate.Hibernate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 
 /**
@@ -21,56 +24,72 @@ import java.util.concurrent.ConcurrentHashMap;
 public class UserProblemPriorityService {
 
     private final UserProblemPriorityDAO priorityDao;
-    private final PriorityCalculator priorityCalculator;
     private final ProblemDAO problemDao;
     private final UserDAO userDao;
     private final TopicDAO topicDao;
     private final UserTopicsDAO userTopicsDao;
     private final ProblemHistoryDAO problemHistoryDao;
+    private final ProcessProblemPriorityService processProblemPriorityService;
+    private final PriorityCalculatorOptimized priorityCalculatorOptimized;
     private final Map<Integer, LinkedList<String>> userRecentDifficulties = new ConcurrentHashMap<>();
 //    private final UserProblemService userProblemService;
 
 
     public UserProblemPriorityService(
             UserProblemPriorityDAO priorityDao,
-            PriorityCalculator priorityCalculator,
+            PriorityCalculatorOptimized priorityCalculatorOptimized,
             ProblemDAO problemDao, UserDAO userDAO,
             TopicDAO topicDao,
             UserTopicsDAO userTopicsDao,
-            ProblemHistoryDAO problemHistoryDao) {
+            ProblemHistoryDAO problemHistoryDao,
+            ProcessProblemPriorityService processProblemPriorityService) {
         this.priorityDao = priorityDao;
-        this.priorityCalculator = priorityCalculator;
+        this.priorityCalculatorOptimized = priorityCalculatorOptimized;
         this.problemDao = problemDao;
         this.userDao = userDAO;
         this.topicDao = topicDao;
         this.userTopicsDao = userTopicsDao;
         this.problemHistoryDao = problemHistoryDao;
+        this.processProblemPriorityService = processProblemPriorityService;
     }
 
     /**
      * Initialize priority for a new problem for a user
      */
     @Transactional
-    public UserProblemPriority initializePriority(Problem problem, User user) {
+    public void initializePriorities(User user) {
+        User myUser = userDao.getUserByIdWithCollections(user.getUserId());
+        int pageNumber = 0;
+        int batchSize = 100;
 
-        // Check if priority already exists
-        UserProblemPriority existingPriority = priorityDao.findByProblemAndUser(problem, user);
+        // Pre-load topic ranks once
+        List<Byte> userTopicRanks = myUser.getTopicRanks().getTopics();
 
-        if (existingPriority != null) {
-            return existingPriority;
-        }
+        List<Problem> problemsBatch;
 
-        // Calculate initial priority score
-        double initialScore = priorityCalculator.calculateInitialPriorityScore(problem, user);
+        do {
+            problemsBatch = problemDao.getProblemsWithCollectionsPage(pageNumber, batchSize);
+            List<UserProblemPriority> initialPriorities = new ArrayList<>();
 
-        // Create new priority record
-        UserProblemPriority priority = new UserProblemPriority();
-        priority.setProblem(problem);
-        priority.setUser(user);
-        priority.setPriorityScore(initialScore);
-        priority.setLastCalculation(LocalDateTime.now(ZoneOffset.UTC));
+            for (Problem problem : problemsBatch) {
+                // Use optimized calculator for initial score
+                double initialScore = priorityCalculatorOptimized.calculateInitialPriorityScoreOptimized(
+                        problem,
+                        Collections.emptyList(), // No attempts yet for new user
+                        userTopicRanks);
 
-        return priorityDao.save(priority);
+                // Create new priority record
+                UserProblemPriority priority = new UserProblemPriority();
+                priority.setProblem(problem);
+                priority.setUser(user);
+                priority.setPriorityScore(initialScore);
+                priority.setLastCalculation(LocalDateTime.now(ZoneOffset.UTC));
+                initialPriorities.add(priority);
+            }
+
+            priorityDao.saveBatch(initialPriorities, batchSize);
+            pageNumber++;
+        } while (!problemsBatch.isEmpty());
     }
 
 
@@ -82,18 +101,41 @@ public class UserProblemPriorityService {
         Problem problem = attempt.getProblem();
         User user = attempt.getUser();
 
-        // Get or create priority record
-        UserProblemPriority priority = priorityDao.findByProblemAndUser(problem, user);
+        User myUser = userDao.getUserByIdWithCollections(user.getUserId());
+        Problem myProblem = problemDao.getProblemByIdWithCollections(problem.getProblemId());
 
-        if(priority == null) {
-            priority = new UserProblemPriority(problem, user, 0);
+        if (myProblem.getProblemTopics() == null || !Hibernate.isInitialized(myProblem.getProblemTopics())) {
+            throw new IllegalStateException("Problem topics not initialized!");
+        }
+        if (myUser.getProblemPriorities() == null || !Hibernate.isInitialized(myUser.getProblemPriorities())) {
+            throw new IllegalStateException("User priorities not initialized!");
+        }
+
+        // Get or create priority record
+        UserProblemPriority priority = priorityDao.findByProblemAndUser(myProblem, myUser);
+
+        if (priority == null) {
+            priority = new UserProblemPriority(myProblem, myUser, 0);
         }
 
         // Update last attempted timestamp
         priority.setLastAttempted(attempt.getEndTime());
 
-        // Recalculate priority score
-        double newScore = priorityCalculator.calculatePriorityScore(problem, user);
+        // Prepare optimized data
+        List<Byte> userTopicRanks = myUser.getTopicRanks().getTopics();
+        List<UserProblemAttempt> problemAttempts = myUser.getProblemAttempts().stream()
+                .filter(a -> a.getProblem().getProblemId() == myProblem.getProblemId())
+                .collect(Collectors.toList());
+
+        // Add the new attempt to the list for calculation
+        problemAttempts.add(attempt);
+
+        // Recalculate priority score using optimized calculator
+        double newScore = priorityCalculatorOptimized.calculatePriorityScoreOptimized(
+                myProblem,
+                problemAttempts,
+                userTopicRanks);
+
         priority.setPriorityScore(newScore);
         priority.setLastCalculation(LocalDateTime.now(ZoneOffset.UTC));
 
@@ -103,12 +145,31 @@ public class UserProblemPriorityService {
 
     @Transactional
     public double recalculateSinglePriority(Problem problem, User user) {
+        User myUser = userDao.getUserByIdWithCollections(user.getUserId());
+        Problem myProblem = problemDao.getProblemByIdWithCollections(problem.getProblemId());
 
-        double newScore = priorityCalculator.calculatePriorityScore(problem, user);
+        if (myProblem.getProblemTopics() == null || !Hibernate.isInitialized(myProblem.getProblemTopics())) {
+            throw new IllegalStateException("Problem topics not initialized!");
+        }
+        if (myUser.getProblemPriorities() == null || !Hibernate.isInitialized(myUser.getProblemPriorities())) {
+            throw new IllegalStateException("User priorities not initialized!");
+        }
+
+        // Prepare optimized data
+        List<Byte> userTopicRanks = myUser.getTopicRanks().getTopics();
+        List<UserProblemAttempt> problemAttempts = myUser.getProblemAttempts().stream()
+                .filter(a -> a.getProblem().getProblemId() == myProblem.getProblemId())
+                .collect(Collectors.toList());
+
+        // Calculate new score using optimized calculator
+        double newScore = priorityCalculatorOptimized.calculatePriorityScoreOptimized(
+                myProblem,
+                problemAttempts,
+                userTopicRanks);
 
         UserProblemPriority priority = priorityDao.findByProblemAndUser(problem, user);
 
-        if(priority == null) {
+        if (priority == null) {
             priority = new UserProblemPriority(problem, user, newScore);
             priority.setPriorityScore(newScore);
             priority.setLastCalculation(LocalDateTime.now(ZoneOffset.UTC));
@@ -125,45 +186,88 @@ public class UserProblemPriorityService {
 
     @Transactional
     public void recalculateAllPrioritiesByUser(User user) {
+        // Get user with all collections pre-loaded
+        User myUser = userDao.getUserByIdWithCollections(user.getUserId());
 
-        List<UserProblemPriority> newPriorities = new ArrayList<>();
+        // Get all priorities for this user
+        List<UserProblemPriority> allPriorities = priorityDao.findByUser(myUser);
 
-        List<UserProblemPriority> allPriorities = priorityDao.findByUser(user);
+        // ====== PRE-LOADING PHASE ======
 
-        for (UserProblemPriority priority : allPriorities) {
-            Problem problem = problemDao.getProblemByIdWithCollections(priority.getProblem().getProblemId());
-            User myUser = userDao.getUserByIdWithCollections(priority.getUser().getUserId());
+        // 1. Pre-load topic ranks
+        List<Byte> userTopicRanks = myUser.getTopicRanks().getTopics();
 
-            // Recalculate score
-            double newScore = priorityCalculator.calculatePriorityScore(problem, myUser);
+        // 2. Pre-load and organize user attempts by problem ID
+        Map<Integer, List<UserProblemAttempt>> attemptsByProblemId = myUser.getProblemAttempts().stream()
+                .collect(Collectors.groupingBy(attempt -> attempt.getProblem().getProblemId()));
 
-            priority.setPriorityScore(newScore);
-            priority.setLastCalculation(LocalDateTime.now(ZoneOffset.UTC));
-            newPriorities.add(priority);
+        // 3. Get all problem IDs needed
+        List<Integer> allProblemIds = allPriorities.stream()
+                .map(p -> p.getProblem().getProblemId())
+                .distinct() // Ensure no duplicates
+                .collect(Collectors.toList());
+
+        // 4. Load all problems with collections in batches
+        Map<Integer, Problem> problemsMap = new HashMap<>();
+        int batchSize = 100;
+
+        for (int i = 0; i < allProblemIds.size(); i += batchSize) {
+            int endIndex = Math.min(i + batchSize, allProblemIds.size());
+            List<Integer> batchProblemIds = allProblemIds.subList(i, endIndex);
+
+            // Fetch problems with collections (topics, tags, etc.)
+            List<Problem> batchProblems = problemDao.getProblemsWithCollectionsByIds(batchProblemIds);
+
+            // Store in map for O(1) lookup
+            for (Problem problem : batchProblems) {
+                problemsMap.put(problem.getProblemId(), problem);
+            }
         }
 
-        priorityDao.updateAll(newPriorities);
+        // Create a reference timestamp for all calculations
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
 
-        // After recalculating all scores, normalize them to prevent inflation
-        normalizeAllScores(allPriorities);
+        // ====== CALCULATION PHASE ======
+
+        List<UserProblemPriority> updatedPriorities = new ArrayList<>();
+
+        for (UserProblemPriority priority : allPriorities) {
+            // Get problem from pre-loaded map
+            Problem problem = problemsMap.get(priority.getProblem().getProblemId());
+
+            // Skip if problem not found (shouldn't happen, but for safety)
+            if (problem == null) continue;
+
+            // Get attempts for this problem
+            List<UserProblemAttempt> problemAttempts =
+                    attemptsByProblemId.getOrDefault(problem.getProblemId(), Collections.emptyList());
+
+            // Calculate new score with optimized method
+            double newScore = priorityCalculatorOptimized.calculatePriorityScoreOptimized(
+                    problem,
+                    problemAttempts,
+                    userTopicRanks);
+
+            // Update priority score
+            priority.setPriorityScore(newScore);
+            priority.setLastCalculation(now);
+            updatedPriorities.add(priority);
+
+            // Process in batches
+            if (updatedPriorities.size() >= batchSize) {
+                priorityDao.updateBatch(updatedPriorities, batchSize);
+                updatedPriorities.clear();
+            }
+        }
+
+        // Process remaining items
+        if (!updatedPriorities.isEmpty()) {
+            priorityDao.updateBatch(updatedPriorities, batchSize);
+        }
+
+        // Normalize scores after recalculation
+        processProblemPriorityService.normalizeScoresForUser(user);
     }
-
-
-
-
-    /**
-     * Get prioritized problems for a user
-     */
-//    @Transactional(readOnly = true)
-//    public Problem getNextTopPriorityProblemForUser(User user) {
-//        UserProblemPriority priority = priorityDao.findNextChallengeByPriorityScoreDesc(user);
-//        if (priority == null) {
-//            return null;
-//        }
-//
-//        int problemId = priority.getProblem().getProblemId();
-//        return problemDao.getProblemByIdWithCollections(problemId);
-//    }
 
 
     /**
@@ -267,86 +371,40 @@ public class UserProblemPriorityService {
     }
 
 
-    /**
-     * Scheduled job to recalculate all problem priorities for all users
-     * Runs once daily
-     */
-    @Scheduled(cron = "0 0 0 * * ?")  // Run at midnight every day
-    @Transactional
+    @Scheduled(cron = "0 0 0 * * ?")
     public void recalculateAllPriorities() {
+        int batchSize = 100;
 
-        List<UserProblemPriority> newPriorities = new ArrayList<>();
+        // Get mappings efficiently
+        List<Object[]> priorityMappings = priorityDao.findAllPriorityMappings();
 
-        List<UserProblemPriority> allPriorities = priorityDao.findAll();
+        // Build maps and extract IDs
+        Map<String, Integer> priorityIdMap = new HashMap<>();
+        Set<Integer> problemIdSet = new HashSet<>();
+        Set<Integer> userIdSet = new HashSet<>();
 
-        for (UserProblemPriority priority : allPriorities) {
-            Problem problem = problemDao.getProblemByIdWithCollections(priority.getProblem().getProblemId());
-            User user = userDao.getUserByIdWithCollections(priority.getUser().getUserId());
+        for (Object[] mapping : priorityMappings) {
+            Integer problemId = (Integer) mapping[0];
+            Integer userId = (Integer) mapping[1];
+            Integer priorityId = (Integer) mapping[2];
 
-            // Recalculate score
-            double newScore = priorityCalculator.calculatePriorityScore(problem, user);
-
-            priority.setPriorityScore(newScore);
-            priority.setLastCalculation(LocalDateTime.now(ZoneOffset.UTC));
-            newPriorities.add(priority);
+            priorityIdMap.put(problemId + ":" + userId, priorityId);
+            problemIdSet.add(problemId);
+            userIdSet.add(userId);
         }
 
-        priorityDao.updateAll(newPriorities);
+        List<Integer> allProblemIds = new ArrayList<>(problemIdSet);
+        List<Integer> allUserIds = new ArrayList<>(userIdSet);
 
-        // After recalculating all scores, normalize them to prevent inflation
-        normalizeAllScores(allPriorities);
-    }
+        // Process problem batches
+        for (int i = 0; i < allProblemIds.size(); i += batchSize) {
+            int endIndex = Math.min(i + batchSize, allProblemIds.size());
+            List<Integer> batchProblemIds = allProblemIds.subList(i, endIndex);
 
-
-    /**
-     * Normalize all priority scores passed to ensure they stay within 0-100 range
-     * This prevents score inflation over time
-     * Run after recalculating priorities
-     */
-    @Transactional
-    public void normalizeAllScores(List<UserProblemPriority> allPriorities) {
-        // Group priorities by user ID to maintain relative importance within each user's set
-        Map<Integer, List<UserProblemPriority>> prioritiesByUser = new HashMap<>();
-
-        for (UserProblemPriority priority : allPriorities) {
-            Integer userId = priority.getUser().getUserId();
-            if (!prioritiesByUser.containsKey(userId)) {
-                prioritiesByUser.put(userId, new ArrayList<>());
-            }
-            prioritiesByUser.get(userId).add(priority);
+            processProblemPriorityService.processProblemBatch(batchProblemIds, allUserIds, priorityIdMap, batchSize);
         }
 
-        // Process each user's priorities separately
-        for (List<UserProblemPriority> userPriorities : prioritiesByUser.values()) {
-            if (userPriorities.size() <= 1) {
-                continue; // Skip if only one problem for this user
-            }
-
-            // Find min and max scores for this user
-            double minScore = Double.MAX_VALUE;
-            double maxScore = Double.MIN_VALUE;
-
-            for (UserProblemPriority priority : userPriorities) {
-                double score = priority.getPriorityScore();
-                if (score < minScore) minScore = score;
-                if (score > maxScore) maxScore = score;
-            }
-
-            double range = maxScore - minScore;
-
-            // Only normalize if there's an actual range and if max score exceeds 100
-            if (range > 0 && maxScore > 100) {
-                for (UserProblemPriority priority : userPriorities) {
-                    double originalScore = priority.getPriorityScore();
-                    // Normalize to 0-100 range
-                    double normalizedScore = ((originalScore - minScore) / range) * 100;
-                    priority.setPriorityScore(normalizedScore);
-                }
-            }
-        }
-
-        // Only call saveAll once with all updated priorities
-        priorityDao.updateAll(allPriorities);
+        processProblemPriorityService.normalizeAllUserPriorities();
     }
 
 
@@ -355,8 +413,6 @@ public class UserProblemPriorityService {
      */
     @Transactional
     public void initializeAllPrioritiesForNewUser(User user) {
-
-        //NEED TO THINK ABOUT THIS ONE
 
         UserTopics userTopics = new UserTopics();
         userTopics.setUser(user);
@@ -372,9 +428,15 @@ public class UserProblemPriorityService {
         user.setTopicRanks(userTopics);
         userDao.updateUser(user);
 
-        for (Problem problem : problemDao.getAllProblems()) {
-            initializePriority(problem, user);
-        }
+        initializePriorities(user);
+    }
+
+    public void skipQuestion(Problem problem, User user) {
+        UserProblemPriority priority = priorityDao.findByProblemAndUser(problem, user);
+        double currentScore = priority.getPriorityScore();
+        // Reduce by 50% of current score
+        priority.setPriorityScore(Math.max(0, currentScore * 0.5));
+        priorityDao.update(priority);
     }
 
 }

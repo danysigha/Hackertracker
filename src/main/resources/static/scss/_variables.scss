@@ -1,0 +1,177 @@
+// Theme colors
+$themes: (
+        light: (
+                font-color: #213547,
+                background-color: #ffffff,
+                button-background: #f9f9f9,
+                nav-gradient-fallback: #EDDD53,
+                nav-gradient-start: rgba(237, 221, 83, 0.9),
+                nav-gradient-end: rgba(206, 229, 242, 1),
+                landing-page-background-fallback: #a1a1a1,
+                landing-page-shadow-color: rgba(0, 0, 0, 0.2),
+                landing-page-gradient-start: rgba(230, 230, 230, 0.71),
+                landing-page-gradient-end: rgba(247, 250, 252, 0.79),
+                auth-button-gradient-fallback: #EEAECA,
+                auth-button-gradient-start: rgba(238, 174, 202, 0.3),
+                auth-button-gradient-end: rgba(148, 187, 233, 0.3),
+                search-overlay-background: #a99b61ed,
+                card-border-color: lightgray,
+                icon-color: #1f1f1f,
+                icon-fill: #000000,
+                dashboard-labels-color: #6b7280,
+                tag-color: #1d4ed8,
+                tag-background: #eff6ff,
+                slider-background: #e5e7eb,
+                slider-thumb-color:#1d4ed8,
+                slider-thumb-border: #ffffff,
+                slider-ticks-color: #6b7280,
+                timer-section-background: #f9fafb,
+                select-dropdown-background: #f0f0f0,
+                select-option-color: #333333,
+                result-list-background: #fff,
+                search-result-hover-color: #f7f9fc,
+                search-bar-background: white,
+                search-bar-text-color: #000,
+                search-button-fallback: #EDDD53,
+                search-button-start: rgba(237, 221, 83, 0.9),
+                search-button-end: rgba(206, 229, 242, 1),
+                del-button-text-color: #666,
+                del-button-text-color-focus: #000,
+                search-icon: #000,
+                results-container-background: #fff,
+                pagination-background: #ffffffc7,
+                pagination-hover-background: #fff,
+                adv-search-title-color: #555,
+                analytics-labels-color: rgb(45, 64, 85),
+                analytics-category-color: rgb(255, 255, 255),
+                analytics-section-titles: #333,
+                analytics-info-background: rgba(38, 50, 56, 0.7),
+                analytics-info-border-color: #29B6F6,
+                analytics-info-text-color: #E3F2FD,
+                analytics-info-title-color: #FFFFFF,
+                analytics-info-subtitle: #CFD8DC,
+                analytics-schedule-title: #1f2937,
+                analytics-day-labels: #6b7280,
+                analytics-schedule-input-background: #FFFFFF,
+                analytics-schedule-completed-background: #eff6ff,
+                analytics-schedule-stats-color: #4b5563,
+                analytics-progress-bar-background: #e5e7eb,
+                analytics-instruction-box-background: #e6f7ff,
+                analytics-feedback-box-background: #e6f7ff,
+                topic-background: #FFFFFF,
+                topic-border-color: #ddd,
+                topic-hover-color: #f5f5f5,
+                topic-drag-handle-color: #999,
+                topic-rank-badge-background: #f0f0f0,
+                topic-nav-color: #6b7280,
+                profile-muted-color: #6c757d,
+                profile-input-color: #495057,
+                profile-input-background: #fff,
+                profile-border-color: #ced4da,
+                profile-focus-border-color: #80bdff,
+                profile-focus-shadow-color: rgba(0, 123, 255, 0.25),
+                profile-input-readonly-background: #e9ecef,
+        ),
+        dark: (
+                font-color: rgba(255, 255, 255, 0.87),
+                background-color: #242424,
+                button-background: #1a1a1a,
+                nav-gradient-fallback: #2a2a2a,
+                nav-gradient-start: rgba(60, 60, 60, 0.9),
+                nav-gradient-end: rgba(40, 40, 40, 1),
+                nav-border-color: #444,
+                landing-page-background-fallback: #a1a1a1,
+                landing-page-gradient-start: rgba(60, 60, 60, 0.8),
+                landing-page-gradient-end: rgba(40, 40, 40, 0.8),
+                landing-page-shadow-color: rgba(0, 0, 0, 0.4),
+                search-overlay-background: rgb(107 100 71),
+                card-border-color: rgba(100, 108, 255, 0.4),
+                icon-color: #646cff,
+                icon-fill: #ffffff,
+                dashboard-labels-color: #646cff,
+                tag-color: #646cff,
+                tag-background: rgba(0, 0, 0, 0.5),
+                slider-background: #646cff52,
+                slider-thumb-color: #646cff,
+                timer-section-background: rgb(34 47 63),
+                select-dropdown-background: rgba(56, 56, 56, 1),
+                select-option-color: #ffffff,
+                result-list-background: rgba(255, 255, 255, 0.46),
+                search-result-hover-color: rgba(50, 64, 84, 0.8),
+                search-bar-background: #2a2a2a,
+                search-bar-text-color: #ffffff,
+                del-button-text-color: #aeaeae,
+                del-button-text-color-focus: #ffffff,
+                search-icon: #ffffff,
+                results-container-background: rgba(56, 56, 56, 0.86),
+                pagination-background: rgba(255, 255, 255, 0.2),
+                pagination-hover-background: rgba(255, 255, 255, 0.4),
+                adv-search-title-color: #ffffff,
+                analytics-labels-color: #ffffff,
+                analytics-category-color: #ffffff,
+                analytics-section-titles: #ffffff,
+                analytics-info-background: rgb(34, 47, 63),
+                analytics-info-border-color: #29B6F6,
+                analytics-schedule-title: #ffffff,
+                analytics-day-labels: #ffffff,
+                analytics-schedule-input-background: rgba(255, 255, 255, 0.5),
+                analytics-schedule-completed-background: rgba(239, 246, 255, 0.5),
+                analytics-schedule-stats-labels-color: #ffffff,
+                analytics-progress-bar-background: #e5e7eb,
+                analytics-instruction-box-background: rgba(230, 247, 255, 0.1),
+                analytics-feedback-box-background: rgba(230, 247, 255, 0.5),
+                topic-background: rgb(34, 47, 63),
+                topic-border-color: #ddd,
+                topic-hover-color: rgba(50, 64, 84, 0.8),
+                topic-drag-handle-color: #646cff,
+                topic-rank-badge-background: #646cff,
+                topic-nav-color: #ffffff,
+                profile-muted-color: #aeaeae,
+                profile-input-color: #ffffff,
+                profile-input-background: rgba(56, 56, 56, 0.86),
+                profile-border-color: rgba(100, 108, 255, 0.4),
+                profile-focus-border-color: #646cff,
+                profile-focus-shadow-color: navajowhite,
+                profile-input-readonly-background: rgba(50, 64, 84, 0.8),
+        )
+);
+
+// Shared colors
+$accent-color-primary: #646cff;
+$accent-color-secondary: #535bf2;
+$error-color: #dc3545;
+$error-color-shadow: rgba(220, 53, 69, 0.25);
+$search-overlay-shadow-start: rgba(0, 0, 0, 0.3);
+$search-overlay-shadow-end: rgba(0, 0, 0, 0.22);
+$ink-blue: #1d4ed8;
+$dashboard-nav-background: rgba(211, 211, 211, 0.15);
+$checkmark-color: #4CAF50;
+$timer-start-background: #2563eb;
+$timer-stop-background: #dc2626;
+$timer-stop-hover-background: #b91c1c;
+$timer-text-color: #ffffff;
+$tom-select-border: lightgray;
+$search-result-border-color: #eaeaea;
+$easy-light-color: #dcfce7;
+$easy-dark-color: #166534;
+$medium-light-color: #fef3c7;
+$medium-dark-color: #b45309;
+$hard-light-color: #fee2e2;
+$hard-dark-color: #b91c1c;
+$active-pagination-background: #eff6ff;
+$update-schedule-button: #3b82f6;
+$update-schedule-hover-button: #2563eb;
+$update-schedule-button-text: #ffffff;
+$update-rank-button: #3b82f6;
+$analytics-success-color: #006600;
+$topic-drag-border-color: #4d90fe;
+$topic-drag-background: #e6f7ff;
+$profile-edit-btn-background: #007bff;
+$profile-focus-edit-btn-background: #0069d9;
+$profile-edit-btn-border-color: #007bff;
+$profile-focus-edit-btn-border-color: #0062cc;
+$profile-edit-text-color: #fff;
+$profile-success-color: #28a745;
+$profile-success-border-color: #28a745;
+$profile-hover-success-color: #218838;
+$profile-hover-success-border-color: #1e7e34;

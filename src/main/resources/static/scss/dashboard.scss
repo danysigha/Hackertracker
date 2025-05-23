@@ -1,0 +1,66 @@
+@use "variables" as *;
+@use "mixins" as *;
+@use "functions" as *;
+@use "base";
+
+/* ================================
+   SYSTEM PREFERENCE ONLY (when no manual override)
+   ================================ */
+
+/* System preference (when no manual override) */
+:root:not([data-theme]) {
+  @media (prefers-color-scheme: dark) {
+    @include dark-theme-styles-dashboard;
+  }
+
+  @media (prefers-color-scheme: light) {
+    @include light-theme-styles-dashboard;
+  }
+}
+
+/* ================================
+   MANUAL DARK OVERRIDE
+   ================================ */
+/* Manual dark override (works regardless of system preference) */
+
+[data-theme="dark"] {
+  @include dark-theme-styles-dashboard;
+}
+
+/* ================================
+   MANUAL LIGHT OVERRIDE
+   ================================ */
+
+/* Manual light override (works regardless of system preference) */
+/* Manual light override (works regardless of system preference) */
+[data-theme="light"] {
+  @include light-theme-styles-dashboard;
+}
+
+/* ================================
+   RESPONSIVE AND OTHER STYLES
+   ================================ */
+@media screen and (max-width: 767px) {
+  .s010 .form-container .inner-form .basic-search .input-field input {
+    padding: 10px 110px 10px 30px;
+  }
+  .s010 .form-container .inner-form .basic-search .input-field .icon-wrap {
+    width: 80px;
+    -ms-flex-pack: center;
+    justify-content: center;
+  }
+  .s010 .form-container .inner-form .basic-search .input-field .icon-wrap svg {
+    width: 30px;
+    height: 30px;
+  }
+  .s010 .form-container .inner-form .advance-search {
+    padding: 40px 15px;
+  }
+  .s010 .form-container .inner-form .advance-search .row {
+    display: block;
+  }
+  .s010 .form-container .inner-form .advance-search .input-field {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+}

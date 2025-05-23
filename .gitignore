@@ -1,4 +1,9 @@
 hibernate-search-indexes/
+target/lucene-test-indexes/
+target/
+node_modules/
+.idea/
+nbactions.xml
 
 ### macOS ###
 # General

@@ -2,15 +2,7 @@ package com.hackertracker.security.user;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.hackertracker.security.problem.Problem;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -18,7 +10,10 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
-@Table(name="user_problem_attempts")
+@Table(name="user_problem_attempts", indexes = {
+        @Index(name = "idx_user_problem_attempt_user", columnList = "user_id"),
+        @Index(name = "idx_user_problem_attempt_problem", columnList = "problem_id"),
+        @Index(name = "idx_user_problem_attempt_end_time", columnList = "end_time")})
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class UserProblemAttempt {
     @Id

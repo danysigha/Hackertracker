@@ -90,6 +90,20 @@ public class PriorityController {
         }
     }
 
+
+    /**
+     * Get the current user's prioritized problems
+     */
+    @GetMapping("/skip")
+    public void skipQuestion(
+            @RequestParam(value = "questionId") String questionId,
+            @AuthenticationPrincipal User user) {
+
+        User myUser = userDao.getUserByUserName(user.getUserName());
+        priorityService.skipQuestion(problemDao.getProblemById(Integer.parseInt(questionId)), myUser);
+    }
+
+
     /**
      * Manually trigger priority recalculation for the current user
      */

@@ -109,15 +109,11 @@ public class ProblemSearchService {
                         // If no completed problems, return empty result
                         return Collections.emptyList();
                     }
-                    boolPredicate.must(f.id().matchingAny(
-                            completedProblemIds.stream().map(String::valueOf).collect(Collectors.toList())
-                    ));
+                    boolPredicate.must(f.id().matchingAny(completedProblemIds));
                 } else {
                     // Exclude completed problems
                     if (!completedProblemIds.isEmpty()) {
-                        boolPredicate.mustNot(f.id().matchingAny(
-                                completedProblemIds.stream().map(String::valueOf).collect(Collectors.toList())
-                        ));
+                        boolPredicate.mustNot(f.id().matchingAny(completedProblemIds));
                     }
                 }
             }

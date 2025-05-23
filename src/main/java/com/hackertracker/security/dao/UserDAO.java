@@ -34,6 +34,15 @@ public class UserDAO {
         }
     }
 
+    public List<Integer> getAllUserIds() {
+        Session session = sessionFactory.openSession();
+        try {
+            return session.createQuery("SELECT u.userId FROM User u", Integer.class).list();
+        } finally {
+            session.close();
+        }
+    }
+
     /**
      * Save a new User entity
      */
@@ -83,20 +92,104 @@ public class UserDAO {
     public User getUserByIdWithCollections(int userId) {
         Session session = sessionFactory.openSession();
         try {
-            User user = session.get(User.class, userId);
+            // Use multiple queries with different join fetches to avoid Cartesian products
+            // First, get the user with topic ranks
+            User user = session.createQuery(
+                            "FROM User u " +
+                                    "LEFT JOIN FETCH u.topicRanks tr " +
+                                    "LEFT JOIN FETCH tr.topics " +
+                                    "WHERE u.userId = :userId",
+                            User.class)
+                    .setParameter("userId", userId)
+                    .uniqueResult();
 
             if (user != null) {
-                // Force initialization of collections while session is still open
-                Hibernate.initialize(user.getListAttempts());
-                Hibernate.initialize(user.getListProblemPriorities());
-                Hibernate.initialize(user.getUserSchedule());
-                Hibernate.initialize(user.getTopicRanks().getTopics());
-                Hibernate.initialize(user.getTopicRanks());
+                // Then load attempts in a separate query
+                // This gives us the same user object but with attempts loaded
+                user = session.createQuery(
+                                "FROM User u " +
+                                        "LEFT JOIN FETCH u.problemAttempts a " +
+                                        "LEFT JOIN FETCH a.problem " +
+                                        "WHERE u.userId = :userId",
+                                User.class)
+                        .setParameter("userId", userId)
+                        .uniqueResult();
+
+                // Load problem priorities
+                user = session.createQuery(
+                                "FROM User u " +
+                                        "LEFT JOIN FETCH u.problemPriorities " +
+                                        "WHERE u.userId = :userId",
+                                User.class)
+                        .setParameter("userId", userId)
+                        .uniqueResult();
+
+                // Load user schedule
+                user = session.createQuery(
+                                "FROM User u " +
+                                        "LEFT JOIN FETCH u.userSchedule " +
+                                        "WHERE u.userId = :userId",
+                                User.class)
+                        .setParameter("userId", userId)
+                        .uniqueResult();
             }
 
             return user;
         } finally {
-            session.close(); // Make sure to close the session
+            session.close();
+        }
+    }
+
+
+
+    public List<User> getUsersWithCollectionsByIds(List<Integer> userIds) {
+        Session session = sessionFactory.openSession();
+        try {
+
+            List<User> users = session.createQuery(
+                            "FROM User u " +
+                                    "LEFT JOIN FETCH u.topicRanks tr " +
+                                    "LEFT JOIN FETCH tr.topics " +
+                                    "WHERE u.userId IN (:userIds)",
+                            User.class)
+                    .setParameter("userIds", userIds)
+                    .getResultList();
+
+            if (users.size() != 0) {
+                // Then load attempts in a separate query
+                // This gives us the same user object but with attempts loaded
+                users = session.createQuery(
+                                "FROM User u " +
+                                        "LEFT JOIN FETCH u.problemAttempts a " +
+                                        "LEFT JOIN FETCH a.problem " +
+                                        "WHERE u.userId IN (:userIds)",
+                                User.class)
+                        .setParameter("userIds", userIds)
+                        .getResultList();
+
+                // Load problem priorities
+                users = session.createQuery(
+                                "FROM User u " +
+                                        "LEFT JOIN FETCH u.problemPriorities " +
+                                        "WHERE u.userId IN (:userIds)",
+                                User.class)
+                        .setParameter("userIds", userIds)
+                        .getResultList();
+
+                // Load user schedule
+                users = session.createQuery(
+                                "FROM User u " +
+                                        "LEFT JOIN FETCH u.userSchedule " +
+                                        "WHERE u.userId IN (:userIds)",
+                                User.class)
+                        .setParameter("userIds", userIds)
+                        .getResultList();
+            }
+
+            return users;
+
+        } finally {
+            session.close();
         }
     }
 //    @Transactional(readOnly = true)

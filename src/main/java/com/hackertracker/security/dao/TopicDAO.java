@@ -67,6 +67,18 @@ public class TopicDAO {
         }
     }
 
+    public List<Topic> getTopicsPage(int pageNumber, int pageSize) {
+        Session session = sessionFactory.openSession();
+        try {
+            Query<Topic> query = session.createQuery("FROM Topic t ORDER BY t.topicId", Topic.class);
+            query.setFirstResult(pageNumber * pageSize);
+            query.setMaxResults(pageSize);
+            return query.list();
+        } finally {
+            session.close();
+        }
+    }
+
     public List<TopicDTO> getAllTopicsDtos(){
         try (Session session = sessionFactory.openSession()) {
             List<Topic> topics = session.createQuery("FROM Topic order by topicRank", Topic.class).list();

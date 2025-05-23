@@ -19,7 +19,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name="problem")
+@Table(name="problem", indexes = {
+        @Index(name = "idx_problem_difficulty", columnList = "difficulty_level")
+})
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Indexed
 public class Problem {

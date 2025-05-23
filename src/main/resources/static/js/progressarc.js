@@ -66,11 +66,8 @@ function drawElements(easyProgressData, mediumProgressData, hardProgressData, to
     const baseSize = Math.min(width, height);
     const innerRadius = baseSize * 0.50; // Make radius responsive to both width and height
     const outerRadius = innerRadius + (baseSize * 0.030); // Proportional thickness
-    const padding = 0.05;
-
-    // const innerRadius = 235;
-    // const outerRadius = 250;
     // const padding = 0.05;
+    const padding = 0.01;
 
     // Define total arc range
     const totalArcStart = -Math.PI * 0.7;
@@ -113,7 +110,7 @@ function drawElements(easyProgressData, mediumProgressData, hardProgressData, to
     const easyArcGenerator = d3.arc()
         .innerRadius(innerRadius)
         .outerRadius(outerRadius)
-        .cornerRadius(100)
+        .cornerRadius(50)
         .padAngle(padding)
         .startAngle(easyStartAngle)
         .endAngle(easyEndAngle);
@@ -121,7 +118,7 @@ function drawElements(easyProgressData, mediumProgressData, hardProgressData, to
     const mediumArcGenerator = d3.arc()
         .innerRadius(innerRadius)
         .outerRadius(outerRadius)
-        .cornerRadius(100)
+        .cornerRadius(50)
         .padAngle(padding)
         .startAngle(mediumStartAngle)
         .endAngle(mediumEndAngle);
@@ -129,7 +126,7 @@ function drawElements(easyProgressData, mediumProgressData, hardProgressData, to
     const hardArcGenerator = d3.arc()
         .innerRadius(innerRadius)
         .outerRadius(outerRadius)
-        .cornerRadius(100)
+        .cornerRadius(50)
         .padAngle(padding)
         .startAngle(hardStartAngle)
         .endAngle(hardEndAngle);
@@ -151,57 +148,96 @@ function drawElements(easyProgressData, mediumProgressData, hardProgressData, to
         .attr("fill", hardProgressData.color);
 
 
+
+    // Guarantee minimum visible filled section
+    // If progress is more than 0 but very small, ensure a minimum visible angle
+    const minVisibleAngle = 0.05; // Minimum visible angle in radians
+
+    let visibleEasyProgressAngle = easyProgressAngle;
+    if (easyProgressData.completed > 0 && (easyProgressAngle - easyStartAngle) < minVisibleAngle) {
+        visibleEasyProgressAngle = easyStartAngle + minVisibleAngle;
+    }
+
+    let visibleMediumProgressAngle = mediumProgressAngle;
+    if (mediumProgressData.completed > 0 && (mediumProgressAngle - mediumStartAngle) < minVisibleAngle) {
+        visibleMediumProgressAngle = mediumStartAngle + minVisibleAngle;
+    }
+
+    let visibleHardProgressAngle = hardProgressAngle;
+    if (hardProgressData.completed > 0 && (hardProgressAngle - hardStartAngle) < minVisibleAngle) {
+        visibleHardProgressAngle = hardStartAngle + minVisibleAngle;
+    }
+
+
     // FORWARD ARCS
 
-    // Progress arcs with animation
     const easyProgressArc = svg.append("path")
         .attr("transform", `translate(${centerX},${centerY})`)
         .attr("d", easyArcGenerator.endAngle(easyStartAngle)())
         .attr("fill", easyProgressData.progressColor);
 
-    easyProgressArc.transition()
-        .duration(1500)
-        .delay(300)
-        .attrTween("d", function() {
-            const interpolate = d3.interpolate(easyStartAngle, easyProgressAngle);
-            return function(t) {
-                return easyArcGenerator.endAngle(interpolate(t))();
-            };
-        });
+    // Special handling for very small progress
+    if (easyProgressData.completed === 0) {
+        // If no progress, don't animate
+        easyProgressArc.attr("d", easyArcGenerator.endAngle(easyStartAngle)());
+    } else {
+        // For any progress > 0, ensure it's visible
+        easyProgressArc.transition()
+            .duration(1500)
+            .delay(300)
+            .attrTween("d", function() {
+                const interpolate = d3.interpolate(easyStartAngle, visibleEasyProgressAngle);
+                return function(t) {
+                    return easyArcGenerator.endAngle(interpolate(t))();
+                };
+            });
+    }
+
 
     const mediumProgressArc = svg.append("path")
         .attr("transform", `translate(${centerX},${centerY})`)
         .attr("d", mediumArcGenerator.endAngle(mediumStartAngle)())
         .attr("fill", mediumProgressData.progressColor);
 
-    mediumProgressArc.transition()
-        .duration(1800)
-        .delay(600)
-        .attrTween("d", function() {
-            const interpolate = d3.interpolate(mediumStartAngle, mediumProgressAngle);
-            return function(t) {
-                return mediumArcGenerator.endAngle(interpolate(t))();
-            };
-        });
+    // Special handling for very small progress
+    if (mediumProgressData.completed === 0) {
+        // If no progress, don't animate
+        mediumProgressArc.attr("d", mediumArcGenerator.endAngle(mediumStartAngle)());
+    } else {
+        // For any progress > 0, ensure it's visible
+        mediumProgressArc.transition()
+            .duration(1800)
+            .delay(600)
+            .attrTween("d", function() {
+                const interpolate = d3.interpolate(mediumStartAngle, visibleMediumProgressAngle);
+                return function(t) {
+                    return mediumArcGenerator.endAngle(interpolate(t))();
+                };
+            });
+    }
+
 
     const hardProgressArc = svg.append("path")
         .attr("transform", `translate(${centerX},${centerY})`)
         .attr("d", hardArcGenerator.endAngle(hardStartAngle)())
         .attr("fill", hardProgressData.progressColor);
 
-    hardProgressArc.transition()
-        .duration(1500)
-        .delay(900)
-        .attrTween("d", function() {
-            const interpolate = d3.interpolate(hardStartAngle, hardProgressAngle);
-            return function(t) {
-                return hardArcGenerator.endAngle(interpolate(t))();
-            };
-        });
-
-    // Add completed number in center
-    // const progressNumberGroup = svg.append("g")
-    //     .attr("transform", `translate(${centerX + baseSize * 0.02},${centerY - baseSize * 0.25})`);
+    // Special handling for very small progress
+    if (hardProgressData.completed === 0) {
+        // If no progress, don't animate
+        hardProgressArc.attr("d", hardArcGenerator.endAngle(hardStartAngle)());
+    } else {
+        // For any progress > 0, ensure it's visible
+        hardProgressArc.transition()
+            .duration(1500)
+            .delay(900)
+            .attrTween("d", function() {
+                const interpolate = d3.interpolate(hardStartAngle, visibleHardProgressAngle);
+                return function(t) {
+                    return hardArcGenerator.endAngle(interpolate(t))();
+                };
+            });
+    }
 
 
     // Add centered progress number
@@ -244,7 +280,7 @@ function drawElements(easyProgressData, mediumProgressData, hardProgressData, to
 
 // "Attempting" label
     svg.append("text")
-        .attr("class", "bottom-attemps-label")
+        .attr("class", "bottom-attempts-label")
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "central")
         .attr("x", centerX)
@@ -445,6 +481,8 @@ function animate(totalSolved, progressText, easyProgressData, mediumProgressData
 
 // Replace your existing JavaScript with this
 document.addEventListener('DOMContentLoaded', function() {
+    initializeTheme();
+
     createVisualization();
 
     // Add resize listener with debounce
@@ -459,4 +497,32 @@ document.addEventListener('DOMContentLoaded', function() {
     createPredictionVisualization();
 
     createTopicList();
+
+    document.getElementById("lightSwitch").addEventListener("click", toggleTheme);
 });
+
+
+function toggleTheme() {
+    const root = document.documentElement;
+    const currentTheme = root.getAttribute('data-theme');
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
+    if (currentTheme) {
+        // Currently in a manual theme, remove it to follow system preference
+        root.removeAttribute('data-theme');
+        try {
+            localStorage.removeItem('theme');
+        } catch (e) {
+            console.warn('Could not remove theme preference:', e);
+        }
+    } else {
+        // Currently following system, switch to opposite
+        const newTheme = systemTheme === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', newTheme);
+        try {
+            localStorage.setItem('theme', newTheme);
+        } catch (e) {
+            console.warn('Could not save theme preference:', e);
+        }
+    }
+}

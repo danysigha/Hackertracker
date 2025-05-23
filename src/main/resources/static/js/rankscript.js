@@ -147,7 +147,7 @@ function createTopicList() {
                     renderTopics();
 
                     // Show feedback
-                    showFeedback("Order changed - click Save to update");
+                    showFeedback("Order changed – click \"Save changes\" to update");
 
                     // Set up debounced server update
                     // if (updateTimer) {

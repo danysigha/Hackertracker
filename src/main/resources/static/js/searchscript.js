@@ -227,13 +227,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function clearFields() {
         selectTags.clear();
-        selectTags.clearOptions();
-
         selectTopics.clear();
-
         selectDifficultyLevel.clear();
-        selectDifficultyLevel.clearOptions();
-
         searchBar.value = "";
     }
 

@@ -2,16 +2,7 @@ package com.hackertracker.security.user;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.hackertracker.security.problem.Problem;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.NamedQuery;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -20,7 +11,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @NamedQuery(name = "challenge.orderByPriority", query="FROM UserProblemPriority where user=:user order by priorityScore desc")
 @Entity
-@Table(name="user_problem_priorities")
+@Table(name="user_problem_priorities", indexes = {
+        @Index(name = "idx_user_problem_priority_user", columnList = "user_id"),
+        @Index(name = "idx_user_problem_priority_problem", columnList = "problem_id")
+})
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class UserProblemPriority {
 
