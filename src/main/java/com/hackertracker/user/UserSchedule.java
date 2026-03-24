@@ -1,4 +1,4 @@
-package com.hackertracker.security.user;
+package com.hackertracker.user;
 
 //import com.hackertracker.security.Schedule.Weekday;
 //import com.hackertracker.security.Schedule.WeekdayName;

@@ -1,13 +1,12 @@
-package com.hackertracker.security.controllers;
+package com.hackertracker.controllers;
 
-import com.hackertracker.security.dao.UserDAO;
-import com.hackertracker.security.dao.UserScheduleDAO;
-import com.hackertracker.security.dto.ProgressStatsDTO;
-import com.hackertracker.security.user.ProgressStatsService;
-import com.hackertracker.security.user.User;
-import com.hackertracker.security.user.UserSchedule;
+import com.hackertracker.dao.UserDAO;
+import com.hackertracker.dao.UserScheduleDAO;
+import com.hackertracker.dto.ProgressStatsDTO;
+import com.hackertracker.user.ProgressStatsService;
+import com.hackertracker.user.User;
+import com.hackertracker.user.UserSchedule;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

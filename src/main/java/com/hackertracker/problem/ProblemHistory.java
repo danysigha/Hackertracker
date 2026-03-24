@@ -1,6 +1,6 @@
-package com.hackertracker.security.problem;
+package com.hackertracker.problem;
 
-import com.hackertracker.security.user.User;
+import com.hackertracker.user.User;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;

@@ -1,8 +1,7 @@
-package com.hackertracker.security.dao;
+package com.hackertracker.dao;
 
-import com.hackertracker.security.user.User;
-import com.hackertracker.security.user.UserSchedule;
-import org.hibernate.Hibernate;
+import com.hackertracker.user.User;
+import com.hackertracker.user.UserSchedule;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;

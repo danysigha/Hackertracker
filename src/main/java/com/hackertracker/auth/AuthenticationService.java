@@ -1,11 +1,11 @@
-package com.hackertracker.security.auth;
+package com.hackertracker.auth;
 
-import com.hackertracker.security.config.JwtService;
-import com.hackertracker.security.dao.UserDAO;
-import com.hackertracker.security.problem.UserProblemPriorityService;
-import com.hackertracker.security.user.Role;
-import com.hackertracker.security.user.User;
-import com.hackertracker.security.user.UserSchedule;
+import com.hackertracker.config.JwtService;
+import com.hackertracker.dao.UserDAO;
+import com.hackertracker.problem.UserProblemPriorityService;
+import com.hackertracker.user.Role;
+import com.hackertracker.user.User;
+import com.hackertracker.user.UserSchedule;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

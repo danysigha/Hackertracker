@@ -1,10 +1,13 @@
-package com.hackertracker.security.problem;
+package com.hackertracker.problem;
 
-import com.hackertracker.security.dao.*;
-import com.hackertracker.security.schedule.PriorityCalculatorOptimized;
-import com.hackertracker.security.schedule.ProcessProblemPriorityService;
-import com.hackertracker.security.topic.Topic;
-import com.hackertracker.security.user.*;
+import com.hackertracker.dao.*;
+import com.hackertracker.schedule.PriorityCalculatorOptimized;
+import com.hackertracker.schedule.ProcessProblemPriorityService;
+import com.hackertracker.topic.Topic;
+import com.hackertracker.user.User;
+import com.hackertracker.user.UserProblemAttempt;
+import com.hackertracker.user.UserProblemPriority;
+import com.hackertracker.user.UserTopics;
 import org.hibernate.Hibernate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;

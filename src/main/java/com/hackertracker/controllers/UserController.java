@@ -1,7 +1,7 @@
-package com.hackertracker.security.controllers;
+package com.hackertracker.controllers;
 
-import com.hackertracker.security.dao.UserDAO;
-import com.hackertracker.security.user.User;
+import com.hackertracker.dao.UserDAO;
+import com.hackertracker.user.User;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -1,6 +1,6 @@
-package com.hackertracker.security.validator;
+package com.hackertracker.validator;
 
-import com.hackertracker.security.user.User;
+import com.hackertracker.user.User;
 import org.springframework.validation.Errors;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.ValidationUtils;

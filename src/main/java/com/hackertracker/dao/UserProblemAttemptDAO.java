@@ -1,10 +1,9 @@
-package com.hackertracker.security.dao;
+package com.hackertracker.dao;
 
 
-import com.hackertracker.security.problem.Problem;
-import com.hackertracker.security.user.User;
-import com.hackertracker.security.user.UserProblemAttempt;
-import com.hackertracker.security.user.UserProblemCompletion;
+import com.hackertracker.problem.Problem;
+import com.hackertracker.user.User;
+import com.hackertracker.user.UserProblemAttempt;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -15,8 +14,6 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 

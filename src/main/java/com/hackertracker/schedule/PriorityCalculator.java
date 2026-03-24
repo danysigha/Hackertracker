@@ -1,15 +1,9 @@
-package com.hackertracker.security.schedule;
+package com.hackertracker.schedule;
 
-import com.hackertracker.security.dao.ProblemDAO;
-import com.hackertracker.security.dao.UserDAO;
-import com.hackertracker.security.dao.UserProblemAttemptDAO;
-import com.hackertracker.security.problem.Problem;
-import com.hackertracker.security.tag.Tag;
-import com.hackertracker.security.topic.Topic;
-import com.hackertracker.security.user.User;
-import com.hackertracker.security.user.UserProblemAttempt;
-import com.hackertracker.security.user.UserProblemPriority;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.hackertracker.problem.Problem;
+import com.hackertracker.topic.Topic;
+import com.hackertracker.user.User;
+import com.hackertracker.user.UserProblemAttempt;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -17,7 +11,6 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Calculates priority scores for problems based on various factors:

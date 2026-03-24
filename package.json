@@ -7,6 +7,6 @@
     "watch-sass": "sass --no-source-map --watch src/main/resources/static/scss:src/main/resources/static/css"
   },
   "devDependencies": {
-    "sass": "^1.89.0"
+    "sass": "^1.98.0"
   }
 }

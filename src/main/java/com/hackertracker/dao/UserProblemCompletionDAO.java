@@ -1,9 +1,8 @@
-package com.hackertracker.security.dao;
+package com.hackertracker.dao;
 
-import com.hackertracker.security.problem.Problem;
-import com.hackertracker.security.user.User;
-import com.hackertracker.security.user.UserProblemCompletion;
-import com.hackertracker.security.user.UserProblemPriority;
+import com.hackertracker.problem.Problem;
+import com.hackertracker.user.User;
+import com.hackertracker.user.UserProblemCompletion;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;

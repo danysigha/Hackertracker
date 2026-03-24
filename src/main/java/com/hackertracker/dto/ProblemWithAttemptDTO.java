@@ -1,7 +1,7 @@
-package com.hackertracker.security.dto;
+package com.hackertracker.dto;
 
-import com.hackertracker.security.problem.Problem;
-import com.hackertracker.security.user.UserProblemAttempt;
+import com.hackertracker.problem.Problem;
+import com.hackertracker.user.UserProblemAttempt;
 
 public class ProblemWithAttemptDTO {
     private ProblemDTO problem;

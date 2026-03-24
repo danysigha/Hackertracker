@@ -1,8 +1,8 @@
-package com.hackertracker.security.schedule;
+package com.hackertracker.schedule;
 
-import com.hackertracker.security.problem.Problem;
-import com.hackertracker.security.topic.Topic;
-import com.hackertracker.security.user.UserProblemAttempt;
+import com.hackertracker.problem.Problem;
+import com.hackertracker.topic.Topic;
+import com.hackertracker.user.UserProblemAttempt;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;

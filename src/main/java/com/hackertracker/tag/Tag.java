@@ -1,8 +1,8 @@
-package com.hackertracker.security.tag;
+package com.hackertracker.tag;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.hackertracker.security.problem.Problem;
-import com.hackertracker.security.problem.TagProblem;
+import com.hackertracker.problem.Problem;
+import com.hackertracker.problem.TagProblem;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

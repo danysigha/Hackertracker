@@ -1,11 +1,9 @@
-package com.hackertracker.security.user;
+package com.hackertracker.user;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Entity

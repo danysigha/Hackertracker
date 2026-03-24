@@ -1,14 +1,12 @@
-package com.hackertracker.security.user;
+package com.hackertracker.user;
 
-import com.hackertracker.security.dao.ProblemDAO;
-import com.hackertracker.security.dao.UserProblemAttemptDAO;
-import com.hackertracker.security.dao.UserProblemCompletionDAO;
-import com.hackertracker.security.dto.ProgressStatsDTO;
-import com.hackertracker.security.dto.UserProblemCompletionDTO;
-import com.hackertracker.security.problem.Problem;
+import com.hackertracker.dao.ProblemDAO;
+import com.hackertracker.dao.UserProblemAttemptDAO;
+import com.hackertracker.dao.UserProblemCompletionDAO;
+import com.hackertracker.dto.ProgressStatsDTO;
+import com.hackertracker.dto.UserProblemCompletionDTO;
 import org.springframework.stereotype.Service;
 
-import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 

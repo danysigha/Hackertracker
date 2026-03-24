@@ -1,4 +1,4 @@
-package com.hackertracker.security.config;
+package com.hackertracker.config;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

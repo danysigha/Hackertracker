@@ -1,6 +1,6 @@
-package com.hackertracker.security.dao;
+package com.hackertracker.dao;
 
-import com.hackertracker.security.problem.TopicProblem;
+import com.hackertracker.problem.TopicProblem;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;

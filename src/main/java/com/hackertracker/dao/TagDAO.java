@@ -1,11 +1,8 @@
-package com.hackertracker.security.dao;
+package com.hackertracker.dao;
 
-import com.hackertracker.security.dto.TagDTO;
-import com.hackertracker.security.dto.TopicDTO;
-import com.hackertracker.security.problem.Problem;
-import com.hackertracker.security.tag.Tag;
-import com.hackertracker.security.topic.Topic;
-import com.hackertracker.security.user.User;
+import com.hackertracker.dto.TagDTO;
+import com.hackertracker.problem.Problem;
+import com.hackertracker.tag.Tag;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;

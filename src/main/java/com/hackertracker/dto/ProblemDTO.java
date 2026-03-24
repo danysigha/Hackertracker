@@ -1,6 +1,6 @@
-package com.hackertracker.security.dto;
+package com.hackertracker.dto;
 
-import com.hackertracker.security.problem.Problem;
+import com.hackertracker.problem.Problem;
 import java.util.ArrayList;
 import java.util.List;
 

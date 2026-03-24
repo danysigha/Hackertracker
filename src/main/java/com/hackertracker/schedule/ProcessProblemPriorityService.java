@@ -1,12 +1,12 @@
-package com.hackertracker.security.schedule;
+package com.hackertracker.schedule;
 
-import com.hackertracker.security.dao.ProblemDAO;
-import com.hackertracker.security.dao.UserDAO;
-import com.hackertracker.security.dao.UserProblemPriorityDAO;
-import com.hackertracker.security.problem.Problem;
-import com.hackertracker.security.user.User;
-import com.hackertracker.security.user.UserProblemAttempt;
-import com.hackertracker.security.user.UserProblemPriority;
+import com.hackertracker.dao.ProblemDAO;
+import com.hackertracker.dao.UserDAO;
+import com.hackertracker.dao.UserProblemPriorityDAO;
+import com.hackertracker.problem.Problem;
+import com.hackertracker.user.User;
+import com.hackertracker.user.UserProblemAttempt;
+import com.hackertracker.user.UserProblemPriority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

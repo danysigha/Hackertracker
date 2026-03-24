@@ -1,16 +1,15 @@
-package com.hackertracker.security.config;
+package com.hackertracker.config;
 
-import com.hackertracker.security.problem.Problem;
-import com.hackertracker.security.problem.ProblemHistory;
-import com.hackertracker.security.problem.TagProblem;
-import com.hackertracker.security.problem.TopicProblem;
-import com.hackertracker.security.tag.Tag;
-import com.hackertracker.security.topic.Topic;
-import com.hackertracker.security.user.*;
+import com.hackertracker.problem.Problem;
+import com.hackertracker.problem.ProblemHistory;
+import com.hackertracker.problem.TagProblem;
+import com.hackertracker.problem.TopicProblem;
+import com.hackertracker.tag.Tag;
+import com.hackertracker.topic.Topic;
+import com.hackertracker.user.*;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.ExpiryPolicyBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
-import org.ehcache.config.units.MemoryUnit;
 import org.ehcache.jsr107.Eh107Configuration;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
@@ -85,13 +84,13 @@ public class HibernateConfig {
                                 .withExpiry(ExpiryPolicyBuilder.noExpiration()));
 
         // Create caches for entities
-        cacheManager.createCache("com.hackertracker.security.problem.Problem", entityCacheConfig);
-        cacheManager.createCache("com.hackertracker.security.tag.Tag", entityCacheConfig);
-        cacheManager.createCache("com.hackertracker.security.topic.Topic", entityCacheConfig);
+        cacheManager.createCache("com.hackertracker.problem.Problem", entityCacheConfig);
+        cacheManager.createCache("com.hackertracker.tag.Tag", entityCacheConfig);
+        cacheManager.createCache("com.hackertracker.topic.Topic", entityCacheConfig);
 
         // Create caches for collections
-        cacheManager.createCache("com.hackertracker.security.problem.Problem.tags", entityCacheConfig);
-        cacheManager.createCache("com.hackertracker.security.problem.Problem.topics", entityCacheConfig);
+        cacheManager.createCache("com.hackertracker.problem.Problem.tags", entityCacheConfig);
+        cacheManager.createCache("com.hackertracker.problem.Problem.topics", entityCacheConfig);
 
         // Create caches for query cache regions
         cacheManager.createCache("default-query-results-region", queryCacheConfig);
@@ -128,7 +127,7 @@ public class HibernateConfig {
         // Add Hibernate Search configuration
         hibernateProps.put("hibernate.search.backend.directory.root", indexBaseDir);
 // Add this line to register your analyzer configurer
-        hibernateProps.put("hibernate.search.backend.analysis.configurer", "com.hackertracker.security.config.MyLuceneAnalysisConfigurer");
+        hibernateProps.put("hibernate.search.backend.analysis.configurer", "com.hackertracker.config.MyLuceneAnalysisConfigurer");
 
         // Add this to your hibernateProps in the sessionFactory method
         hibernateProps.put("hibernate.current_session_context_class", "thread");

@@ -1,7 +1,7 @@
-package com.hackertracker.security.config;
+package com.hackertracker.config;
 
-import com.hackertracker.security.dao.UserDAO;
-import com.hackertracker.security.user.User;
+import com.hackertracker.dao.UserDAO;
+import com.hackertracker.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;

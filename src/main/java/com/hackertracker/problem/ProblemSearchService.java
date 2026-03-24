@@ -1,10 +1,8 @@
-package com.hackertracker.security.problem;
+package com.hackertracker.problem;
 
-import com.hackertracker.security.dto.ProblemWithAttemptDTO;
-import com.hackertracker.security.dto.UserProblemAttemptDTO;
-import jakarta.persistence.EntityManager;
+import com.hackertracker.dto.ProblemWithAttemptDTO;
+import com.hackertracker.dto.UserProblemAttemptDTO;
 import org.hibernate.SessionFactory;
-import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.dsl.SearchPredicateFactory;
 
 import org.hibernate.search.engine.search.query.SearchResult;
@@ -13,7 +11,6 @@ import org.hibernate.search.mapper.orm.Search;
 import org.springframework.stereotype.Service;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.Collections;

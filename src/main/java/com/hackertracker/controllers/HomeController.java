@@ -1,26 +1,25 @@
-package com.hackertracker.security.controllers;
+package com.hackertracker.controllers;
 
 /**
  *
  * @author danysigha
  */
 
-import com.hackertracker.security.auth.AuthenticationResponse;
+import com.hackertracker.auth.AuthenticationResponse;
 import jakarta.servlet.http.HttpServletResponse;
-import com.hackertracker.security.user.User;
-import com.hackertracker.security.validator.UserLoginValidator;
+import com.hackertracker.user.User;
+import com.hackertracker.validator.UserLoginValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.validation.BindingResult;
-import com.hackertracker.security.validator.UserRegistrationValidator;
+import com.hackertracker.validator.UserRegistrationValidator;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import com.hackertracker.security.auth.RegisterRequest;
-import com.hackertracker.security.auth.AuthenticationService;
-import com.hackertracker.security.auth.AuthenticationRequest;
-import com.hackertracker.security.config.JwtService;
+import com.hackertracker.auth.RegisterRequest;
+import com.hackertracker.auth.AuthenticationService;
+import com.hackertracker.auth.AuthenticationRequest;
 import jakarta.servlet.http.Cookie;
 
 @Controller

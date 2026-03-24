@@ -1,4 +1,4 @@
-package com.hackertracker.security.problem;
+package com.hackertracker.problem;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.JoinColumn;
@@ -10,7 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.FetchType;
-import com.hackertracker.security.tag.Tag;
+import com.hackertracker.tag.Tag;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;

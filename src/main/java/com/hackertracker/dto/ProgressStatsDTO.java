@@ -1,11 +1,7 @@
-package com.hackertracker.security.dto;
+package com.hackertracker.dto;
 
-import com.hackertracker.security.dao.UserProblemAttemptDAO;
-import com.hackertracker.security.user.UserProblemCompletion;
-import com.hackertracker.security.user.UserSchedule;
+import com.hackertracker.user.UserSchedule;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ProgressStatsDTO {

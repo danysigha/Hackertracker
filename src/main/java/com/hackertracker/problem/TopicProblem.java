@@ -1,7 +1,7 @@
-package com.hackertracker.security.problem;
+package com.hackertracker.problem;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.hackertracker.security.topic.Topic;
+import com.hackertracker.topic.Topic;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

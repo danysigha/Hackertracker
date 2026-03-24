@@ -1,4 +1,4 @@
-package com.hackertracker.security.auth;
+package com.hackertracker.auth;
 
 import java.util.Objects;
 

@@ -1,6 +1,6 @@
-package com.hackertracker.security.dto;
+package com.hackertracker.dto;
 
-import com.hackertracker.security.user.UserProblemAttempt;
+import com.hackertracker.user.UserProblemAttempt;
 
 import java.time.LocalDateTime;
 

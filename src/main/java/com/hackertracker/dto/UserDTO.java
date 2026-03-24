@@ -1,7 +1,7 @@
-package com.hackertracker.security.dto;
+package com.hackertracker.dto;
 
-import com.hackertracker.security.user.Role;
-import com.hackertracker.security.user.User;
+import com.hackertracker.user.Role;
+import com.hackertracker.user.User;
 
 public class UserDTO {
     private int userId;

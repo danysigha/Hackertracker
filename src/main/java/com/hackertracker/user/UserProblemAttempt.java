@@ -1,7 +1,7 @@
-package com.hackertracker.security.user;
+package com.hackertracker.user;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.hackertracker.security.problem.Problem;
+import com.hackertracker.problem.Problem;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;

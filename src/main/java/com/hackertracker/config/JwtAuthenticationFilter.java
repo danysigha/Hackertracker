@@ -1,4 +1,4 @@
-package com.hackertracker.security.config;
+package com.hackertracker.config;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

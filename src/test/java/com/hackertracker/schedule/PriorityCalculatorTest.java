@@ -1,15 +1,13 @@
-package com.hackertracker.security.schedule;
+package com.hackertracker.schedule;
 
-import com.hackertracker.security.dao.*;
-import com.hackertracker.security.problem.Problem;
-import com.hackertracker.security.problem.TagProblem;
-import com.hackertracker.security.problem.TopicProblem;
-import com.hackertracker.security.problem.UserProblemPriorityService;
-import com.hackertracker.security.tag.Tag;
-import com.hackertracker.security.topic.Topic;
-import com.hackertracker.security.user.Role;
-import com.hackertracker.security.user.User;
-import com.hackertracker.security.user.UserProblemAttempt;
+import com.hackertracker.dao.*;
+import com.hackertracker.problem.Problem;
+import com.hackertracker.problem.TopicProblem;
+import com.hackertracker.problem.UserProblemPriorityService;
+import com.hackertracker.topic.Topic;
+import com.hackertracker.user.Role;
+import com.hackertracker.user.User;
+import com.hackertracker.user.UserProblemAttempt;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;

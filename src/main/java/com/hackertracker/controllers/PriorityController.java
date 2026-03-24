@@ -1,14 +1,14 @@
-package com.hackertracker.security.controllers;
+package com.hackertracker.controllers;
 
-import com.hackertracker.security.dao.*;
-import com.hackertracker.security.dto.ProblemWithAttemptDTO;
-import com.hackertracker.security.dto.TopicDTO;
-import com.hackertracker.security.problem.Problem;
-import com.hackertracker.security.problem.UserProblemPriorityService;
-import com.hackertracker.security.topic.Topic;
-import com.hackertracker.security.user.User;
-import com.hackertracker.security.user.UserProblemAttempt;
-import com.hackertracker.security.user.UserProblemCompletion;
+import com.hackertracker.dao.*;
+import com.hackertracker.dto.ProblemWithAttemptDTO;
+import com.hackertracker.dto.TopicDTO;
+import com.hackertracker.problem.Problem;
+import com.hackertracker.problem.UserProblemPriorityService;
+import com.hackertracker.topic.Topic;
+import com.hackertracker.user.User;
+import com.hackertracker.user.UserProblemAttempt;
+import com.hackertracker.user.UserProblemCompletion;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 

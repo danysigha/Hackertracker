@@ -1,10 +1,10 @@
-package com.hackertracker.security.dao;
+package com.hackertracker.dao;
 
-import com.hackertracker.security.dto.TopicDTO;
-import com.hackertracker.security.problem.Problem;
-import com.hackertracker.security.topic.Topic;
-import com.hackertracker.security.user.User;
-import com.hackertracker.security.user.UserTopics;
+import com.hackertracker.dto.TopicDTO;
+import com.hackertracker.problem.Problem;
+import com.hackertracker.topic.Topic;
+import com.hackertracker.user.User;
+import com.hackertracker.user.UserTopics;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -12,7 +12,6 @@ import org.hibernate.query.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

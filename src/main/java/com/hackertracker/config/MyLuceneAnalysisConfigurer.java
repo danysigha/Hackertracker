@@ -1,4 +1,4 @@
-package com.hackertracker.security.config;
+package com.hackertracker.config;
 
 import org.hibernate.search.backend.lucene.analysis.LuceneAnalysisConfigurationContext;
 import org.hibernate.search.backend.lucene.analysis.LuceneAnalysisConfigurer;

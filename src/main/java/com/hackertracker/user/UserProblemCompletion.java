@@ -1,7 +1,7 @@
-package com.hackertracker.security.user;
+package com.hackertracker.user;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.hackertracker.security.problem.Problem;
+import com.hackertracker.problem.Problem;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Entity;

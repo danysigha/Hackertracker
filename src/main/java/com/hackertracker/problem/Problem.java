@@ -1,11 +1,11 @@
-package com.hackertracker.security.problem;
+package com.hackertracker.problem;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.hackertracker.security.tag.Tag;
-import com.hackertracker.security.topic.Topic;
-import com.hackertracker.security.user.UserProblemAttempt;
-import com.hackertracker.security.user.UserProblemCompletion;
-import com.hackertracker.security.user.UserProblemPriority;
+import com.hackertracker.tag.Tag;
+import com.hackertracker.topic.Topic;
+import com.hackertracker.user.UserProblemAttempt;
+import com.hackertracker.user.UserProblemCompletion;
+import com.hackertracker.user.UserProblemPriority;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;

@@ -1,8 +1,8 @@
-package com.hackertracker.security.dto;
+package com.hackertracker.dto;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import com.hackertracker.security.user.UserSchedule;
+import com.hackertracker.user.UserSchedule;
 
 public class UserScheduleDTO {
     private int userScheduleId;

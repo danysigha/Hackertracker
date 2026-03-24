@@ -1,7 +1,6 @@
-package com.hackertracker.security.dto;
+package com.hackertracker.dto;
 
-import com.hackertracker.security.tag.Tag;
-import com.hackertracker.security.topic.Topic;
+import com.hackertracker.tag.Tag;
 
 public class TagDTO {
     private byte tagId;

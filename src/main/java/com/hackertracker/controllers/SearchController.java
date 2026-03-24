@@ -1,21 +1,19 @@
-package com.hackertracker.security.controllers;
+package com.hackertracker.controllers;
 
-import com.hackertracker.security.dao.TagDAO;
-import com.hackertracker.security.dao.TopicDAO;
-import com.hackertracker.security.dao.UserDAO;
-import com.hackertracker.security.dto.ProblemWithAttemptDTO;
-import com.hackertracker.security.dto.TagDTO;
-import com.hackertracker.security.dto.TopicDTO;
-import com.hackertracker.security.problem.ProblemSearchService;
-import com.hackertracker.security.topic.Topic;
-import com.hackertracker.security.user.User;
+import com.hackertracker.dao.TagDAO;
+import com.hackertracker.dao.TopicDAO;
+import com.hackertracker.dao.UserDAO;
+import com.hackertracker.dto.ProblemWithAttemptDTO;
+import com.hackertracker.dto.TagDTO;
+import com.hackertracker.dto.TopicDTO;
+import com.hackertracker.problem.ProblemSearchService;
+import com.hackertracker.user.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
