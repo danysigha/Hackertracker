@@ -397,7 +397,7 @@ echo $JAVA_HOME
 # Rebuild Hibernate Search indexes (automatic on first run)
 rm -rf hibernate-search-indexes/
 mvn clean install
-
+```
 
 ## Contributing
 
