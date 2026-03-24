@@ -154,14 +154,6 @@ button:focus, button:focus-visible {
    ================================ */
 /* System preference (when no manual override) */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) {
-    /* Container styling */
-    /* Profile header styling */
-    /* Form styling */
-    /* Button container */
-    /* Button styling */
-    /* Utility to hide elements */
-  }
   :root:not([data-theme]) .icon {
     fill: #646cff;
   }
@@ -174,10 +166,16 @@ button:focus, button:focus-visible {
     width: 20px;
     height: 20px;
   }
+  :root:not([data-theme]) {
+    /* Container styling */
+  }
   :root:not([data-theme]) .container {
     max-width: 600px;
     margin: 50px auto;
     padding: 0 15px;
+  }
+  :root:not([data-theme]) {
+    /* Profile header styling */
   }
   :root:not([data-theme]) .profile-header {
     margin-bottom: 30px;
@@ -190,6 +188,9 @@ button:focus, button:focus-visible {
   }
   :root:not([data-theme]) .text-muted {
     color: #aeaeae;
+  }
+  :root:not([data-theme]) {
+    /* Form styling */
   }
   :root:not([data-theme]) .form-group {
     margin-bottom: 20px;
@@ -223,6 +224,9 @@ button:focus, button:focus-visible {
     background-color: rgba(50, 64, 84, 0.8);
     opacity: 1;
   }
+  :root:not([data-theme]) {
+    /* Button container */
+  }
   :root:not([data-theme]) .d-flex {
     display: flex;
   }
@@ -231,6 +235,9 @@ button:focus, button:focus-visible {
   }
   :root:not([data-theme]) .mt-4 {
     margin-top: 1.5rem;
+  }
+  :root:not([data-theme]) {
+    /* Button styling */
   }
   :root:not([data-theme]) .btn {
     display: inline-block;
@@ -270,19 +277,14 @@ button:focus, button:focus-visible {
     background-color: #218838;
     border-color: #1e7e34;
   }
+  :root:not([data-theme]) {
+    /* Utility to hide elements */
+  }
   :root:not([data-theme]) [style*="display: none"] {
     display: none !important;
   }
 }
 @media (prefers-color-scheme: light) {
-  :root:not([data-theme]) {
-    /* Container styling */
-    /* Profile header styling */
-    /* Form styling */
-    /* Button container */
-    /* Button styling */
-    /* Utility to hide elements */
-  }
   :root:not([data-theme]) .navigation-buttons button {
     height: 2.4em;
     width: auto;
@@ -292,10 +294,16 @@ button:focus, button:focus-visible {
     width: 20px;
     height: 20px;
   }
+  :root:not([data-theme]) {
+    /* Container styling */
+  }
   :root:not([data-theme]) .container {
     max-width: 600px;
     margin: 50px auto;
     padding: 0 15px;
+  }
+  :root:not([data-theme]) {
+    /* Profile header styling */
   }
   :root:not([data-theme]) .profile-header {
     margin-bottom: 30px;
@@ -308,6 +316,9 @@ button:focus, button:focus-visible {
   }
   :root:not([data-theme]) .text-muted {
     color: #6c757d;
+  }
+  :root:not([data-theme]) {
+    /* Form styling */
   }
   :root:not([data-theme]) .form-group {
     margin-bottom: 20px;
@@ -341,6 +352,9 @@ button:focus, button:focus-visible {
     background-color: #e9ecef;
     opacity: 1;
   }
+  :root:not([data-theme]) {
+    /* Button container */
+  }
   :root:not([data-theme]) .d-flex {
     display: flex;
   }
@@ -349,6 +363,9 @@ button:focus, button:focus-visible {
   }
   :root:not([data-theme]) .mt-4 {
     margin-top: 1.5rem;
+  }
+  :root:not([data-theme]) {
+    /* Button styling */
   }
   :root:not([data-theme]) .btn {
     display: inline-block;
@@ -388,6 +405,9 @@ button:focus, button:focus-visible {
     background-color: #218838;
     border-color: #1e7e34;
   }
+  :root:not([data-theme]) {
+    /* Utility to hide elements */
+  }
   :root:not([data-theme]) [style*="display: none"] {
     display: none !important;
   }
@@ -397,14 +417,6 @@ button:focus, button:focus-visible {
    MANUAL DARK OVERRIDE
    ================================ */
 /* Manual dark override (works regardless of system preference) */
-[data-theme=dark] {
-  /* Container styling */
-  /* Profile header styling */
-  /* Form styling */
-  /* Button container */
-  /* Button styling */
-  /* Utility to hide elements */
-}
 [data-theme=dark] .icon {
   fill: #646cff;
 }
@@ -417,10 +429,16 @@ button:focus, button:focus-visible {
   width: 20px;
   height: 20px;
 }
+[data-theme=dark] {
+  /* Container styling */
+}
 [data-theme=dark] .container {
   max-width: 600px;
   margin: 50px auto;
   padding: 0 15px;
+}
+[data-theme=dark] {
+  /* Profile header styling */
 }
 [data-theme=dark] .profile-header {
   margin-bottom: 30px;
@@ -433,6 +451,9 @@ button:focus, button:focus-visible {
 }
 [data-theme=dark] .text-muted {
   color: #aeaeae;
+}
+[data-theme=dark] {
+  /* Form styling */
 }
 [data-theme=dark] .form-group {
   margin-bottom: 20px;
@@ -466,6 +487,9 @@ button:focus, button:focus-visible {
   background-color: rgba(50, 64, 84, 0.8);
   opacity: 1;
 }
+[data-theme=dark] {
+  /* Button container */
+}
 [data-theme=dark] .d-flex {
   display: flex;
 }
@@ -474,6 +498,9 @@ button:focus, button:focus-visible {
 }
 [data-theme=dark] .mt-4 {
   margin-top: 1.5rem;
+}
+[data-theme=dark] {
+  /* Button styling */
 }
 [data-theme=dark] .btn {
   display: inline-block;
@@ -513,6 +540,9 @@ button:focus, button:focus-visible {
   background-color: #218838;
   border-color: #1e7e34;
 }
+[data-theme=dark] {
+  /* Utility to hide elements */
+}
 [data-theme=dark] [style*="display: none"] {
   display: none !important;
 }
@@ -522,14 +552,6 @@ button:focus, button:focus-visible {
    ================================ */
 /* Manual light override (works regardless of system preference) */
 /* Manual light override (works regardless of system preference) */
-[data-theme=light] {
-  /* Container styling */
-  /* Profile header styling */
-  /* Form styling */
-  /* Button container */
-  /* Button styling */
-  /* Utility to hide elements */
-}
 [data-theme=light] .navigation-buttons button {
   height: 2.4em;
   width: auto;
@@ -539,10 +561,16 @@ button:focus, button:focus-visible {
   width: 20px;
   height: 20px;
 }
+[data-theme=light] {
+  /* Container styling */
+}
 [data-theme=light] .container {
   max-width: 600px;
   margin: 50px auto;
   padding: 0 15px;
+}
+[data-theme=light] {
+  /* Profile header styling */
 }
 [data-theme=light] .profile-header {
   margin-bottom: 30px;
@@ -555,6 +583,9 @@ button:focus, button:focus-visible {
 }
 [data-theme=light] .text-muted {
   color: #6c757d;
+}
+[data-theme=light] {
+  /* Form styling */
 }
 [data-theme=light] .form-group {
   margin-bottom: 20px;
@@ -588,6 +619,9 @@ button:focus, button:focus-visible {
   background-color: #e9ecef;
   opacity: 1;
 }
+[data-theme=light] {
+  /* Button container */
+}
 [data-theme=light] .d-flex {
   display: flex;
 }
@@ -596,6 +630,9 @@ button:focus, button:focus-visible {
 }
 [data-theme=light] .mt-4 {
   margin-top: 1.5rem;
+}
+[data-theme=light] {
+  /* Button styling */
 }
 [data-theme=light] .btn {
   display: inline-block;
@@ -634,6 +671,9 @@ button:focus, button:focus-visible {
   color: #fff;
   background-color: #218838;
   border-color: #1e7e34;
+}
+[data-theme=light] {
+  /* Utility to hide elements */
 }
 [data-theme=light] [style*="display: none"] {
   display: none !important;

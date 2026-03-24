@@ -154,10 +154,6 @@ button:focus, button:focus-visible {
    ================================ */
 /* System preference (when no manual override) */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) {
-    /* Optional: Add a subtle inner glow to enhance the glass effect */
-    /* Weekly schedule styles */
-  }
   :root:not([data-theme]) .icon {
     fill: #646cff;
   }
@@ -240,6 +236,9 @@ button:focus, button:focus-visible {
     margin: 10px 0;
     padding: 6px 0;
   }
+  :root:not([data-theme]) {
+    /* Optional: Add a subtle inner glow to enhance the glass effect */
+  }
   :root:not([data-theme]) .info-box:before {
     content: "";
     position: absolute;
@@ -250,6 +249,9 @@ button:focus, button:focus-visible {
     border-radius: 10px;
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
     pointer-events: none;
+  }
+  :root:not([data-theme]) {
+    /* Weekly schedule styles */
   }
   :root:not([data-theme]) .week-container {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
@@ -451,10 +453,6 @@ button:focus, button:focus-visible {
   }
 }
 @media (prefers-color-scheme: light) {
-  :root:not([data-theme]) {
-    /* Optional: Add a subtle inner glow to enhance the glass effect */
-    /* Weekly schedule styles */
-  }
   :root:not([data-theme]) .navigation-buttons button {
     height: 2.4em;
     width: auto;
@@ -534,6 +532,9 @@ button:focus, button:focus-visible {
     margin: 10px 0;
     padding: 6px 0;
   }
+  :root:not([data-theme]) {
+    /* Optional: Add a subtle inner glow to enhance the glass effect */
+  }
   :root:not([data-theme]) .info-box:before {
     content: "";
     position: absolute;
@@ -544,6 +545,9 @@ button:focus, button:focus-visible {
     border-radius: 10px;
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
     pointer-events: none;
+  }
+  :root:not([data-theme]) {
+    /* Weekly schedule styles */
   }
   :root:not([data-theme]) .week-container {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
@@ -750,10 +754,6 @@ button:focus, button:focus-visible {
    MANUAL DARK OVERRIDE
    ================================ */
 /* Manual dark override (works regardless of system preference) */
-[data-theme=dark] {
-  /* Optional: Add a subtle inner glow to enhance the glass effect */
-  /* Weekly schedule styles */
-}
 [data-theme=dark] .icon {
   fill: #646cff;
 }
@@ -836,6 +836,9 @@ button:focus, button:focus-visible {
   margin: 10px 0;
   padding: 6px 0;
 }
+[data-theme=dark] {
+  /* Optional: Add a subtle inner glow to enhance the glass effect */
+}
 [data-theme=dark] .info-box:before {
   content: "";
   position: absolute;
@@ -846,6 +849,9 @@ button:focus, button:focus-visible {
   border-radius: 10px;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
   pointer-events: none;
+}
+[data-theme=dark] {
+  /* Weekly schedule styles */
 }
 [data-theme=dark] .week-container {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
@@ -1051,10 +1057,6 @@ button:focus, button:focus-visible {
    ================================ */
 /* Manual light override (works regardless of system preference) */
 /* Manual light override (works regardless of system preference) */
-[data-theme=light] {
-  /* Optional: Add a subtle inner glow to enhance the glass effect */
-  /* Weekly schedule styles */
-}
 [data-theme=light] .navigation-buttons button {
   height: 2.4em;
   width: auto;
@@ -1134,6 +1136,9 @@ button:focus, button:focus-visible {
   margin: 10px 0;
   padding: 6px 0;
 }
+[data-theme=light] {
+  /* Optional: Add a subtle inner glow to enhance the glass effect */
+}
 [data-theme=light] .info-box:before {
   content: "";
   position: absolute;
@@ -1144,6 +1149,9 @@ button:focus, button:focus-visible {
   border-radius: 10px;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
   pointer-events: none;
+}
+[data-theme=light] {
+  /* Weekly schedule styles */
 }
 [data-theme=light] .week-container {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
