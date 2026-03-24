@@ -154,15 +154,6 @@ button:focus, button:focus-visible {
    ================================ */
 /* System preference (when no manual override) */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) {
-    /* Chrome/Safari styling */
-    /* Firefox styling */
-    /* Custom tick marks with better positioning */
-    /* Ensure the first and last ticks align properly */
-    /* Change dropdown background color */
-    /* Change the hover color for dropdown options */
-    /* Different colors for difficulty levels */
-  }
   :root:not([data-theme]) #navigation-backward, :root:not([data-theme]) #navigation-forward {
     color: white;
   }
@@ -388,6 +379,9 @@ button:focus, button:focus-visible {
     margin-bottom: 15px;
     position: relative;
   }
+  :root:not([data-theme]) {
+    /* Chrome/Safari styling */
+  }
   :root:not([data-theme]) .difficulty-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
@@ -401,6 +395,9 @@ button:focus, button:focus-visible {
     position: relative;
     z-index: 0.5;
   }
+  :root:not([data-theme]) {
+    /* Firefox styling */
+  }
   :root:not([data-theme]) .difficulty-slider::-moz-range-thumb {
     width: 20px;
     height: 20px;
@@ -411,6 +408,9 @@ button:focus, button:focus-visible {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     position: relative;
     z-index: 2;
+  }
+  :root:not([data-theme]) {
+    /* Custom tick marks with better positioning */
   }
   :root:not([data-theme]) .difficulty-ticks {
     display: flex;
@@ -427,6 +427,9 @@ button:focus, button:focus-visible {
     color: #6b7280;
     width: 20px;
     margin-left: -10px; /* Offset to center the number under the tick */
+  }
+  :root:not([data-theme]) {
+    /* Ensure the first and last ticks align properly */
   }
   :root:not([data-theme]) .difficulty-ticks span:first-child {
     margin-left: 0;
@@ -517,11 +520,17 @@ button:focus, button:focus-visible {
     border: 2px solid lightgray !important;
     width: 100%;
   }
+  :root:not([data-theme]) {
+    /* Change dropdown background color */
+  }
   :root:not([data-theme]) .ts-dropdown {
     background-color: rgb(56, 56, 56); /* Change to any color you want */
   }
   :root:not([data-theme]) .ts-dropdown .option {
     color: #ffffff;
+  }
+  :root:not([data-theme]) {
+    /* Change the hover color for dropdown options */
   }
   :root:not([data-theme]) .ts-dropdown .option:hover,
   :root:not([data-theme]) .ts-dropdown .active {
@@ -567,6 +576,9 @@ button:focus, button:focus-visible {
     border-radius: 20px;
     min-width: 70px;
     text-align: center;
+  }
+  :root:not([data-theme]) {
+    /* Different colors for difficulty levels */
   }
   :root:not([data-theme]) .search-result span[difficulty=Easy] {
     background: #dcfce7;
@@ -812,15 +824,6 @@ button:focus, button:focus-visible {
   }
 }
 @media (prefers-color-scheme: light) {
-  :root:not([data-theme]) {
-    /* Chrome/Safari styling */
-    /* Firefox styling */
-    /* Custom tick marks with better positioning */
-    /* Ensure the first and last ticks align properly */
-    /* Change dropdown background color */
-    /* Change the hover color for dropdown options */
-    /* Different colors for difficulty levels */
-  }
   :root:not([data-theme]) #navigation-backward, :root:not([data-theme]) #navigation-forward {
     color: black;
   }
@@ -1040,6 +1043,9 @@ button:focus, button:focus-visible {
     margin-bottom: 15px;
     position: relative;
   }
+  :root:not([data-theme]) {
+    /* Chrome/Safari styling */
+  }
   :root:not([data-theme]) .difficulty-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
@@ -1053,6 +1059,9 @@ button:focus, button:focus-visible {
     position: relative;
     z-index: 0.5;
   }
+  :root:not([data-theme]) {
+    /* Firefox styling */
+  }
   :root:not([data-theme]) .difficulty-slider::-moz-range-thumb {
     width: 20px;
     height: 20px;
@@ -1063,6 +1072,9 @@ button:focus, button:focus-visible {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     position: relative;
     z-index: 2;
+  }
+  :root:not([data-theme]) {
+    /* Custom tick marks with better positioning */
   }
   :root:not([data-theme]) .difficulty-ticks {
     display: flex;
@@ -1079,6 +1091,9 @@ button:focus, button:focus-visible {
     color: #6b7280;
     width: 20px;
     margin-left: -10px; /* Offset to center the number under the tick */
+  }
+  :root:not([data-theme]) {
+    /* Ensure the first and last ticks align properly */
   }
   :root:not([data-theme]) .difficulty-ticks span:first-child {
     margin-left: 0;
@@ -1169,11 +1184,17 @@ button:focus, button:focus-visible {
     border: 2px solid lightgray !important;
     width: 100%;
   }
+  :root:not([data-theme]) {
+    /* Change dropdown background color */
+  }
   :root:not([data-theme]) .ts-dropdown {
     background-color: #f0f0f0; /* Change to any color you want */
   }
   :root:not([data-theme]) .ts-dropdown .option {
     color: #333333;
+  }
+  :root:not([data-theme]) {
+    /* Change the hover color for dropdown options */
   }
   :root:not([data-theme]) .ts-dropdown .option:hover,
   :root:not([data-theme]) .ts-dropdown .active {
@@ -1219,6 +1240,9 @@ button:focus, button:focus-visible {
     border-radius: 20px;
     min-width: 70px;
     text-align: center;
+  }
+  :root:not([data-theme]) {
+    /* Different colors for difficulty levels */
   }
   :root:not([data-theme]) .search-result span[difficulty=Easy] {
     background: #dcfce7;
@@ -1468,15 +1492,6 @@ button:focus, button:focus-visible {
    MANUAL DARK OVERRIDE
    ================================ */
 /* Manual dark override (works regardless of system preference) */
-[data-theme=dark] {
-  /* Chrome/Safari styling */
-  /* Firefox styling */
-  /* Custom tick marks with better positioning */
-  /* Ensure the first and last ticks align properly */
-  /* Change dropdown background color */
-  /* Change the hover color for dropdown options */
-  /* Different colors for difficulty levels */
-}
 [data-theme=dark] #navigation-backward, [data-theme=dark] #navigation-forward {
   color: white;
 }
@@ -1702,6 +1717,9 @@ button:focus, button:focus-visible {
   margin-bottom: 15px;
   position: relative;
 }
+[data-theme=dark] {
+  /* Chrome/Safari styling */
+}
 [data-theme=dark] .difficulty-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
@@ -1715,6 +1733,9 @@ button:focus, button:focus-visible {
   position: relative;
   z-index: 0.5;
 }
+[data-theme=dark] {
+  /* Firefox styling */
+}
 [data-theme=dark] .difficulty-slider::-moz-range-thumb {
   width: 20px;
   height: 20px;
@@ -1725,6 +1746,9 @@ button:focus, button:focus-visible {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   position: relative;
   z-index: 2;
+}
+[data-theme=dark] {
+  /* Custom tick marks with better positioning */
 }
 [data-theme=dark] .difficulty-ticks {
   display: flex;
@@ -1741,6 +1765,9 @@ button:focus, button:focus-visible {
   color: #6b7280;
   width: 20px;
   margin-left: -10px; /* Offset to center the number under the tick */
+}
+[data-theme=dark] {
+  /* Ensure the first and last ticks align properly */
 }
 [data-theme=dark] .difficulty-ticks span:first-child {
   margin-left: 0;
@@ -1831,11 +1858,17 @@ button:focus, button:focus-visible {
   border: 2px solid lightgray !important;
   width: 100%;
 }
+[data-theme=dark] {
+  /* Change dropdown background color */
+}
 [data-theme=dark] .ts-dropdown {
   background-color: rgb(56, 56, 56); /* Change to any color you want */
 }
 [data-theme=dark] .ts-dropdown .option {
   color: #ffffff;
+}
+[data-theme=dark] {
+  /* Change the hover color for dropdown options */
 }
 [data-theme=dark] .ts-dropdown .option:hover,
 [data-theme=dark] .ts-dropdown .active {
@@ -1881,6 +1914,9 @@ button:focus, button:focus-visible {
   border-radius: 20px;
   min-width: 70px;
   text-align: center;
+}
+[data-theme=dark] {
+  /* Different colors for difficulty levels */
 }
 [data-theme=dark] .search-result span[difficulty=Easy] {
   background: #dcfce7;
@@ -2130,15 +2166,6 @@ button:focus, button:focus-visible {
    ================================ */
 /* Manual light override (works regardless of system preference) */
 /* Manual light override (works regardless of system preference) */
-[data-theme=light] {
-  /* Chrome/Safari styling */
-  /* Firefox styling */
-  /* Custom tick marks with better positioning */
-  /* Ensure the first and last ticks align properly */
-  /* Change dropdown background color */
-  /* Change the hover color for dropdown options */
-  /* Different colors for difficulty levels */
-}
 [data-theme=light] #navigation-backward, [data-theme=light] #navigation-forward {
   color: black;
 }
@@ -2358,6 +2385,9 @@ button:focus, button:focus-visible {
   margin-bottom: 15px;
   position: relative;
 }
+[data-theme=light] {
+  /* Chrome/Safari styling */
+}
 [data-theme=light] .difficulty-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
@@ -2371,6 +2401,9 @@ button:focus, button:focus-visible {
   position: relative;
   z-index: 0.5;
 }
+[data-theme=light] {
+  /* Firefox styling */
+}
 [data-theme=light] .difficulty-slider::-moz-range-thumb {
   width: 20px;
   height: 20px;
@@ -2381,6 +2414,9 @@ button:focus, button:focus-visible {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   position: relative;
   z-index: 2;
+}
+[data-theme=light] {
+  /* Custom tick marks with better positioning */
 }
 [data-theme=light] .difficulty-ticks {
   display: flex;
@@ -2397,6 +2433,9 @@ button:focus, button:focus-visible {
   color: #6b7280;
   width: 20px;
   margin-left: -10px; /* Offset to center the number under the tick */
+}
+[data-theme=light] {
+  /* Ensure the first and last ticks align properly */
 }
 [data-theme=light] .difficulty-ticks span:first-child {
   margin-left: 0;
@@ -2487,11 +2526,17 @@ button:focus, button:focus-visible {
   border: 2px solid lightgray !important;
   width: 100%;
 }
+[data-theme=light] {
+  /* Change dropdown background color */
+}
 [data-theme=light] .ts-dropdown {
   background-color: #f0f0f0; /* Change to any color you want */
 }
 [data-theme=light] .ts-dropdown .option {
   color: #333333;
+}
+[data-theme=light] {
+  /* Change the hover color for dropdown options */
 }
 [data-theme=light] .ts-dropdown .option:hover,
 [data-theme=light] .ts-dropdown .active {
@@ -2537,6 +2582,9 @@ button:focus, button:focus-visible {
   border-radius: 20px;
   min-width: 70px;
   text-align: center;
+}
+[data-theme=light] {
+  /* Different colors for difficulty levels */
 }
 [data-theme=light] .search-result span[difficulty=Easy] {
   background: #dcfce7;
