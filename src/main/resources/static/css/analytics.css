@@ -1,0 +1,1346 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+#logo {
+  width: 5em;
+  user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  pointer-events: none;
+}
+
+.logo {
+  width: 5em;
+  user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  pointer-events: none;
+}
+
+.navigation-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 2em;
+}
+
+.navigation-buttons button {
+  width: 6em;
+}
+
+.menu {
+  display: flex;
+  flex-direction: row;
+  gap: 2em;
+}
+
+#main-nav {
+  position: sticky;
+  top: 1em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 2em;
+  padding: 1em;
+  padding-left: 4em;
+  padding-right: 4em;
+  z-index: 1;
+  background: #2a2a2a;
+  background: linear-gradient(90deg, rgba(60, 60, 60, 0.9) 0%, rgb(40, 40, 40) 100%);
+  color: rgba(255, 255, 255, 0.87);
+  border: 1px solid #444;
+}
+
+main {
+  margin: 2em;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.4em 1em;
+  font-size: 0.8em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus, button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  :root:not([data-theme]) #main-nav {
+    background: #EDDD53;
+    background: linear-gradient(90deg, rgba(237, 221, 83, 0.9) 0%, rgb(206, 229, 242) 100%);
+    color: #213547;
+    border: none;
+  }
+  :root:not([data-theme]) button {
+    background-color: #f9f9f9;
+  }
+}
+[data-theme=dark] {
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+}
+[data-theme=dark] #main-nav {
+  background: #2a2a2a;
+  background: linear-gradient(90deg, rgba(60, 60, 60, 0.9) 0%, rgb(40, 40, 40) 100%);
+  color: rgba(255, 255, 255, 0.87);
+  border: 1px solid #444;
+}
+[data-theme=dark] button {
+  background-color: #1a1a1a;
+}
+
+[data-theme=light] {
+  color: #213547;
+  background-color: #ffffff;
+}
+[data-theme=light] #main-nav {
+  background: #EDDD53;
+  background: linear-gradient(90deg, rgba(237, 221, 83, 0.9) 0%, rgb(206, 229, 242) 100%);
+  color: #213547;
+  border: none;
+}
+[data-theme=light] button {
+  background-color: #f9f9f9;
+}
+
+/* ================================
+   SYSTEM PREFERENCE ONLY (when no manual override)
+   ================================ */
+/* System preference (when no manual override) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    /* Optional: Add a subtle inner glow to enhance the glass effect */
+    /* Weekly schedule styles */
+  }
+  :root:not([data-theme]) .icon {
+    fill: #646cff;
+  }
+  :root:not([data-theme]) .navigation-buttons button {
+    height: 2.4em;
+    width: auto;
+    padding: 0.2em 0.7em;
+  }
+  :root:not([data-theme]) .icon {
+    width: 20px;
+    height: 20px;
+  }
+  :root:not([data-theme]) #container {
+    width: 95%;
+    height: 65vh;
+    margin: auto;
+  }
+  :root:not([data-theme]) .center-label-missing, :root:not([data-theme]) .center-solved-label {
+    fill: #ffffff !important;
+  }
+  :root:not([data-theme]) .center-label--completed {
+    fill: #ffffff !important;
+    font-weight: bold;
+  }
+  :root:not([data-theme]) .bottom-attempts-label {
+    fill: #ffffff !important;
+  }
+  :root:not([data-theme]) .category-label {
+    fill: #ffffff !important;
+  }
+  :root:not([data-theme]) .progress-wheel-section {
+    margin-bottom: 3em;
+  }
+  :root:not([data-theme]) .schedule-calendar-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 3em 0 0 0;
+  }
+  :root:not([data-theme]) .schedule-chart-container {
+    width: 60%;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  :root:not([data-theme]) h2 {
+    margin-top: 0;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #ffffff;
+    font-size: 1.5rem;
+  }
+  :root:not([data-theme]) .chart-container {
+    width: 100%;
+    height: 400px;
+    margin-bottom: 30px;
+  }
+  :root:not([data-theme]) .info-box {
+    background-color: rgb(34, 47, 63); /* Dark background with transparency */
+    backdrop-filter: blur(10px); /* Creates the frosted glass effect */
+    -webkit-backdrop-filter: blur(10px); /* For Safari support */
+    border-radius: 10px;
+    padding: 22px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    /* max-width: 520px; */
+    margin: 0 auto;
+    border-top: 3px solid #29B6F6;
+    /* Light text for contrast */
+  }
+  :root:not([data-theme]) .info-box .title {
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 18px;
+    /* Bright white for maximum visibility on frosted background */
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Subtle text shadow for readability */
+  }
+  :root:not([data-theme]) .info-box .subtitle {
+    font-size: 15px;
+    /* Light gray-blue that's visible on the dark backdrop */
+    margin: 10px 0;
+    padding: 6px 0;
+  }
+  :root:not([data-theme]) .info-box:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 10px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    pointer-events: none;
+  }
+  :root:not([data-theme]) .week-container {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    padding: 1.5rem;
+    max-width: 32rem;
+    margin: 30px auto 0;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  :root:not([data-theme]) .week-container h2 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #ffffff;
+  }
+  :root:not([data-theme]) .grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  :root:not([data-theme]) .day-header {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #ffffff;
+  }
+  :root:not([data-theme]) .input-container {
+    display: flex;
+    justify-content: center;
+  }
+  :root:not([data-theme]) input {
+    color: black;
+    width: 2.5rem;
+    height: 2.5rem;
+    text-align: center;
+    border: 0;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  :root:not([data-theme]) input::-webkit-outer-spin-button,
+  :root:not([data-theme]) input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  :root:not([data-theme]) input[type=number] {
+    -moz-appearance: textfield;
+  }
+  :root:not([data-theme]) .completion-input {
+    color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(239, 246, 255, 0.5);
+  }
+  :root:not([data-theme]) .stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    margin-top: 1rem;
+  }
+  :root:not([data-theme]) .progress-bar {
+    width: 100%;
+    background-color: #e5e7eb;
+    border-radius: 9999px;
+    height: 0.375rem;
+    margin-top: 0.5rem;
+  }
+  :root:not([data-theme]) .progress-fill {
+    background-color: #1d4ed8;
+    height: 0.375rem;
+    border-radius: 9999px;
+  }
+  :root:not([data-theme]) .total-goal {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  :root:not([data-theme]) .total-goal label {
+    margin-right: 10px;
+    font-weight: 500;
+  }
+  :root:not([data-theme]) .total-goal input {
+    width: 4rem;
+  }
+  :root:not([data-theme]) .already-done {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  :root:not([data-theme]) .already-done label {
+    margin-right: 10px;
+    font-weight: 500;
+  }
+  :root:not([data-theme]) .already-done input {
+    width: 4rem;
+  }
+  :root:not([data-theme]) #update-chart {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #3b82f6;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  :root:not([data-theme]) #update-chart:hover, :root:not([data-theme]) #save-changes:hover {
+    background-color: #2563eb;
+  }
+  :root:not([data-theme]) #save-changes {
+    width: 100%;
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  :root:not([data-theme]) .topic-section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  :root:not([data-theme]) .instruction-box {
+    background-color: rgba(230, 247, 255, 0.1);
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  :root:not([data-theme]) .feedback {
+    background-color: rgba(230, 247, 255, 0.5);
+    border-radius: 6px;
+    padding: 12px;
+    margin-top: 12px;
+    color: #006600;
+    display: none;
+  }
+  :root:not([data-theme]) .topic-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  :root:not([data-theme]) .topic-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: rgb(34, 47, 63);
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    cursor: move;
+    user-select: none;
+  }
+  :root:not([data-theme]) .topic-item:hover {
+    background-color: rgba(50, 64, 84, 0.8);
+  }
+  :root:not([data-theme]) .topic-item.dragging {
+    opacity: 0.5;
+    border: 1px dashed #999;
+  }
+  :root:not([data-theme]) .topic-item.drag-over {
+    border: 1px solid #4d90fe;
+    background-color: #e6f7ff;
+  }
+  :root:not([data-theme]) .topic-name {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+  }
+  :root:not([data-theme]) .drag-handle {
+    margin-right: 12px;
+    color: #646cff;
+  }
+  :root:not([data-theme]) .rank-badge {
+    background-color: #646cff;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 14px;
+  }
+  :root:not([data-theme]) .topic-navigation-section button {
+    font-size: 12px;
+    border: none;
+    color: #ffffff;
+    background-color: rgba(255, 254, 254, 0);
+    cursor: pointer;
+  }
+  :root:not([data-theme]) .topic-navigation-section {
+    margin-top: 1em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    /* Optional: Add a subtle inner glow to enhance the glass effect */
+    /* Weekly schedule styles */
+  }
+  :root:not([data-theme]) .navigation-buttons button {
+    height: 2.4em;
+    width: auto;
+    padding: 0.2em 0.7em;
+  }
+  :root:not([data-theme]) .icon {
+    width: 20px;
+    height: 20px;
+  }
+  :root:not([data-theme]) #container {
+    width: 95%;
+    height: 65vh;
+    margin: auto;
+  }
+  :root:not([data-theme]) .center-label-missing, :root:not([data-theme]) .center-solved-label {
+    fill: rgb(45, 64, 85) !important;
+  }
+  :root:not([data-theme]) .center-label--completed {
+    fill: rgb(45, 64, 85) !important;
+    font-weight: bold;
+  }
+  :root:not([data-theme]) .bottom-attempts-label {
+    fill: rgb(45, 64, 85) !important;
+  }
+  :root:not([data-theme]) .category-label {
+    fill: rgb(255, 255, 255) !important;
+  }
+  :root:not([data-theme]) .progress-wheel-section {
+    margin-bottom: 3em;
+  }
+  :root:not([data-theme]) .schedule-calendar-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 3em 0 0 0;
+  }
+  :root:not([data-theme]) .schedule-chart-container {
+    width: 60%;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  :root:not([data-theme]) h2 {
+    margin-top: 0;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 1.5rem;
+  }
+  :root:not([data-theme]) .chart-container {
+    width: 100%;
+    height: 400px;
+    margin-bottom: 30px;
+  }
+  :root:not([data-theme]) .info-box {
+    background-color: rgba(38, 50, 56, 0.7); /* Dark background with transparency */
+    backdrop-filter: blur(10px); /* Creates the frosted glass effect */
+    -webkit-backdrop-filter: blur(10px); /* For Safari support */
+    border-radius: 10px;
+    padding: 22px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    /* max-width: 520px; */
+    margin: 0 auto;
+    border-top: 3px solid #29B6F6;
+    color: #E3F2FD; /* Light text for contrast */
+  }
+  :root:not([data-theme]) .info-box .title {
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 18px;
+    color: #FFFFFF; /* Bright white for maximum visibility on frosted background */
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Subtle text shadow for readability */
+  }
+  :root:not([data-theme]) .info-box .subtitle {
+    font-size: 15px;
+    color: #CFD8DC; /* Light gray-blue that's visible on the dark backdrop */
+    margin: 10px 0;
+    padding: 6px 0;
+  }
+  :root:not([data-theme]) .info-box:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 10px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    pointer-events: none;
+  }
+  :root:not([data-theme]) .week-container {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    padding: 1.5rem;
+    max-width: 32rem;
+    margin: 30px auto 0;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  :root:not([data-theme]) .week-container h2 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #1f2937;
+  }
+  :root:not([data-theme]) .grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  :root:not([data-theme]) .day-header {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6b7280;
+  }
+  :root:not([data-theme]) .input-container {
+    display: flex;
+    justify-content: center;
+  }
+  :root:not([data-theme]) input {
+    color: black;
+    width: 2.5rem;
+    height: 2.5rem;
+    text-align: center;
+    border: 0;
+    background-color: #FFFFFF;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  :root:not([data-theme]) input::-webkit-outer-spin-button,
+  :root:not([data-theme]) input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  :root:not([data-theme]) input[type=number] {
+    -moz-appearance: textfield;
+  }
+  :root:not([data-theme]) .completion-input {
+    color: rgba(0, 0, 0, 0.5);
+    background-color: #eff6ff;
+  }
+  :root:not([data-theme]) .stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin-top: 1rem;
+  }
+  :root:not([data-theme]) .progress-bar {
+    width: 100%;
+    background-color: #e5e7eb;
+    border-radius: 9999px;
+    height: 0.375rem;
+    margin-top: 0.5rem;
+  }
+  :root:not([data-theme]) .progress-fill {
+    background-color: #1d4ed8;
+    height: 0.375rem;
+    border-radius: 9999px;
+  }
+  :root:not([data-theme]) .total-goal {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  :root:not([data-theme]) .total-goal label {
+    margin-right: 10px;
+    font-weight: 500;
+  }
+  :root:not([data-theme]) .total-goal input {
+    width: 4rem;
+  }
+  :root:not([data-theme]) .already-done {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  :root:not([data-theme]) .already-done label {
+    margin-right: 10px;
+    font-weight: 500;
+  }
+  :root:not([data-theme]) .already-done input {
+    width: 4rem;
+  }
+  :root:not([data-theme]) #update-chart {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #3b82f6;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  :root:not([data-theme]) #update-chart:hover, :root:not([data-theme]) #save-changes:hover {
+    background-color: #2563eb;
+  }
+  :root:not([data-theme]) #save-changes {
+    width: 100%;
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  :root:not([data-theme]) .topic-section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  :root:not([data-theme]) .instruction-box {
+    background-color: #e6f7ff;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  :root:not([data-theme]) .feedback {
+    background-color: #e6f7ff;
+    border-radius: 6px;
+    padding: 12px;
+    margin-top: 12px;
+    color: #006600;
+    display: none;
+  }
+  :root:not([data-theme]) .topic-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  :root:not([data-theme]) .topic-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: #FFFFFF;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    cursor: move;
+    user-select: none;
+  }
+  :root:not([data-theme]) .topic-item:hover {
+    background-color: #f5f5f5;
+  }
+  :root:not([data-theme]) .topic-item.dragging {
+    opacity: 0.5;
+    border: 1px dashed #999;
+  }
+  :root:not([data-theme]) .topic-item.drag-over {
+    border: 1px solid #4d90fe;
+    background-color: #e6f7ff;
+  }
+  :root:not([data-theme]) .topic-name {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+  }
+  :root:not([data-theme]) .drag-handle {
+    margin-right: 12px;
+    color: #999;
+  }
+  :root:not([data-theme]) .rank-badge {
+    background-color: #f0f0f0;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 14px;
+  }
+  :root:not([data-theme]) .topic-navigation-section button {
+    font-size: 12px;
+    border: none;
+    color: #6b7280;
+    background-color: rgba(255, 254, 254, 0);
+    cursor: pointer;
+  }
+  :root:not([data-theme]) .topic-navigation-section {
+    margin-top: 1em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+}
+
+/* ================================
+   MANUAL DARK OVERRIDE
+   ================================ */
+/* Manual dark override (works regardless of system preference) */
+[data-theme=dark] {
+  /* Optional: Add a subtle inner glow to enhance the glass effect */
+  /* Weekly schedule styles */
+}
+[data-theme=dark] .icon {
+  fill: #646cff;
+}
+[data-theme=dark] .navigation-buttons button {
+  height: 2.4em;
+  width: auto;
+  padding: 0.2em 0.7em;
+}
+[data-theme=dark] .icon {
+  width: 20px;
+  height: 20px;
+}
+[data-theme=dark] #container {
+  width: 95%;
+  height: 65vh;
+  margin: auto;
+}
+[data-theme=dark] .center-label-missing, [data-theme=dark] .center-solved-label {
+  fill: #ffffff !important;
+}
+[data-theme=dark] .center-label--completed {
+  fill: #ffffff !important;
+  font-weight: bold;
+}
+[data-theme=dark] .bottom-attempts-label {
+  fill: #ffffff !important;
+}
+[data-theme=dark] .category-label {
+  fill: #ffffff !important;
+}
+[data-theme=dark] .progress-wheel-section {
+  margin-bottom: 3em;
+}
+[data-theme=dark] .schedule-calendar-section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 3em 0 0 0;
+}
+[data-theme=dark] .schedule-chart-container {
+  width: 60%;
+  margin: 0 auto;
+  padding: 20px;
+}
+[data-theme=dark] h2 {
+  margin-top: 0;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #ffffff;
+  font-size: 1.5rem;
+}
+[data-theme=dark] .chart-container {
+  width: 100%;
+  height: 400px;
+  margin-bottom: 30px;
+}
+[data-theme=dark] .info-box {
+  background-color: rgb(34, 47, 63); /* Dark background with transparency */
+  backdrop-filter: blur(10px); /* Creates the frosted glass effect */
+  -webkit-backdrop-filter: blur(10px); /* For Safari support */
+  border-radius: 10px;
+  padding: 22px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  /* max-width: 520px; */
+  margin: 0 auto;
+  border-top: 3px solid #29B6F6;
+  /* Light text for contrast */
+}
+[data-theme=dark] .info-box .title {
+  font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 18px;
+  /* Bright white for maximum visibility on frosted background */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Subtle text shadow for readability */
+}
+[data-theme=dark] .info-box .subtitle {
+  font-size: 15px;
+  /* Light gray-blue that's visible on the dark backdrop */
+  margin: 10px 0;
+  padding: 6px 0;
+}
+[data-theme=dark] .info-box:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+}
+[data-theme=dark] .week-container {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  padding: 1.5rem;
+  max-width: 32rem;
+  margin: 30px auto 0;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+[data-theme=dark] .week-container h2 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #ffffff;
+}
+[data-theme=dark] .grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+[data-theme=dark] .day-header {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #ffffff;
+}
+[data-theme=dark] .input-container {
+  display: flex;
+  justify-content: center;
+}
+[data-theme=dark] input {
+  color: black;
+  width: 2.5rem;
+  height: 2.5rem;
+  text-align: center;
+  border: 0;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+[data-theme=dark] input::-webkit-outer-spin-button,
+[data-theme=dark] input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+[data-theme=dark] input[type=number] {
+  -moz-appearance: textfield;
+}
+[data-theme=dark] .completion-input {
+  color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(239, 246, 255, 0.5);
+}
+[data-theme=dark] .stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  margin-top: 1rem;
+}
+[data-theme=dark] .progress-bar {
+  width: 100%;
+  background-color: #e5e7eb;
+  border-radius: 9999px;
+  height: 0.375rem;
+  margin-top: 0.5rem;
+}
+[data-theme=dark] .progress-fill {
+  background-color: #1d4ed8;
+  height: 0.375rem;
+  border-radius: 9999px;
+}
+[data-theme=dark] .total-goal {
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+[data-theme=dark] .total-goal label {
+  margin-right: 10px;
+  font-weight: 500;
+}
+[data-theme=dark] .total-goal input {
+  width: 4rem;
+}
+[data-theme=dark] .already-done {
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+[data-theme=dark] .already-done label {
+  margin-right: 10px;
+  font-weight: 500;
+}
+[data-theme=dark] .already-done input {
+  width: 4rem;
+}
+[data-theme=dark] #update-chart {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #3b82f6;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+[data-theme=dark] #update-chart:hover, [data-theme=dark] #save-changes:hover {
+  background-color: #2563eb;
+}
+[data-theme=dark] #save-changes {
+  width: 100%;
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+[data-theme=dark] .topic-section {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+[data-theme=dark] .instruction-box {
+  background-color: rgba(230, 247, 255, 0.1);
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+[data-theme=dark] .feedback {
+  background-color: rgba(230, 247, 255, 0.5);
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 12px;
+  color: #006600;
+  display: none;
+}
+[data-theme=dark] .topic-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+[data-theme=dark] .topic-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  background: rgb(34, 47, 63);
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  cursor: move;
+  user-select: none;
+}
+[data-theme=dark] .topic-item:hover {
+  background-color: rgba(50, 64, 84, 0.8);
+}
+[data-theme=dark] .topic-item.dragging {
+  opacity: 0.5;
+  border: 1px dashed #999;
+}
+[data-theme=dark] .topic-item.drag-over {
+  border: 1px solid #4d90fe;
+  background-color: #e6f7ff;
+}
+[data-theme=dark] .topic-name {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+}
+[data-theme=dark] .drag-handle {
+  margin-right: 12px;
+  color: #646cff;
+}
+[data-theme=dark] .rank-badge {
+  background-color: #646cff;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+[data-theme=dark] .topic-navigation-section button {
+  font-size: 12px;
+  border: none;
+  color: #ffffff;
+  background-color: rgba(255, 254, 254, 0);
+  cursor: pointer;
+}
+[data-theme=dark] .topic-navigation-section {
+  margin-top: 1em;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+/* ================================
+   MANUAL LIGHT OVERRIDE
+   ================================ */
+/* Manual light override (works regardless of system preference) */
+/* Manual light override (works regardless of system preference) */
+[data-theme=light] {
+  /* Optional: Add a subtle inner glow to enhance the glass effect */
+  /* Weekly schedule styles */
+}
+[data-theme=light] .navigation-buttons button {
+  height: 2.4em;
+  width: auto;
+  padding: 0.2em 0.7em;
+}
+[data-theme=light] .icon {
+  width: 20px;
+  height: 20px;
+}
+[data-theme=light] #container {
+  width: 95%;
+  height: 65vh;
+  margin: auto;
+}
+[data-theme=light] .center-label-missing, [data-theme=light] .center-solved-label {
+  fill: rgb(45, 64, 85) !important;
+}
+[data-theme=light] .center-label--completed {
+  fill: rgb(45, 64, 85) !important;
+  font-weight: bold;
+}
+[data-theme=light] .bottom-attempts-label {
+  fill: rgb(45, 64, 85) !important;
+}
+[data-theme=light] .category-label {
+  fill: rgb(255, 255, 255) !important;
+}
+[data-theme=light] .progress-wheel-section {
+  margin-bottom: 3em;
+}
+[data-theme=light] .schedule-calendar-section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 3em 0 0 0;
+}
+[data-theme=light] .schedule-chart-container {
+  width: 60%;
+  margin: 0 auto;
+  padding: 20px;
+}
+[data-theme=light] h2 {
+  margin-top: 0;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 1.5rem;
+}
+[data-theme=light] .chart-container {
+  width: 100%;
+  height: 400px;
+  margin-bottom: 30px;
+}
+[data-theme=light] .info-box {
+  background-color: rgba(38, 50, 56, 0.7); /* Dark background with transparency */
+  backdrop-filter: blur(10px); /* Creates the frosted glass effect */
+  -webkit-backdrop-filter: blur(10px); /* For Safari support */
+  border-radius: 10px;
+  padding: 22px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  /* max-width: 520px; */
+  margin: 0 auto;
+  border-top: 3px solid #29B6F6;
+  color: #E3F2FD; /* Light text for contrast */
+}
+[data-theme=light] .info-box .title {
+  font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 18px;
+  color: #FFFFFF; /* Bright white for maximum visibility on frosted background */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Subtle text shadow for readability */
+}
+[data-theme=light] .info-box .subtitle {
+  font-size: 15px;
+  color: #CFD8DC; /* Light gray-blue that's visible on the dark backdrop */
+  margin: 10px 0;
+  padding: 6px 0;
+}
+[data-theme=light] .info-box:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+}
+[data-theme=light] .week-container {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  padding: 1.5rem;
+  max-width: 32rem;
+  margin: 30px auto 0;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+[data-theme=light] .week-container h2 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #1f2937;
+}
+[data-theme=light] .grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+[data-theme=light] .day-header {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
+}
+[data-theme=light] .input-container {
+  display: flex;
+  justify-content: center;
+}
+[data-theme=light] input {
+  color: black;
+  width: 2.5rem;
+  height: 2.5rem;
+  text-align: center;
+  border: 0;
+  background-color: #FFFFFF;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+[data-theme=light] input::-webkit-outer-spin-button,
+[data-theme=light] input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+[data-theme=light] input[type=number] {
+  -moz-appearance: textfield;
+}
+[data-theme=light] .completion-input {
+  color: rgba(0, 0, 0, 0.5);
+  background-color: #eff6ff;
+}
+[data-theme=light] .stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  color: #4b5563;
+  margin-top: 1rem;
+}
+[data-theme=light] .progress-bar {
+  width: 100%;
+  background-color: #e5e7eb;
+  border-radius: 9999px;
+  height: 0.375rem;
+  margin-top: 0.5rem;
+}
+[data-theme=light] .progress-fill {
+  background-color: #1d4ed8;
+  height: 0.375rem;
+  border-radius: 9999px;
+}
+[data-theme=light] .total-goal {
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+[data-theme=light] .total-goal label {
+  margin-right: 10px;
+  font-weight: 500;
+}
+[data-theme=light] .total-goal input {
+  width: 4rem;
+}
+[data-theme=light] .already-done {
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+[data-theme=light] .already-done label {
+  margin-right: 10px;
+  font-weight: 500;
+}
+[data-theme=light] .already-done input {
+  width: 4rem;
+}
+[data-theme=light] #update-chart {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #3b82f6;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+[data-theme=light] #update-chart:hover, [data-theme=light] #save-changes:hover {
+  background-color: #2563eb;
+}
+[data-theme=light] #save-changes {
+  width: 100%;
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+[data-theme=light] .topic-section {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+[data-theme=light] .instruction-box {
+  background-color: #e6f7ff;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+[data-theme=light] .feedback {
+  background-color: #e6f7ff;
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 12px;
+  color: #006600;
+  display: none;
+}
+[data-theme=light] .topic-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+[data-theme=light] .topic-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  background: #FFFFFF;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  cursor: move;
+  user-select: none;
+}
+[data-theme=light] .topic-item:hover {
+  background-color: #f5f5f5;
+}
+[data-theme=light] .topic-item.dragging {
+  opacity: 0.5;
+  border: 1px dashed #999;
+}
+[data-theme=light] .topic-item.drag-over {
+  border: 1px solid #4d90fe;
+  background-color: #e6f7ff;
+}
+[data-theme=light] .topic-name {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+}
+[data-theme=light] .drag-handle {
+  margin-right: 12px;
+  color: #999;
+}
+[data-theme=light] .rank-badge {
+  background-color: #f0f0f0;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+[data-theme=light] .topic-navigation-section button {
+  font-size: 12px;
+  border: none;
+  color: #6b7280;
+  background-color: rgba(255, 254, 254, 0);
+  cursor: pointer;
+}
+[data-theme=light] .topic-navigation-section {
+  margin-top: 1em;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}

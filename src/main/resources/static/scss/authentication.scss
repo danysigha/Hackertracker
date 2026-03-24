@@ -1,0 +1,56 @@
+@use "variables" as *;
+@use "mixins" as *;
+@use "functions" as *;
+@use "base";
+
+.login-form, .register-form {
+  display: flex;
+  flex-direction: column;
+  place-items: center;
+  gap: 1.5em;
+}
+
+h1 {
+  text-align: center;
+  margin: 1em;
+  font-size: 2em;
+}
+
+.error {
+  color: $error-color;
+  font-size: 0.85em;
+  margin-top: 5px;
+  display: block;
+  font-weight: 500;
+}
+
+input.error {
+  border-color: $error-color;
+  box-shadow: 0 0 0 0.2rem $error-color-shadow;
+}
+
+.login-button, .register-button, .input {
+  width: 35vw;
+  font-size: 1.2em;
+  padding: 0.5em;
+  font-feature-settings: inherit;
+  font-variation-settings: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  opacity: 1;
+  border: 1px solid theme-color(dark, nav-border-color);
+  border-radius: 0.6em;
+}
+
+.login-button, .register-button {
+  width: 36.5vw;
+  display: block;
+}
+
+.login-button:hover, .register-button:hover {
+  @include gradient-background-circular(
+    theme-color(light, auth-button-gradient-fallback),
+    theme-color(light, auth-button-gradient-start),
+    theme-color(light, auth-button-gradient-end)
+  );
+}

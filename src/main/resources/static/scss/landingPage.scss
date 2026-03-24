@@ -1,0 +1,40 @@
+@use "variables" as *;
+@use "mixins" as *;
+@use "functions" as *;
+@use "base";
+
+h1 {
+  text-align: center;
+  margin: 0;
+}
+
+.pattern-container {
+  background-image: url('/assets/graphs.png');
+  background-repeat: repeat;
+  background-size: 400px 400px; /* Controls the spacing */
+}
+
+main {
+  box-shadow: 0 0 6px 2px theme-color(light, landing-page-shadow-color); /* blurry outer shadow */
+  @include gradient-background-linear(
+    theme-color(light, landing-page-background-fallback),
+    theme-color(light, landing-page-gradient-start),
+    theme-color(light, landing-page-gradient-end)
+  );
+  border-radius: 16px;
+  padding: 1em;
+}
+
+/* Dark mode styling */
+@media (prefers-color-scheme: dark) {
+  main {
+    @include gradient-background-linear(
+      theme-color(dark, landing-page-gradient-start),
+      theme-color(dark, landing-page-gradient-start),
+      theme-color(dark, landing-page-gradient-end)
+    );
+    box-shadow: 0 0 30px 10px theme-color(dark, landing-page-shadow-color); /* blurry outer shadow */
+    border-radius: 16px;
+    padding: 1em;
+  }
+}

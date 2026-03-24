@@ -1,0 +1,209 @@
+@use "variables" as *;
+@use "mixins" as *;
+@use "functions" as *;
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: theme-color(dark, font-color);
+  background-color: theme-color(dark, background-color);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: $accent-color-primary;
+  text-decoration: inherit;
+
+  &:hover{
+    color: $accent-color-secondary;
+  }
+}
+
+#logo {
+  width: 5em;
+  user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  pointer-events: none;
+}
+
+.logo {
+  width: 5em;
+  user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  pointer-events: none;
+}
+
+.navigation-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 2em;
+}
+
+.navigation-buttons button {
+  width: 6em;
+}
+
+.menu {
+  display: flex;
+  flex-direction: row;
+  gap: 2em;
+}
+
+#main-nav {
+  position: sticky;
+  top: 1em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 2em;
+  padding: 1em;
+  padding-left: 4em;
+  padding-right: 4em;
+  z-index: 1;
+
+  // Default to dark mode styling
+  @include gradient-background-linear(
+                  theme-color(dark, nav-gradient-fallback),
+                  theme-color(dark, nav-gradient-start),
+                  theme-color(dark, nav-gradient-end)
+  );
+  color: theme-color(dark, font-color);
+  border: 1px solid theme-color(dark, nav-border-color);
+}
+
+main {
+  margin: 2em;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.4em 1em;
+  font-size: 0.8em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: theme-color(dark, button-background);
+  cursor: pointer;
+  transition: border-color 0.25s;
+
+  &:hover {
+    border-color: $accent-color-primary;
+  }
+
+  &:focus,
+  &:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+  }
+}
+
+
+// System Preference (when no manual override)
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    color: theme-color(light, font-color);
+    background-color: theme-color(light, background-color);
+
+    #main-nav {
+      @include gradient-background-linear(
+                      theme-color(light, nav-gradient-fallback),
+                      theme-color(light, nav-gradient-start),
+                      theme-color(light, nav-gradient-end)
+      );
+      color: theme-color(light, font-color);
+      border: none;
+    }
+
+    button {
+      background-color: theme-color(light, button-background);
+    }
+  }
+}
+
+// Manual Dark Theme (highest specificity)
+[data-theme="dark"] {
+  color: theme-color(dark, font-color);
+  background-color: theme-color(dark, background-color);
+
+  #main-nav {
+    @include gradient-background-linear(
+                    theme-color(dark, nav-gradient-fallback),
+                    theme-color(dark, nav-gradient-start),
+                    theme-color(dark, nav-gradient-end)
+    );
+    color: theme-color(dark, font-color);
+    border: 1px solid theme-color(dark, nav-border-color);
+  }
+
+  button {
+    background-color: theme-color(dark, button-background);
+  }
+}
+
+// Manual Light Theme (highest specificity)
+[data-theme="light"] {
+  color: theme-color(light, font-color);
+  background-color: theme-color(light, background-color);
+
+  #main-nav {
+    @include gradient-background-linear(
+                    theme-color(light, nav-gradient-fallback),
+                    theme-color(light, nav-gradient-start),
+                    theme-color(light, nav-gradient-end)
+    );
+    color: theme-color(light, font-color);
+    border: none;
+  }
+
+  button {
+    background-color: theme-color(light, button-background);
+  }
+}
+
+
+
+
+//@media (prefers-color-scheme: light) {
+//  :root {
+//    color: theme-color(light, font-color);
+//    background-color: theme-color(light, background-color);
+//  }
+//
+//  #main-nav {
+//    @include gradient-background-linear(
+//                    theme-color(light, nav-gradient-fallback),
+//                    theme-color(light, nav-gradient-start),
+//                    theme-color(light, nav-gradient-end)
+//    );
+//    color: theme-color(light, font-color);
+//    border: none; // Remove the border in light mode if you don't want it
+//  }
+//
+//  button {
+//    background-color: theme-color(light, button-background);
+//  }
+//}

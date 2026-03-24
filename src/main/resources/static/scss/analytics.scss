@@ -1,0 +1,38 @@
+@use "variables" as *;
+@use "mixins" as *;
+@use "functions" as *;
+@use "base";
+
+/* ================================
+   SYSTEM PREFERENCE ONLY (when no manual override)
+   ================================ */
+
+/* System preference (when no manual override) */
+:root:not([data-theme]) {
+  @media (prefers-color-scheme: dark) {
+    @include dark-theme-styles-analytics;
+  }
+
+  @media (prefers-color-scheme: light) {
+    @include light-theme-styles-analytics;
+  }
+}
+
+/* ================================
+   MANUAL DARK OVERRIDE
+   ================================ */
+/* Manual dark override (works regardless of system preference) */
+
+[data-theme="dark"] {
+  @include dark-theme-styles-analytics;
+}
+
+/* ================================
+   MANUAL LIGHT OVERRIDE
+   ================================ */
+
+/* Manual light override (works regardless of system preference) */
+/* Manual light override (works regardless of system preference) */
+[data-theme="light"] {
+  @include light-theme-styles-analytics;
+}
