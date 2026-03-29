@@ -5,6 +5,10 @@ node_modules/
 .idea/
 nbactions.xml
 
+# Generated and local configuration
+docker/db-init/01-init-data.sql
+docker-compose.yml
+
 ### macOS ###
 # General
 .DS_Store
