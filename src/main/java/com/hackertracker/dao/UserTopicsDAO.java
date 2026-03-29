@@ -49,7 +49,6 @@ public class UserTopicsDAO {
      * Save a new User entity
      */
     public void saveUserTopics(UserTopics userTopics) {
-//        System.out.println("The user we want to save \n" + user);
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
             try {
