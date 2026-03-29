@@ -25,6 +25,9 @@ import java.util.List;
 @Repository
 public class UserProblemPriorityDAO {
 
+    private static final String USER_ID_PARAM = "userId";
+    private static final String PRIORITY_ID_PARAM = "priorityId";
+
     private final SessionFactory sessionFactory;
 
     public UserProblemPriorityDAO(SessionFactory sessionFactory) {
@@ -52,8 +55,6 @@ public class UserProblemPriorityDAO {
 
             return session.createQuery(cq).uniqueResult();
 
-        } catch (Exception e) {
-            throw e;
         } finally {
             session.close();
         }
@@ -65,14 +66,15 @@ public class UserProblemPriorityDAO {
             try {
                 // Direct SQL update is much faster
                 session.createNativeQuery(
-                                "UPDATE user_problem_priority " +
-                                        "SET priority_score = ((priority_score - :minScore) / :range) * 100, " +
-                                        "last_calculation = :now " +
-                                        "WHERE user_id = :userId")
+                        "UPDATE user_problem_priority " +
+                                "SET priority_score = ((priority_score - :minScore) / :range) * 100, " +
+                                "last_calculation = :now " +
+                                "WHERE user_id = :" + USER_ID_PARAM,
+                        void.class)
                         .setParameter("minScore", minScore)
                         .setParameter("range", range)
                         .setParameter("now", LocalDateTime.now(ZoneOffset.UTC))
-                        .setParameter("userId", userId)
+                        .setParameter(USER_ID_PARAM, userId)
                         .executeUpdate();
                 tx.commit();
             } catch (Exception e) {
@@ -82,31 +84,29 @@ public class UserProblemPriorityDAO {
         }
     }
 
-
     // Add to priorityDao
     public List<Object[]> findAllPriorityMappings() {
         Session session = sessionFactory.openSession();
         try {
             return session.createQuery(
-                            "SELECT p.problem.problemId, p.user.userId, p.priorityId FROM UserProblemPriority p",
-                            Object[].class)
+                    "SELECT p.problem.problemId, p.user.userId, p.priorityId FROM UserProblemPriority p",
+                    Object[].class)
                     .list();
         } finally {
             session.close();
         }
     }
 
-
     /**
      * Get highest priority problem of a specific difficulty
      */
     public Problem getHighestPriorityProblemOfDifficulty(User user, String difficulty) {
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Query<Problem> q = session.createQuery("SELECT p FROM Problem p " +
                     "JOIN UserProblemPriority pp ON p = pp.problem " +
                     "WHERE pp.user = :user " +
                     "AND p.difficultyLevel = :difficulty " +
-                    "ORDER BY pp.priorityScore DESC" , Problem.class).setMaxResults(1);
+                    "ORDER BY pp.priorityScore DESC", Problem.class).setMaxResults(1);
 
             q.setParameter("user", user);
             q.setParameter("difficulty", difficulty);
@@ -117,7 +117,6 @@ public class UserProblemPriorityDAO {
         }
     }
 
-
     /**
      * Find all priorities for a user, ordered by priority score descending
      */
@@ -125,17 +124,14 @@ public class UserProblemPriorityDAO {
         Session session = sessionFactory.openSession();
 
         try {
-            Query<UserProblemPriority> q = session.createNamedQuery("challenge.orderByPriority", UserProblemPriority.class);
+            Query<UserProblemPriority> q = session.createNamedQuery("challenge.orderByPriority",
+                    UserProblemPriority.class);
             q.setMaxResults(1);
 
             q.setParameter("user", user);
 
-            UserProblemPriority priority = q.uniqueResult();
+            return q.uniqueResult();
 
-            return priority;
-
-        } catch (Exception e) {
-            throw e;
         } finally {
             session.close();
         }
@@ -150,18 +146,14 @@ public class UserProblemPriorityDAO {
         try {
             Query<UserProblemPriority> q = session.createQuery(
                     "from UserProblemPriority where problem=:problem",
-                    UserProblemPriority.class
-            );
+                    UserProblemPriority.class);
             q.setParameter("problem", problem);
             return q.list();
 
-        } catch (Exception e) {
-            throw e;
         } finally {
             session.close();
         }
     }
-
 
     /**
      * Find all priorities for a user
@@ -172,13 +164,10 @@ public class UserProblemPriorityDAO {
         try {
             Query<UserProblemPriority> q = session.createQuery(
                     "from UserProblemPriority where user=:user",
-                    UserProblemPriority.class
-            );
+                    UserProblemPriority.class);
             q.setParameter("user", user);
             return q.list();
 
-        } catch (Exception e) {
-            throw e;
         } finally {
             session.close();
         }
@@ -194,10 +183,7 @@ public class UserProblemPriorityDAO {
             Query<UserProblemPriority> q = session.createQuery(
                     "from UserProblemPriority", UserProblemPriority.class);
 
-
             return q.list();
-        } catch (Exception e) {
-            throw e;
         } finally {
             session.close();
         }
@@ -243,9 +229,9 @@ public class UserProblemPriorityDAO {
         }
     }
 
-
     /**
      * Find min and max scores for a user
+     * 
      * @return Object array with [minScore, maxScore, count]
      */
     public Object[] findMinMaxScoresByUserId(int userId) {
@@ -254,15 +240,15 @@ public class UserProblemPriorityDAO {
             Query<Object[]> query = session.createQuery(
                     "SELECT MIN(p.priorityScore), MAX(p.priorityScore), COUNT(p) " +
                             "FROM UserProblemPriority p " +
-                            "WHERE p.user.userId = :userId",
+                            "WHERE p.user.userId = :" + USER_ID_PARAM,
                     Object[].class);
-            query.setParameter("userId", userId);
+            query.setParameter(USER_ID_PARAM, userId);
 
             Object[] result = query.uniqueResult();
 
-            // If there are no priorities or just one, return null
-            if (result[2] == null || (Long)result[2] <= 1) {
-                return null;
+            // If there are no priorities or just one, return empty array
+            if (result == null || result[2] == null || (Long) result[2] <= 1) {
+                return new Object[0];
             }
 
             return result;
@@ -273,16 +259,17 @@ public class UserProblemPriorityDAO {
 
     /**
      * Get min and max scores for all users in one query
+     * 
      * @return List of arrays containing [userId, minScore, maxScore, count]
      */
     public List<Object[]> findMinMaxScoresForAllUsers() {
         Session session = sessionFactory.openSession();
         try {
             return session.createQuery(
-                            "SELECT p.user.userId, MIN(p.priorityScore), MAX(p.priorityScore), COUNT(p) " +
-                                    "FROM UserProblemPriority p " +
-                                    "GROUP BY p.user.userId",
-                            Object[].class)
+                    "SELECT p.user.userId, MIN(p.priorityScore), MAX(p.priorityScore), COUNT(p) " +
+                            "FROM UserProblemPriority p " +
+                            "GROUP BY p.user.userId",
+                    Object[].class)
                     .list();
         } finally {
             session.close();
@@ -298,9 +285,9 @@ public class UserProblemPriorityDAO {
             Query<Object[]> query = session.createQuery(
                     "SELECT p.priorityId, p.priorityScore " +
                             "FROM UserProblemPriority p " +
-                            "WHERE p.user.userId = :userId",
+                            "WHERE p.user.userId = :" + USER_ID_PARAM,
                     Object[].class);
-            query.setParameter("userId", userId);
+            query.setParameter(USER_ID_PARAM, userId);
 
             return query.list();
         } finally {
@@ -317,14 +304,14 @@ public class UserProblemPriorityDAO {
             session.beginTransaction();
 
             for (UserProblemPriority priority : priorities) {
-                session.createQuery(
-                                "UPDATE UserProblemPriority p " +
-                                        "SET p.priorityScore = :score, " +
-                                        "p.lastCalculation = :timestamp " +
-                                        "WHERE p.priorityId = :priorityId")
+                session.createMutationQuery(
+                        "UPDATE UserProblemPriority p " +
+                                "SET p.priorityScore = :score, " +
+                                "p.lastCalculation = :timestamp " +
+                                "WHERE p.priorityId = :" + PRIORITY_ID_PARAM)
                         .setParameter("score", priority.getPriorityScore())
                         .setParameter("timestamp", priority.getLastCalculation())
-                        .setParameter("priorityId", priority.getPriorityId())
+                        .setParameter(PRIORITY_ID_PARAM, priority.getPriorityId())
                         .executeUpdate();
             }
 
@@ -337,12 +324,12 @@ public class UserProblemPriorityDAO {
         }
     }
 
-
     public UserProblemPriority update(UserProblemPriority priority) {
         Session session = sessionFactory.openSession();
         try {
             session.beginTransaction();
-            priority = session.merge(priority);  // Merges the state of the given object into the current persistence context
+            priority = session.merge(priority); // Merges the state of the given object into the current persistence
+                                                // context
             session.getTransaction().commit();
             return priority;
         } catch (Exception e) {
@@ -352,7 +339,6 @@ public class UserProblemPriorityDAO {
             session.close();
         }
     }
-
 
     public void updateAll(List<UserProblemPriority> allPriorities) {
         Session session = sessionFactory.openSession();
@@ -374,31 +360,10 @@ public class UserProblemPriorityDAO {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            throw e;
         } finally {
             session.close();
         }
     }
-
-
-//    public void updateAll( List<UserProblemPriority> allPriorities) {
-//        Session session = sessionFactory.openSession();
-//
-//        try {
-//            session.beginTransaction();
-//
-//            for(UserProblemPriority priority : allPriorities) {
-//                session.merge(priority);
-//            }
-//            session.getTransaction().commit();
-//
-//        } catch (Exception e) {
-//            session.getTransaction().rollback();
-//            throw e;
-//        } finally {
-//            session.close();
-//        }
-//    }
 
     /**
      * Delete a user problem priority
@@ -409,7 +374,7 @@ public class UserProblemPriorityDAO {
             session.beginTransaction();
             session.remove(userProblemPriority);
             session.getTransaction().commit();
-        } catch(Exception e) {
+        } catch (Exception e) {
             session.getTransaction().rollback();
         } finally {
             session.close();

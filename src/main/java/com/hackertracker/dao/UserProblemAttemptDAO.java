@@ -25,11 +25,9 @@ import java.util.List;
 public class UserProblemAttemptDAO {
 
     private final SessionFactory sessionFactory;
-    private final UserProblemCompletionDAO userProblemCompletionDao;
 
-    public UserProblemAttemptDAO(SessionFactory sessionFactory, UserProblemCompletionDAO userProblemCompletionDao) {
+    public UserProblemAttemptDAO(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
-        this.userProblemCompletionDao = userProblemCompletionDao;
     }
 
     /**
@@ -42,28 +40,12 @@ public class UserProblemAttemptDAO {
             try {
                 List<UserProblemAttempt> attempts = findByProblemAndUser(newAttempt.getProblem(), newAttempt.getUser());
 
-//                System.out.println("Attempts found that match \n");
-//                for(UserProblemAttempt attempt : attempts) {
-//                    if( attempt.equals(newAttempt) ) {
-//                        System.out.println(attempt);
-//                    }
-//                }
-
                 for(UserProblemAttempt attempt : attempts) {
                     if( attempt.equals(newAttempt) ) {
                         tx.rollback();
                         return;
                     }
                 }
-
-//                UserProblemCompletion completion = new UserProblemCompletion();
-//                completion.setCompletionDate(LocalDateTime.now(ZoneOffset.UTC));
-//                completion.setUser(newAttempt.getUser());
-//                completion.setProblem(newAttempt.getProblem());
-//                System.out.println("Completion supposedly getting saved.\n\n");
-//                System.out.println(completion);
-
-//                userProblemCompletionDao.save(completion);
 
                 session.persist(newAttempt);
                 tx.commit();
@@ -96,8 +78,6 @@ public class UserProblemAttemptDAO {
 
             return session.createQuery(cq).list();
 
-        } catch (Exception e) {
-            throw e;
         } finally {
             session.close();
         }
@@ -141,8 +121,6 @@ public class UserProblemAttemptDAO {
             query.setParameter("userId", userId);
             Long count = query.uniqueResult();
             return count.intValue();
-        } catch (Exception e) {
-            throw e;
         }
     }
 
@@ -154,8 +132,7 @@ public class UserProblemAttemptDAO {
             Query<Long> query = session.createQuery("select count(*) from UserProblemAttempt", Long.class);
             Long count = query.uniqueResult();
             return count.intValue();
-        } catch (Exception e) {
-            throw e;
+
         }
     }
 }

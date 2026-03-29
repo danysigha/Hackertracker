@@ -18,6 +18,9 @@ import java.util.List;
 @Repository
 public class UserDAO {
 
+    private static final String USER_ID_PARAM = "userId";
+    private static final String USER_IDS_PARAM = "userIds";
+    
     private final SessionFactory sessionFactory;
 
     public UserDAO(SessionFactory sessionFactory) {
@@ -46,7 +49,6 @@ public class UserDAO {
      * Save a new User entity
      */
     public void saveUser(User user) {
-//        System.out.println("The user we want to save \n" + user);
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
             try {
@@ -64,27 +66,12 @@ public class UserDAO {
      */
     public User getUserById(int userId) {
         try (Session session = sessionFactory.openSession()) {
-            Query<User> q = session.createQuery("from User where userId=:userId", User.class);
-            q.setParameter("userId", userId);
+            Query<User> q = session.createQuery("from User where userId=:" + USER_ID_PARAM, User.class);
+            q.setParameter(USER_ID_PARAM, userId);
             return q.uniqueResult();
         }
     }
 
-//    /**
-//     * Get a User entity by ID
-//     */
-//    @Transactional(readOnly = true)
-//    public User getUserByIdWithCollections(int userId) {
-//        Session session = sessionFactory.openSession();
-//        User user = session.get(User.class, userId);
-//        Hibernate.initialize(user.getListAttempts());
-//        Hibernate.initialize(user.getUserSchedule());
-//        return user;
-//    }
-
-    /**
-     * Get a User entity by ID with collections initialized
-     */
     /**
      * Get a User entity by ID with collections initialized
      */
@@ -97,9 +84,9 @@ public class UserDAO {
                             "FROM User u " +
                                     "LEFT JOIN FETCH u.topicRanks tr " +
                                     "LEFT JOIN FETCH tr.topics " +
-                                    "WHERE u.userId = :userId",
+                                    "WHERE u.userId = :" + USER_ID_PARAM,
                             User.class)
-                    .setParameter("userId", userId)
+                    .setParameter(USER_ID_PARAM, userId)
                     .uniqueResult();
 
             if (user != null) {
@@ -109,27 +96,27 @@ public class UserDAO {
                                 "FROM User u " +
                                         "LEFT JOIN FETCH u.problemAttempts a " +
                                         "LEFT JOIN FETCH a.problem " +
-                                        "WHERE u.userId = :userId",
+                                        "WHERE u.userId = :" + USER_ID_PARAM,
                                 User.class)
-                        .setParameter("userId", userId)
+                        .setParameter(USER_ID_PARAM, userId)
                         .uniqueResult();
 
                 // Load problem priorities
                 user = session.createQuery(
                                 "FROM User u " +
                                         "LEFT JOIN FETCH u.problemPriorities " +
-                                        "WHERE u.userId = :userId",
+                                        "WHERE u.userId = :" + USER_ID_PARAM,
                                 User.class)
-                        .setParameter("userId", userId)
+                        .setParameter(USER_ID_PARAM, userId)
                         .uniqueResult();
 
                 // Load user schedule
                 user = session.createQuery(
                                 "FROM User u " +
                                         "LEFT JOIN FETCH u.userSchedule " +
-                                        "WHERE u.userId = :userId",
+                                        "WHERE u.userId = :" + USER_ID_PARAM,
                                 User.class)
-                        .setParameter("userId", userId)
+                        .setParameter(USER_ID_PARAM, userId)
                         .uniqueResult();
             }
 
@@ -149,39 +136,39 @@ public class UserDAO {
                             "FROM User u " +
                                     "LEFT JOIN FETCH u.topicRanks tr " +
                                     "LEFT JOIN FETCH tr.topics " +
-                                    "WHERE u.userId IN (:userIds)",
+                                    "WHERE u.userId IN (:" + USER_IDS_PARAM + ")",
                             User.class)
-                    .setParameter("userIds", userIds)
+                    .setParameter(USER_IDS_PARAM, userIds)
                     .getResultList();
 
-            if (users.size() != 0) {
+            if (!users.isEmpty()) {
                 // Then load attempts in a separate query
                 // This gives us the same user object but with attempts loaded
                 users = session.createQuery(
                                 "FROM User u " +
                                         "LEFT JOIN FETCH u.problemAttempts a " +
                                         "LEFT JOIN FETCH a.problem " +
-                                        "WHERE u.userId IN (:userIds)",
+                                        "WHERE u.userId IN (:" + USER_IDS_PARAM + ")",
                                 User.class)
-                        .setParameter("userIds", userIds)
+                        .setParameter(USER_IDS_PARAM, userIds)
                         .getResultList();
 
                 // Load problem priorities
                 users = session.createQuery(
                                 "FROM User u " +
                                         "LEFT JOIN FETCH u.problemPriorities " +
-                                        "WHERE u.userId IN (:userIds)",
+                                        "WHERE u.userId IN (:" + USER_IDS_PARAM + ")",
                                 User.class)
-                        .setParameter("userIds", userIds)
+                        .setParameter(USER_IDS_PARAM, userIds)
                         .getResultList();
 
                 // Load user schedule
                 users = session.createQuery(
                                 "FROM User u " +
                                         "LEFT JOIN FETCH u.userSchedule " +
-                                        "WHERE u.userId IN (:userIds)",
+                                        "WHERE u.userId IN (:" + USER_IDS_PARAM + ")",
                                 User.class)
-                        .setParameter("userIds", userIds)
+                        .setParameter(USER_IDS_PARAM, userIds)
                         .getResultList();
             }
 
@@ -191,19 +178,6 @@ public class UserDAO {
             session.close();
         }
     }
-//    @Transactional(readOnly = true)
-//    public User getUserByIdWithCollections(int userId) {
-//        Session session = sessionFactory.getCurrentSession();
-//        User user = session.get(User.class, userId);
-//
-//        if (user != null) {
-//            Hibernate.initialize(user.getListAttempts());
-//            Hibernate.initialize(user.getListProblemPriorities());
-//            Hibernate.initialize(user.getUserSchedule());
-//        }
-//
-//        return user;
-//    }
 
     /**
      * Get a User entity by username with schedule
@@ -241,8 +215,8 @@ public class UserDAO {
 
         try {
             // Query directly in this method instead of calling getUserByUserName
-            Query<User> q = session.createQuery("from User where userId=:userId", User.class);
-            q.setParameter("userId", userId);
+            Query<User> q = session.createQuery("from User where userId=:" + USER_ID_PARAM, User.class);
+            q.setParameter(USER_ID_PARAM, userId);
             User user = q.uniqueResult();
 
             // Initialize the collections within the same session

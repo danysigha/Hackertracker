@@ -17,7 +17,6 @@ public class TopicProblemDAO {
      * Save a new TopicProblem entity
      */
     public void saveTopicProblem(TopicProblem topicProblem) {
-//        System.out.println("The user we want to save \n" + user);
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
             try {

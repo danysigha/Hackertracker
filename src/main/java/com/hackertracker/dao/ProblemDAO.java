@@ -147,8 +147,6 @@ public class ProblemDAO {
             Query<Long> query = session.createQuery("select count(*) from Problem", Long.class);
             Long count = query.uniqueResult();
             return count.intValue();
-        } catch (Exception e) {
-            throw e;
         }
     }
 
@@ -161,8 +159,6 @@ public class ProblemDAO {
             query.setParameter("difficultyLevel", difficultyLevel);
             Long count = query.uniqueResult();
             return count.intValue();
-        } catch (Exception e) {
-            throw e;
         }
     }
 
@@ -204,25 +200,4 @@ public class ProblemDAO {
             }
         }
     }
-
-    /**
-     * Check if problems of a specific difficulty are available
-     */
-//    public boolean hasProblemsByDifficulty(int userId, String difficulty) {
-//        try (Session session = sessionFactory.openSession()){
-//            Query<Long> q = session.createQuery("SELECT COUNT(p) FROM Problem p " +
-//                    "WHERE p.difficultyLevel = :difficulty " +
-//                    "AND p.id NOT IN (SELECT cp.problem.problemId FROM UserProblemCompletion cp WHERE cp.user.userId = :userId)", Long.class);
-//
-//            q.setParameter("userId", userId);
-//            q.setParameter("difficulty", difficulty);
-//
-//            Long count = q.getSingleResult();
-//
-//            return count > 0;
-//
-//        } catch (Exception e) {
-//            throw e;
-//        }
-//    }
 }

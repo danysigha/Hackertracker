@@ -19,7 +19,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-
 /**
  * Service for managing user problem priorities
  */
@@ -34,9 +33,8 @@ public class UserProblemPriorityService {
     private final ProblemHistoryDAO problemHistoryDao;
     private final ProcessProblemPriorityService processProblemPriorityService;
     private final PriorityCalculatorOptimized priorityCalculatorOptimized;
-    private final Map<Integer, LinkedList<String>> userRecentDifficulties = new ConcurrentHashMap<>();
-//    private final UserProblemService userProblemService;
-
+    private final Map<Integer, Deque<String>> userRecentDifficulties = new ConcurrentHashMap<>();
+    // private final UserProblemService userProblemService;
 
     public UserProblemPriorityService(
             UserProblemPriorityDAO priorityDao,
@@ -95,7 +93,6 @@ public class UserProblemPriorityService {
         } while (!problemsBatch.isEmpty());
     }
 
-
     /**
      * Update priority score after a user attempts a problem
      */
@@ -145,7 +142,6 @@ public class UserProblemPriorityService {
         priorityDao.update(priority);
     }
 
-
     @Transactional
     public double recalculateSinglePriority(Problem problem, User user) {
         User myUser = userDao.getUserByIdWithCollections(user.getUserId());
@@ -185,7 +181,6 @@ public class UserProblemPriorityService {
 
         return newScore;
     }
-
 
     @Transactional
     public void recalculateAllPrioritiesByUser(User user) {
@@ -239,11 +234,12 @@ public class UserProblemPriorityService {
             Problem problem = problemsMap.get(priority.getProblem().getProblemId());
 
             // Skip if problem not found (shouldn't happen, but for safety)
-            if (problem == null) continue;
+            if (problem == null)
+                continue;
 
             // Get attempts for this problem
-            List<UserProblemAttempt> problemAttempts =
-                    attemptsByProblemId.getOrDefault(problem.getProblemId(), Collections.emptyList());
+            List<UserProblemAttempt> problemAttempts = attemptsByProblemId.getOrDefault(problem.getProblemId(),
+                    Collections.emptyList());
 
             // Calculate new score with optimized method
             double newScore = priorityCalculatorOptimized.calculatePriorityScoreOptimized(
@@ -272,38 +268,40 @@ public class UserProblemPriorityService {
         processProblemPriorityService.normalizeScoresForUser(user);
     }
 
-
     /**
      * Get the next recommended problem for a user
+     * 
      * @param user
      * @return The next recommended problem
      */
     @Transactional(readOnly = true)
     public Problem getNextRecommendedProblem(User user) {
         // Get or initialize recent difficulties
-        LinkedList<String> recentDifficulties = userRecentDifficulties.computeIfAbsent(
-                user.getUserId(), problemHistoryDao::loadRecentDifficulties);
+        Deque<String> recentDifficulties = userRecentDifficulties.computeIfAbsent(
+                user.getUserId(), uid -> new LinkedList<>(problemHistoryDao.loadRecentDifficulties(uid)));
 
         // Determine what difficulty to recommend next
         String nextDifficulty = determineNextDifficulty(user.getUserId(), recentDifficulties);
-//        System.out.println("\n\nREQUESTING "+ nextDifficulty + " problem \n\n");
+        // System.out.println("\n\nREQUESTING "+ nextDifficulty + " problem \n\n");
 
         // Get the highest priority problem of that difficulty
         Problem problem = priorityDao.getHighestPriorityProblemOfDifficulty(user, nextDifficulty);
 
-//        System.out.println("\n\nGOT " + problem.getDifficultyLevel() + " PROBLEM \n\n");
+        // System.out.println("\n\nGOT " + problem.getDifficultyLevel() + " PROBLEM
+        // \n\n");
 
         // If no problems of preferred difficulty, get any problem
         if (problem == null) {
-//            System.out.println("FALLING BACK TO findNextChallengeByPriorityScoreDesc");
+            // System.out.println("FALLING BACK TO findNextChallengeByPriorityScoreDesc");
             problem = priorityDao.findNextChallengeByPriorityScoreDesc(user).getProblem();
         }
 
         // Record this problem in history
         if (problem != null) {
             // Update in-memory cache
-//            System.out.println("\n\nADDING " + problem.getDifficultyLevel() + " problem\n\n");
-//            System.out.println(problem);
+            // System.out.println("\n\nADDING " + problem.getDifficultyLevel() + "
+            // problem\n\n");
+            // System.out.println(problem);
             recentDifficulties.addFirst(problem.getDifficultyLevel().toLowerCase());
             userRecentDifficulties.put(user.getUserId(), recentDifficulties);
 
@@ -316,16 +314,16 @@ public class UserProblemPriorityService {
             problemHistoryDao.saveProblemHistory(ph);
         }
 
-//        System.out.println("\n\nRETURNING " + problem.getDifficultyLevel() + " PROBLEM \n\n");
+        // System.out.println("\n\nRETURNING " + problem.getDifficultyLevel() + "
+        // PROBLEM \n\n");
 
         return problem;
     }
 
-
     /**
      * Determine what difficulty level to show next
      */
-    private String determineNextDifficulty(int userId, LinkedList<String> recentDifficulties) {
+    private String determineNextDifficulty(int userId, Deque<String> recentDifficulties) {
         if (recentDifficulties.isEmpty()) {
             return "Easy"; // Start with easy
         }
@@ -338,7 +336,7 @@ public class UserProblemPriorityService {
             double spin = Math.random();
             if (spin < 0.18) {
                 return "Hard";
-            } else if(spin < 0.36) {
+            } else if (spin < 0.36) {
                 return "Medium";
             } else {
                 return "Easy";
@@ -357,12 +355,12 @@ public class UserProblemPriorityService {
 
         // After 2-3 consecutive easy problems, try medium or hard
         if (consecutiveEasy >= 3) {
-//            System.out.println("DO WE EVEN GET IN HERE?!");
+            // System.out.println("DO WE EVEN GET IN HERE?!");
             // Choose medium more often than hard (2:1 ratio)
             double spin = Math.random();
             if (spin < 0.40) {
                 return "Hard";
-            } else if(spin < 0.80) {
+            } else if (spin < 0.80) {
                 return "Medium";
             } else {
                 return "Easy";
@@ -372,7 +370,6 @@ public class UserProblemPriorityService {
         // Default to easy
         return "Easy";
     }
-
 
     @Scheduled(cron = "0 0 0 * * ?")
     public void recalculateAllPriorities() {
@@ -410,7 +407,6 @@ public class UserProblemPriorityService {
         processProblemPriorityService.normalizeAllUserPriorities();
     }
 
-
     /**
      * Batch initialize priorities for a new user
      */
@@ -421,7 +417,7 @@ public class UserProblemPriorityService {
         userTopics.setUser(user);
 
         List<Byte> myTopics = new ArrayList<>();
-        for(Topic topic : topicDao.getAllTopics()) {
+        for (Topic topic : topicDao.getAllTopics()) {
             myTopics.add(topic.getTopicRank());
         }
 

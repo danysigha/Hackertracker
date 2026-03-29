@@ -17,6 +17,9 @@ import java.util.List;
 
 @Repository
 public class UserProblemCompletionDAO {
+    
+    private static final String USER_ID_PARAM = "userId";
+    
     private final SessionFactory sessionFactory;
 
     public UserProblemCompletionDAO(SessionFactory sessionFactory) {
@@ -44,8 +47,6 @@ public class UserProblemCompletionDAO {
 
             return session.createQuery(cq).uniqueResult();
 
-        } catch (Exception e) {
-            throw e;
         } finally {
             session.close();
         }
@@ -75,12 +76,10 @@ public class UserProblemCompletionDAO {
     public int getNumberOfProblemsCompletedByUserId(int userId) {
         try (Session session = sessionFactory.openSession()) {
             // Using the typed version of createQuery, specifying the return type as Long
-            Query<Long> query = session.createQuery("select count(*) from UserProblemCompletion where user.userId=:userId", Long.class);
-            query.setParameter("userId", userId);
+            Query<Long> query = session.createQuery("select count(*) from UserProblemCompletion where user.userId=:" + USER_ID_PARAM, Long.class);
+            query.setParameter(USER_ID_PARAM, userId);
             Long count = query.uniqueResult();
             return count.intValue();
-        } catch (Exception e) {
-            throw e;
         }
     }
 
@@ -92,14 +91,12 @@ public class UserProblemCompletionDAO {
         try (Session session = sessionFactory.openSession()) {
             // Query with filter condition
             Query<Long> query = session.createQuery(
-                    "select count(*) from UserProblemCompletion upc where upc.problem.difficultyLevel=:level and user.userId=:userId",
+                    "select count(*) from UserProblemCompletion upc where upc.problem.difficultyLevel=:level and user.userId=:" + USER_ID_PARAM,
                     Long.class);
             query.setParameter("level", difficultyLevel);
-            query.setParameter("userId", userId);
+            query.setParameter(USER_ID_PARAM, userId);
             Long count = query.uniqueResult();
             return count.intValue();
-        } catch (Exception e) {
-            throw e;
         }
     }
 
@@ -112,12 +109,10 @@ public class UserProblemCompletionDAO {
 
         try {
             Query<UserProblemCompletion> q = session.createQuery(
-                    "from UserProblemCompletion where user.userId=:userId", UserProblemCompletion.class);
+                    "from UserProblemCompletion where user.userId=:" + USER_ID_PARAM, UserProblemCompletion.class);
 
-            q.setParameter("userId", userId);
+            q.setParameter(USER_ID_PARAM, userId);
             return q.list();
-        } catch (Exception e) {
-            throw e;
         } finally {
             session.close();
         }

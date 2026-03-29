@@ -35,8 +35,23 @@ public class TopicDAO {
     /**
      * Save a new Topic entity
      */
+    public void saveTopic(Topic topic) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            try {
+                session.persist(topic);
+                tx.commit();
+            } catch (Exception e) {
+                tx.rollback();
+                throw e;
+            }
+        }
+    }
+
+    /**
+     * Save a new Topic entity with user association
+     */
     public void saveTopicByUserId(Topic topic, int userId) {
-//        System.out.println("The user we want to save \n" + user);
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
             try {
@@ -61,20 +76,15 @@ public class TopicDAO {
     public List<Topic> getAllTopics(){
         try (Session session = sessionFactory.openSession()) {
             return session.createQuery("FROM Topic order by topicRank", Topic.class).list();
-        } catch (Exception e) {
-            throw e;
         }
     }
 
     public List<Topic> getTopicsPage(int pageNumber, int pageSize) {
-        Session session = sessionFactory.openSession();
-        try {
+        try (Session session = sessionFactory.openSession()) {
             Query<Topic> query = session.createQuery("FROM Topic t ORDER BY t.topicId", Topic.class);
             query.setFirstResult(pageNumber * pageSize);
             query.setMaxResults(pageSize);
             return query.list();
-        } finally {
-            session.close();
         }
     }
 
@@ -82,23 +92,23 @@ public class TopicDAO {
         try (Session session = sessionFactory.openSession()) {
             List<Topic> topics = session.createQuery("FROM Topic order by topicRank", Topic.class).list();
             return topics.stream().map(TopicDTO::fromEntity).toList();
-        } catch (Exception e) {
-            throw e;
         }
     }
 
     public Topic getTopicById(byte topicId) {
-        Session session = sessionFactory.openSession();
-        Query<Topic> q = session.createQuery("from Topic where topicId=:topicId", Topic.class);
-        q.setParameter("topicId", topicId);
-        return q.uniqueResult();
+        try (Session session = sessionFactory.openSession()) {
+            Query<Topic> q = session.createQuery("from Topic where topicId=:topicId", Topic.class);
+            q.setParameter("topicId", topicId);
+            return q.uniqueResult();
+        }
     }
 
     public List<Topic> getTopicByName(String topicName) {
-        Session session = sessionFactory.openSession();
-        Query<Topic> q = session.createQuery("from Topic where topicName LIKE :topicName", Topic.class);
-        q.setParameter("topicName", "%" + topicName + "%");
-        return q.list();
+        try (Session session = sessionFactory.openSession()) {
+            Query<Topic> q = session.createQuery("from Topic where topicName LIKE :topicName", Topic.class);
+            q.setParameter("topicName", "%" + topicName + "%");
+            return q.list();
+        }
     }
 
     public List<Problem> getTopicProblems(Topic topic) {
