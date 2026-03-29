@@ -7,7 +7,6 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.LinkedList;
 import java.util.List;
 
 @Repository
@@ -23,7 +22,6 @@ public class ProblemHistoryDAO {
      * Save a new ProblemHistory entity
      */
     public void saveProblemHistory(ProblemHistory ph) {
-//        System.out.println("The user we want to save \n" + user);
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
             try {
@@ -44,15 +42,13 @@ public class ProblemHistoryDAO {
             Query<ProblemHistory> q = session.createQuery("from ProblemHistory where user.userId=:userId", ProblemHistory.class);
             q.setParameter("userId", userId);
             return q.list();
-        } catch (Exception e) {
-            throw e;
         }
     }
 
     /**
      * Load recent problem difficulties from database
      */
-    public LinkedList<String> loadRecentDifficulties(int userId) {
+    public List<String> loadRecentDifficulties(int userId) {
         try (Session session = sessionFactory.openSession()){
             Query<String> q = session.createQuery("SELECT ph.problem.difficultyLevel FROM ProblemHistory ph " +
                     "WHERE ph.user.userId = :userId " +
@@ -65,10 +61,8 @@ public class ProblemHistoryDAO {
             // Convert to lowercase for consistency
             difficulties.replaceAll(String::toLowerCase);
 
-            return new LinkedList<>(difficulties);
+            return difficulties;
 
-        } catch (Exception e) {
-            throw e;
         }
     }
 }
