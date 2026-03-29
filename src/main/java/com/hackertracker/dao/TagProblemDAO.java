@@ -17,7 +17,6 @@ public class TagProblemDAO {
      * Save a new TagProblem entity
      */
     public void saveTagProblem(TagProblem tagProblem) {
-//        System.out.println("The user we want to save \n" + user);
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
             try {
