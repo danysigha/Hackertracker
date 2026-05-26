@@ -39,24 +39,12 @@ A comprehensive LeetCode progress tracking and intelligent scheduling platform d
 
 ## Screenshots
 
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 20px 0;">
-  <div style="text-align: center;">
-    <h4>Main Dashboard - Light</h4>
-    <img src="docs/screenshots/main_dashboard.png" alt="Main Dashboard - Light Mode" style="max-width: 100%; height: auto;" />
-  </div>
-  <div style="text-align: center;">
-    <h4>Main Dashboard - Dark</h4>
-    <img src="docs/screenshots/main_dashboard_dark.png" alt="Main Dashboard - Dark Mode" style="max-width: 100%; height: auto;" />
-  </div>
-  <div style="text-align: center;">
-    <h4>Progress Dashboard</h4>
-    <img src="docs/screenshots/progress_dashboard.png" alt="Progress Dashboard" style="max-width: 100%; height: auto;" />
-  </div>
-  <div style="text-align: center;">
-    <h4>Progress Analytics</h4>
-    <img src="docs/screenshots/progress_dashboard_bis.png" alt="Progress Dashboard Alternative" style="max-width: 100%; height: auto;" />
-  </div>
-</div>
+|                                                                |                                                                    |
+| -------------------------------------------------------------- | ------------------------------------------------------------------ |
+| ![Main Dashboard - Light](docs/screenshots/main_dashboard.png) | ![Main Dashboard - Dark](docs/screenshots/main_dashboard_dark.png) |
+| **Light Mode**                                                 | **Dark Mode**                                                      |
+| ![Progress Dashboard](docs/screenshots/progress_dashboard.png) | ![Progress Analytics](docs/screenshots/progress_dashboard_bis.png) |
+| **Progress Dashboard**                                         | **Progress Analytics**                                             |
 
 ## Tech Stack
 
